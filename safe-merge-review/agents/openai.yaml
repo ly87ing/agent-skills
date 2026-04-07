@@ -1,0 +1,4 @@
+interface:
+  display_name: "Safe Merge Review"
+  short_description: "Safely merge branches with proof-driven review"
+  default_prompt: "Use $safe-merge-review to merge a branch with pre-merge analysis, completeness checks, and semantic review."
