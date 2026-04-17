@@ -1,0 +1,30 @@
+{
+  "skill_name": "safe-merge-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我把 origin/feature/tenant-migration 合到当前分支，并确认有没有漏掉初始化链路和配置回写。",
+      "expected_output": "应触发 safe-merge-review。结果应先锁定 source ref 和当前分支，建模 merge base、left/right counts、incoming commits 和热点文件，再给出完整性证明、最小相关验证和 push 决策。"
+    },
+    {
+      "id": 2,
+      "prompt": "这个 merge commit 我不放心，帮我复核是不是 Git 合上了但逻辑其实拼错了，尤其是 deploy 配置和 schema 变更。",
+      "expected_output": "应触发 safe-merge-review。结果应把任务识别为已完成 merge 的审计，而不是直接再次 merge；应重建预期差异，检查 deploy 配置、schema、共享边界，并输出 Green/Yellow/Red 结论。"
+    },
+    {
+      "id": 3,
+      "prompt": "这几个仓的 release 分支都要合一下，帮我逐仓确认哪些仓真的有 incoming commits，哪些仓其实已经包含了。",
+      "expected_output": "应触发 safe-merge-review。结果应把请求识别为多仓联动 merge，逐仓输出证据，而不是用一句统一口径覆盖所有仓。"
+    },
+    {
+      "id": 4,
+      "prompt": "这个冲突文件你帮我看下该保留 ours 还是 theirs，解完以后到底能不能 push？",
+      "expected_output": "应触发 safe-merge-review。结果应要求查看 base、ours、theirs 三方证据，解释冲突保留方案，并在完整性证明和最小相关验证后才给 push 建议。"
+    },
+    {
+      "id": 5,
+      "prompt": "帮我写一个 Python merge sort，并顺手解释一下时间复杂度。",
+      "expected_output": "不应触发 safe-merge-review；这不是分支合并、merge 审计或冲突复核任务。"
+    }
+  ]
+}

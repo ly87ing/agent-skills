@@ -1,0 +1,30 @@
+{
+  "skill_name": "legacy-component-skinning",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "不要换掉现有组件，只改样式，让这个老页面贴近这套新设计稿；默认页能看，但弹窗和抽屉打开后还是旧皮肤。",
+      "expected_output": "应触发 legacy-component-skinning。结果应要求保留原组件与原行为，覆盖默认页和交互后 surface，并把隐藏界面纳入 interaction sweep。"
+    },
+    {
+      "id": 2,
+      "prompt": "参考站点我只有 URL 和几张截图，先别急着改代码，帮我判断参考包够不够，以及还缺哪些组件状态。",
+      "expected_output": "应触发 legacy-component-skinning。结果应优先走补齐参考包路径，指出参考包不足时不能直接进入正式样式改造。"
+    },
+    {
+      "id": 3,
+      "prompt": "页面 happy path 已经差不多了，但接口失败、权限不足和表单校验失败这些异常提示看起来很乱，也帮我一起验收。",
+      "expected_output": "应触发 legacy-component-skinning。结果应把异常态纳入 exception sweep，并强调只能用可逆、低风险手段复现，不得扰动共享环境。"
+    },
+    {
+      "id": 4,
+      "prompt": "帮我检查这次换肤有没有不小心改到 API、数据流或者业务逻辑，顺便看共享层有没有该下沉却散落在页面补丁里的规则。",
+      "expected_output": "应触发 legacy-component-skinning。结果应复核 non-UI boundary 和 shared-layer convergence，而不是只看视觉相似度。"
+    },
+    {
+      "id": 5,
+      "prompt": "这个后台太老了，直接换成一套新的 React 组件库吧，旧组件都不要了。",
+      "expected_output": "不应触发 legacy-component-skinning；这个请求要求替换组件库，已经超出保留 legacy 组件、只做展示层换肤的边界。"
+    }
+  ]
+}
