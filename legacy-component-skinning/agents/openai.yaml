@@ -1,4 +1,4 @@
 interface:
   display_name: "Legacy Component Skinning"
-  short_description: "Reskin legacy UI without replacing components"
-  default_prompt: "Use $legacy-component-skinning to reskin legacy UI against a reference design system without replacing components or changing behavior."
+  short_description: "Reskin legacy UI, hidden surfaces, and error states"
+  default_prompt: "Use $legacy-component-skinning when legacy UI must match a reference visual system without replacing components, including hidden interactive surfaces, degraded states, or skinning review."

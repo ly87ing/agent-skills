@@ -1,6 +1,6 @@
 ---
 name: legacy-component-skinning
-description: "当需要保留现有前端组件、交互行为和业务语义，只通过 presentation layer skinning 让 legacy 页面或组件贴近某套参考视觉规范时使用。适用于用户提供参考站点、设计稿截图、组件规范文档或视觉契约包，并要求不替换组件库、不改 API、数据流或业务逻辑，优先通过 theme、token、shared component overrides 完成换肤迁移、差异评审或视觉验收。"
+description: "当需要在不替换 legacy 前端组件、不改 API / 数据流 / 业务逻辑的前提下，处理参考视觉迁移、隐藏交互界面样式问题、异常态或降级态样式问题，以及换肤验收时使用。适用于用户提供参考站点、设计稿截图、组件规范文档或视觉契约包，并指出默认页、交互后弹窗/抽屉/二级面板、异常 banner / 表单报错 / 后端不可用提示等需要统一视觉的问题。"
 ---
 
 # Legacy Component Skinning
@@ -62,16 +62,18 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
   - 至少覆盖核心组件默认态和关键状态的参考包
 - 至少覆盖 2-3 个真实业务复合场景，如筛选工具栏、配置表单、编辑弹窗
 - 如果页面存在横向选项组、特性分组或 segmented rail，必须纳入参考包
-  - 如果页面存在异常横幅、错误页、降级提示、warning banner，也必须纳入参考包
+- 如果页面存在异常横幅、错误页、降级提示、warning banner，也必须纳入参考包
 - 验证环境：
-  - 浏览器工具或截图来源
+  - 真实查看效果的手段，如浏览器直接操作、DevTools、Playwright、录屏回传或人工截图
   - 需要覆盖的断点
   - 目标项目是否有现成测试或 smoke 命令
-  - 是否可用浏览器自动化以展开隐藏 surface，如 Playwright / DevTools
-  - 是否可通过 mock、环境开关、参数配置、断网/接口失败来触发异常态
+  - 是否有可用于展开隐藏 surface 的浏览器交互手段，如 DevTools、Playwright 或人工浏览器操作
+  - 异常态只允许通过本地、隔离测试环境、浏览器级 request blocking / mock、环境开关、URL 参数、测试账号等可逆低风险手段触发
 - 审批与停止条件：
   - 没有可核对参考包时，不进入正式样式改造
   - 宿主项目跑不起来或范围不清时，不猜样式、不盲改
+  - 无法真实查看渲染结果、交互结果或异常态结果时，不给出“已统一 / 已通过 / 已验证”的确定性结论
+  - 不得为了复现异常态去停共享服务、改公共配置、污染公共数据或破坏真实后端；如果只能用这类手段，先升级并请求批准
   - 需要安装依赖、打开外部页面或执行高风险命令时，先请求批准
 
 ## Workflow Paths
@@ -91,7 +93,7 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
    - 记录尺寸、状态、密度和层级
    - 补充真实业务复合场景截图，覆盖空值、占位态、禁用态、长文案和帮助信息
    - 对隐藏 surface 保留“触发前 / 触发后”成对截图，覆盖所有关键可见状态变化，而不是只挑 1-2 个显眼按钮
-   - 对异常态保留“正常态 / 异常态”成对截图，如后端可用与后端不可用、校验前与校验失败后
+   - 对异常态仅使用本地 / 测试环境 / 浏览器级可逆手段复现，并保留“正常态 / 异常态”成对截图，如 mock 成功与 mock 失败、校验前与校验失败后
    - 将推断项和缺失项单独标注
 4. 输出“可核对参考包已就绪”或“仍缺哪些组件/状态”。
 
@@ -137,16 +139,19 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
    - [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
    - [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
    - [references/exception-state-checklist.md](references/exception-state-checklist.md)
-9. 如果页面包含隐藏 surface，必须先做一次 interaction sweep，再检查：
+9. 如果目标页面较多、触发器较多或需要多人协作，先运行 [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py) 生成统一的覆盖清单，避免漏检和证据漂移。
+10. 如果页面包含隐藏 surface，必须先做一次 interaction sweep，再检查：
    - 系统枚举所有会改变可见 UI 的触发器，而不是只看文案最显眼的按钮
    - 至少覆盖 click、tab 切换、展开/收起、dropdown item、row action、hover、focus、selection、route jump
    - 每发现一个新 surface，都要补一次布局与状态检查
    - 不得只根据默认初始页断言“页面样式正常”
-10. 如果系统存在罕见异常态，必须补一次 exception sweep：
+11. 如果系统存在罕见异常态，必须补一次 exception sweep：
    - 系统枚举所有会让页面从 happy path 转入 degraded / error / warning / empty-error 的条件
    - 至少覆盖接口失败、后端不可用、表单校验失败、权限不足、功能未开启、空数据异常提示中的可复现项
+   - 只允许使用 mock、浏览器 request blocking、测试环境专用开关、隔离数据或其它可逆低风险手段；不得为了看到异常 UI 去停共享服务、改公共地址或破坏真实后端
    - 不得因为“场景少见”就默认忽略其样式质量
-11. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
+12. 所有布局、对齐、状态和收敛判断都必须基于真实渲染后的实际观察，不得仅凭代码、CSS、DOM、截图命名或静态推断判定“已经对齐”。
+13. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
 
 ### Path 3: 评审与验收
 
@@ -171,30 +176,23 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
    - 后端不可用、权限不足、校验失败、空数据异常等罕见状态是否已回看
    - 异常 banner / alert / inline error 的图标、文案、边框、背景、间距和层级是否协调
    - 异常态不会因为只在特殊条件下出现而继续沿用旧皮肤
-6. 复核实现边界：
+6. 再复核“验收结论是否来自真实观察”：
+   - 至少有真实渲染、真实交互或真实异常反馈的观察证据
+   - 不能只依据代码 diff、CSS 变量、DOM 结构或人工推断给出通过结论
+   - 若某页或某状态无法真实查看，只能标记为未验证
+7. 复核实现边界：
    - 原组件是否仍为原组件
    - 是否有任何非 UI 层改动
    - 是否引入了新的 UI 运行时依赖或复制参考资源
-7. 报告完成项、剩余差异、假设和风险。
+8. 报告完成项、剩余差异、假设和风险。
 
 ## Reusable Resources
 
 ### scripts/
 
-当前未内置脚本；如果这类任务在团队内高频重复，优先把以下脆弱步骤沉淀为 helper：
-
-- `capture_reference_manifest.*`
-  根据截图目录生成参考包清单，避免人工漏记组件状态。
-- `capture_composite_surface_manifest.*`
-  汇总真实业务页截图，标记哪些复合场景已覆盖空态、禁用态和弹窗态。
-- `capture_interactive_surface_manifest.*`
-  记录哪些页面需要点击、切换、展开后才会出现关键 UI，并输出触发前后截图清单。
-- `capture_exception_surface_manifest.*`
-  汇总系统中可复现的异常态、降级态和罕见提示态，并输出正常/异常成对截图清单。
-- `diff_component_map.*`
-  对比两版 legacy 组件映射表，快速找出新增页面补丁和共享层下沉机会。
-- `check_non_ui_touch.*`
-  扫描受影响文件，辅助确认改动是否越过 API、路由、状态管理等非 UI 边界。
+- [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py)
+  生成统一的 Markdown 覆盖清单，强制把复合场景、交互后 surface、异常态和非 UI 边界证据放进同一份 manifest，适合多人协作或大页面群回看。输入是页面名、路由、复合场景、交互触发器和异常态定义；输出是可直接补证据的 checklist / table。
+  在触发器较多、异常态较多或需要批量回看时优先运行它，而不是手工拼接截图清单。
 
 ### references/
 
@@ -223,9 +221,9 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
 
 | Path | Check | Evidence |
 | --- | --- | --- |
-| 路径 1 | 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、命名列表、缺失项说明 |
-| 路径 2 | 只改了 presentation layer，且核心页面与关键弹窗/表单/隐藏 surface / 异常态能运行 | 最小测试结果、页面访问结果、受影响文件摘要 |
-| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵与非 UI 边界均通过 | 验收清单、剩余差异列表、断点检查说明 |
+| 路径 1 | 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、命名列表、缺失项说明、必要时附 manifest |
+| 路径 2 | 只改了 presentation layer，且核心页面与关键弹窗/表单/隐藏 surface / 异常态能运行并被真实回看 | 最小测试结果、页面访问结果、前后截图或观察记录、受影响文件摘要、必要时附 manifest |
+| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵与非 UI 边界均通过 | 验收清单、真实观察证据、剩余差异列表、断点检查说明 |
 
 ## Failure and Escalation
 
@@ -233,8 +231,10 @@ description: "当需要保留现有前端组件、交互行为和业务语义，
 
 - 参考规范缺失关键组件或状态：先补参考包
 - 宿主项目无法运行、范围不清、样式入口未知：先补上下文
+- 无法真实查看渲染结果、交互结果或异常态结果：停止确定性验收，只报告未验证项与阻塞原因
 - 旧组件能力不足以 1:1 还原：记录可接受退化，不得以替换组件规避
 - 参考资源存在 license / copy 风险：只抽视觉契约，不搬源码、构建产物、CSS / JS / 字体 / 图标
+- 为复现异常态必须扰动共享环境、关闭公共服务、修改公共配置或污染真实数据：停止并升级，不得自行操作
 - 需要安装依赖、访问受限环境、执行高风险命令：先请求批准
 
 ## Reporting

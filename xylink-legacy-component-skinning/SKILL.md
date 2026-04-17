@@ -1,6 +1,6 @@
 ---
 name: xylink-legacy-component-skinning
-description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn.xylink.com/public/uikit/demo/index.html，且要求保留 legacy 前端组件和行为、只做 presentation layer skinning 时使用。先读取 sibling skill ../legacy-component-skinning/SKILL.md 作为通用 workflow，再应用 XYLINK 专属参考抓取、验收口径与禁止复制实现的约束。"
+description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在不替换 legacy 前端组件、不改 API / 数据流 / 业务逻辑的前提下，处理 XYLINK 风格迁移、交互后隐藏界面样式问题、异常态或降级态样式问题，以及换肤验收时使用。适用于用户给出 XYLINK demo URL、截图，或指出弹窗/配置页/异常提示等界面与 XYLINK 规范不一致的场景。"
 ---
 
 # XYLINK Legacy Component Skinning
@@ -34,6 +34,8 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
 | --- | --- | --- | --- |
 | “按 XYLINK UIKit demo 给旧页面换肤” | Engineering | 宿主项目 + XYLINK 参考源 | 路径 2 |
 | “不要换组件，只把视觉往 XYLINK 靠” | Engineering | 目标页面 + XYLINK 参考图 | 路径 2 |
+| “默认页像了，但点开后的弹窗/高级区还是旧皮肤” | Engineering / QA | 可运行页面 + 交互入口 | 路径 2 + 路径 3 |
+| “异常 banner、登录失败提示、后端不可用提示和 XYLINK 不一致” | Engineering / QA | 可运行页面 + 异常态复现条件 | 路径 2 + 路径 3 |
 | “检查这次改动有没有照搬 XYLINK 实现” | Engineering / QA | diff + 参考截图 | 路径 3 |
 
 ## Context Sources
@@ -61,8 +63,12 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
 3. 如果 sibling skill 不可用，至少遵守：
    - 保留原组件和原行为
    - 只做 presentation layer 改动
-   - 优先共享 token / shared overrides
-   - 先抓参考包，再做实现，再做组件矩阵验收
+   - 先抓参考包，再做实现，再做验收
+   - 参考包必须覆盖核心组件、真实复合场景、交互后 surface、异常态 / 降级态
+   - 优先共享 token / shared overrides，其次 shared layout density，最后 page-level patches
+   - 主动做 interaction sweep 和 exception sweep，不得只看默认页和 happy path
+   - 异常态只允许通过 mock、测试环境专用开关、浏览器级拦截等低风险手段复现，禁止扰动共享环境
+   - 验收必须同时覆盖组件矩阵、复合场景矩阵、交互态矩阵、异常态矩阵，以及 copy risk / non-UI boundary
 
 ### Path 2: 构建 XYLINK 参考包并实施
 
@@ -93,6 +99,10 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
    - 登录失败 / 校验失败
    - 权限不足
    - warning / error banner
+   - 只允许使用 mock、测试环境专用开关、浏览器级 request blocking 等低风险手段复现；不得为了看异常 UI 去停共享服务或改公共配置
+8. XYLINK 收敛判断必须基于真实效果回看：
+   - 可以用浏览器直接操作、DevTools、Playwright、录屏回传或人工截图
+   - 不得只凭源码片段、CSS、DOM 或静态推断就断言“已经像 XYLINK”
 
 ### Path 3: XYLINK 口径验收
 
@@ -109,18 +119,15 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
    - 交互后才出现的弹窗、tab panel、popover 和高级区没有被漏检
    - 不是只验证了少数几个示例入口，而是按页面做过系统性入口扫描
    - 特殊异常态下的 banner、提示卡片和反馈文案也已做样式回看
+   - 验收结论来自真实渲染与实际回看，而不是代码或静态推断
 4. 报告 remaining visual gaps，并说明是参考缺失还是 legacy 能力限制。
 
 ## Reusable Resources
 
 ### scripts/
 
-当前未内置脚本；如果 XYLINK 参考包抓取和验收成为高频工作，优先补这类 helper：
-
-- `capture_xylink_reference_manifest.*`
-  汇总已抓取的 XYLINK 组件截图和状态覆盖。
-- `check_xylink_copy_risk.*`
-  辅助扫描是否误引入 XYLINK 参考资源、选择器或构建产物痕迹。
+- 如果 sibling core 可用，优先运行 [../legacy-component-skinning/scripts/build_surface_manifest.py](../legacy-component-skinning/scripts/build_surface_manifest.py) 生成统一的复合场景 / 交互态 / 异常态覆盖清单。
+- 如果 sibling core 不可用，不要假装存在自动化脚本；按 Path 1 fallback 的结构手工记录同样的 manifest 字段和证据。
 
 ### references/
 
@@ -134,8 +141,8 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
 | Path | Check | Evidence |
 | --- | --- | --- |
 | 路径 1 | core workflow 已载入或 fallback 规则已明确 | 读取文件路径或执行说明 |
-| 路径 2 | XYLINK 参考包覆盖核心组件、关键状态和真实复合场景 | 截图清单、组件契约、映射表 |
-| 路径 3 | 结果向 XYLINK 规范收敛且未越界 | 验收清单、最小验证结果、剩余差异 |
+| 路径 2 | XYLINK 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、组件契约、映射表、必要时附 manifest |
+| 路径 3 | 结果向 XYLINK 规范收敛且未越界，并完成交互态 / 异常态 / copy risk / non-UI boundary 复核 | 验收清单、真实观察证据、最小验证结果、剩余差异、必要时附 manifest |
 
 ## Failure and Escalation
 
@@ -143,7 +150,9 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo https://precdn
 
 - 只有 XYLINK demo URL，没有可核对截图或真实渲染结果
 - 宿主项目运行方式、目标页面或样式入口不清
+- 无法真实查看宿主页面、交互后 surface 或异常态效果
 - 为了更像 XYLINK，开始尝试替换组件或引入新 UI 运行时依赖
+- 为复现异常态准备扰动共享环境、关闭公共服务、修改公共配置或污染真实数据
 - 需要访问受限环境或执行高风险命令但尚未批准
 
 ## Reporting
