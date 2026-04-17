@@ -76,6 +76,24 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
   - 不得为了复现异常态去停共享服务、改公共配置、污染公共数据或破坏真实后端；如果只能用这类手段，先升级并请求批准
   - 需要安装依赖、打开外部页面或执行高风险命令时，先请求批准
 
+环境前提：
+
+- 需要能读取宿主项目文件，并能访问目标页面或其等价本地环境
+- 需要一种真实观察渲染结果的方式，例如浏览器、DevTools、Playwright、录屏回传或人工截图
+
+## Reference Loading Guide
+
+按需读取 reference，不把所有细节一次性灌进主流程：
+
+- 参考包不足或只有零散截图 / URL 时，读取 [references/reference-capture-requirements.md](references/reference-capture-requirements.md)
+- 正式动手前，先填写 [references/host-project-context-template.md](references/host-project-context-template.md)
+- 盘点 legacy 组件与共享覆盖点时，读取 [references/legacy-component-map-template.md](references/legacy-component-map-template.md)
+- 抽取视觉契约时，读取 [references/component-visual-contract-template.md](references/component-visual-contract-template.md)
+- 发现复合业务页错位时，读取 [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
+- 发现隐藏 surface 问题时，读取 [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
+- 发现异常态或降级态问题时，读取 [references/exception-state-checklist.md](references/exception-state-checklist.md)
+- 最终验收时，读取 [references/visual-acceptance-checklist.md](references/visual-acceptance-checklist.md)
+
 ## Workflow Paths
 
 ### Path 1: 补齐参考包

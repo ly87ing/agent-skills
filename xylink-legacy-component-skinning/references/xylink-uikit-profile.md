@@ -3,6 +3,7 @@
 ## Reference Source
 - URL: `https://precdn.xylink.com/public/uikit/demo/index.html`
 - 用途：把该站点当作组件视觉样例库，而不是可直接搬运的实现来源。
+- 执行原则：该 profile 必须能独立运行，不依赖 sibling core skill 才能完成基本 workflow。
 
 ## Hard Rules
 - 不复制 XYLINK demo 的源码、构建产物、CSS / JS / 字体 / 图标 / 运行时资源。
@@ -26,6 +27,7 @@
 - 最终汇报中要明确写出使用了哪些 XYLINK 参考素材，以及哪些状态仍存在差距。
 - 是否贴近 XYLINK 的判断必须来自真实渲染后的实际回看；工具不限，但不能只凭代码、CSS、DOM 或静态推断下结论。
 - 可复用的 XYLINK 风格修复应优先下沉到共享 token、shared override 或共享 layout 层；不要把同类规则散落在多个页面补丁中。
+- 页面较多、隐藏 surface 较多或需要多人协作时，优先运行本 skill 自带的 `scripts/build_surface_manifest.py` 固化覆盖范围。
 - 不能只证明原子组件变像了；还要证明真实业务复合场景里的对齐、空态和说明文案也已经收敛。
 - 若页面存在横向 rail 或特性分组，必须证明长文案、选中态、chip / 按钮组合在真实容器宽度下仍然成立。
 - 若关键界面需要交互后才出现，必须证明这些隐藏 surface 已被实际展开并检查，而不是停留在默认初始页；示例入口不是边界，应按页面做系统性扫描。
