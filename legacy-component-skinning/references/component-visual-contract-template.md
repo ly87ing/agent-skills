@@ -49,6 +49,22 @@
 - 在页面中的主次：
 - 与相邻组件的间距关系：
 
+## 内容容量
+- primary content：
+- secondary content：
+- overflow content：
+- 默认文案样例：
+- 长文案样例：
+- placeholder 样例：
+- 是否允许换行：
+- 最大行数：
+- trigger 最小可读宽度：
+- panel 最大宽度策略：
+- 截断策略：
+- 补充查看路径：
+- 何时判定“过窄”：
+- 何时判定“过长”：
+
 ## 特殊说明
 - 参考来源类型：
 - legacy 组件能力差异：

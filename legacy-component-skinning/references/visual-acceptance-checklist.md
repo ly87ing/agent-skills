@@ -36,6 +36,10 @@
 - [ ] 表单项间距一致
 - [ ] 空值或 placeholder-only 的 select trigger 宽度稳定
 - [ ] 下拉面板的选项、hover、selected 态可清晰识别
+- [ ] 已选值、主选项文案和 placeholder 不会长期只剩 1-2 个字或难以识别的前缀
+- [ ] trigger 不会为了显示长值被异常拉长并挤压同排关键控件
+- [ ] dropdown / popover 面板可按内容合理增宽，但不会撑爆容器或视口
+- [ ] 若存在截断，ellipsis 与补充查看路径可用，且不只依赖 hover tooltip
 
 ### Table
 - [ ] 表头层级一致
@@ -58,6 +62,7 @@
 - [ ] 列表页工具栏中的搜索框、下拉、日期范围、按钮组已对齐
 - [ ] 配置表单中的 label、control、help text、必填星号已对齐
 - [ ] 弹窗/抽屉中的说明块、表单块、footer 已在同一布局节奏
+- [ ] 筛选栏/工具栏里的 select、segmented、date range 等控件既不因过窄导致内容不可读，也不因追求全文展示而异常拉长
 - [ ] 横向选项组 / segmented rail 在长文案和窄容器下没有截断、挤压或异常大空白
 - [ ] 组内 chip / 徽标 / 次按钮与主文案基线一致
 - [ ] disabled / read-only 场景下控件宽度和层级保持稳定

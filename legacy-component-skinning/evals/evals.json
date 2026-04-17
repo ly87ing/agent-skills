@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "不要换掉现有组件，只改样式，让这个老页面贴近这套新设计稿；默认页能看，但弹窗和抽屉打开后还是旧皮肤。",
-      "expected_output": "应触发 legacy-component-skinning。结果应要求保留原组件与原行为，覆盖默认页和交互后 surface，并把隐藏界面纳入 interaction sweep。"
+      "expected_output": "应触发 legacy-component-skinning。结果应要求保留原组件与原行为，默认先走实施路径，覆盖默认页和交互后 surface，并把隐藏界面纳入 interaction sweep，而不是先进入 review。"
     },
     {
       "id": 2,
@@ -14,17 +14,32 @@
     {
       "id": 3,
       "prompt": "页面 happy path 已经差不多了，但接口失败、权限不足和表单校验失败这些异常提示看起来很乱，也帮我一起验收。",
-      "expected_output": "应触发 legacy-component-skinning。结果应把异常态纳入 exception sweep，并强调只能用可逆、低风险手段复现，不得扰动共享环境。"
+      "expected_output": "应触发 legacy-component-skinning。结果应把异常态纳入 exception sweep，默认先修实施范围的问题，并强调只能用可逆、低风险手段复现，不得扰动共享环境。"
     },
     {
       "id": 4,
       "prompt": "帮我检查这次换肤有没有不小心改到 API、数据流或者业务逻辑，顺便看共享层有没有该下沉却散落在页面补丁里的规则。",
-      "expected_output": "应触发 legacy-component-skinning。结果应复核 non-UI boundary 和 shared-layer convergence，而不是只看视觉相似度。"
+      "expected_output": "应触发 legacy-component-skinning。结果应复核 non-UI boundary 和 shared-layer convergence，而不是只看视觉相似度；如需看代码证据，也只应查看当前相关 diff，而不是 git history。"
     },
     {
       "id": 5,
       "prompt": "这个后台太老了，直接换成一套新的 React 组件库吧，旧组件都不要了。",
       "expected_output": "不应触发 legacy-component-skinning；这个请求要求替换组件库，已经超出保留 legacy 组件、只做展示层换肤的边界。"
+    },
+    {
+      "id": 6,
+      "prompt": "继续把这个老页面的隐藏 drawer、二级弹窗和异常态一起换肤，不要看 git 历史，也不用做 review。",
+      "expected_output": "应触发 legacy-component-skinning。结果应默认停在路径 1/2，继续做 skinning 与最小验证，不查看 git history、git log 或提交记录。"
+    },
+    {
+      "id": 7,
+      "prompt": "下面这个 diff 帮我审一下这次换肤有没有越界；只看当前 diff，不用翻历史记录。",
+      "expected_output": "应触发 legacy-component-skinning。结果应进入路径 3，只基于当前 diff 和真实视觉证据做审查，不扩展到 git log、历史提交或分支比较。"
+    },
+    {
+      "id": 8,
+      "prompt": "这个筛选栏里的下拉和 segmented 很窄，长内容看不全；但也不要为了显示全文把整行控件越拉越长。请按换肤规则处理。",
+      "expected_output": "应触发 legacy-component-skinning。结果应应用 content capacity 规则：优先保证 primary content 可读，按 min-width、panel 扩容、有限换行、ellipsis 的顺序处理，并同时避免控件异常拉长破坏整体结构。"
     }
   ]
 }

@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "按 XYLINK UIKit demo 给这个旧页面换肤，不要换组件。默认页已经像了，但点开高级配置和二级弹窗后还是旧样式。",
-      "expected_output": "应触发 xylink-legacy-component-skinning。结果应把 XYLINK demo 识别为视觉样例库，保留原组件，并对高级配置和二级弹窗做 interaction sweep。"
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应把 XYLINK demo 识别为视觉样例库，保留原组件，默认先走实施路径，并对高级配置和二级弹窗做 interaction sweep，而不是先进入 review。"
     },
     {
       "id": 2,
@@ -14,17 +14,32 @@
     {
       "id": 3,
       "prompt": "这个登录页的 warning banner、登录失败提示和后端不可用页面跟 XYLINK 不一致，也一起按 XYLINK 口径回看。",
-      "expected_output": "应触发 xylink-legacy-component-skinning。结果应把 warning banner、登录失败和后端不可用纳入 exception sweep，并要求基于真实渲染结果判断是否收敛。"
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应把 warning banner、登录失败和后端不可用纳入 exception sweep，默认先修实施范围的问题，并要求基于真实渲染结果判断是否收敛。"
     },
     {
       "id": 4,
       "prompt": "帮我检查这次 XYLINK 风格迁移有没有照搬 demo 的 DOM、CSS、字体或图标资源。",
-      "expected_output": "应触发 xylink-legacy-component-skinning。结果应显式检查 copy risk，确认不能复制 XYLINK 源码、构建产物或运行时资源。"
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应显式检查 copy risk，确认不能复制 XYLINK 源码、构建产物或运行时资源；如需看代码证据，也只应查看当前相关 diff，而不是 git history。"
     },
     {
       "id": 5,
       "prompt": "保留旧组件，只把视觉往新的企业设计系统靠，没有 XYLINK demo，也不是 XYLINK 风格。",
       "expected_output": "不应触发 xylink-legacy-component-skinning；这更适合通用的 legacy-component-skinning，而不是 XYLINK 专属 profile。"
+    },
+    {
+      "id": 6,
+      "prompt": "用 XYLINK UIKit 的风格把这个旧页面继续做完，重点补齐隐藏弹窗和异常态；不要看 git 历史，也不用做 review。",
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应默认停在路径 1/2，继续做 skinning 与最小验证，不查看 git history、git log 或提交记录。"
+    },
+    {
+      "id": 7,
+      "prompt": "我已经改完了，下面这个 diff 帮我按 XYLINK 口径审一下有没有越界；只看当前 diff，不用翻历史记录。",
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应进入路径 3，只基于当前 diff 和真实视觉证据做审查，不扩展到 git log、历史提交或分支比较。"
+    },
+    {
+      "id": 8,
+      "prompt": "XYLINK 风格迁移里，这个筛选栏下拉和 segmented 太窄，长内容看不全；但也不要为了显示全文把整排控件拉得很长。请按规则处理。",
+      "expected_output": "应触发 xylink-legacy-component-skinning。结果应应用 content capacity 规则：优先保证 primary content 可读，按 min-width、panel 扩容、有限换行、ellipsis 的顺序处理，并同时避免控件异常拉长破坏整体结构。"
     }
   ]
 }

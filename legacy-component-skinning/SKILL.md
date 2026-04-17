@@ -1,6 +1,6 @@
 ---
 name: legacy-component-skinning
-description: "当需要在不替换 legacy 前端组件、不改 API / 数据流 / 业务逻辑的前提下，处理参考视觉迁移、隐藏交互界面样式问题、异常态或降级态样式问题，以及换肤验收时使用。适用于用户提供参考站点、设计稿截图、组件规范文档或视觉契约包，并指出默认页、交互后弹窗/抽屉/二级面板、异常 banner / 表单报错 / 后端不可用提示等需要统一视觉的问题。"
+description: "当需要在不替换 legacy 前端组件、不改 API / 数据流 / 业务逻辑的前提下，处理参考视觉迁移、隐藏交互界面样式问题、异常态或降级态样式问题，以及在显式要求时做换肤验收时使用。适用于用户提供参考站点、设计稿截图、组件规范文档或视觉契约包，并指出默认页、交互后弹窗/抽屉/二级面板、异常 banner / 表单报错 / 后端不可用提示等需要统一视觉的问题。"
 ---
 
 # Legacy Component Skinning
@@ -42,9 +42,25 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 | “只有设计稿/截图，先整理参考包再改” | Product / Engineering | 截图、设计稿、参考站点 URL | 路径 1 |
 | “检查这次换肤是否改到了非 UI 逻辑” | Engineering / QA | diff、目标页面、组件映射 | 路径 3 |
 | “验收 legacy skinning 是否统一” | QA | 可运行页面、参考包、断点要求 | 路径 3 |
-| “页面能跑，但弹窗、配置表单、空态下拉还是很乱” | Engineering / QA | 真实页面截图或可运行页面 | 路径 2 + 路径 3 |
-| “有些问题藏在点开之后才出现的界面里” | Engineering / QA | 可运行页面 + 可交互入口 | 路径 2 + 路径 3 |
-| “特殊报错、后端不可用、异常提示样式也要一起检查” | Engineering / QA | 可运行页面 + 异常态复现条件 | 路径 2 + 路径 3 |
+| “页面能跑，但弹窗、配置表单、空态下拉还是很乱” | Engineering / QA | 真实页面截图或可运行页面 | 路径 2，必要时路径 3 |
+| “有些问题藏在点开之后才出现的界面里” | Engineering / QA | 可运行页面 + 可交互入口 | 路径 2，必要时路径 3 |
+| “特殊报错、后端不可用、异常提示样式也要一起检查” | Engineering / QA | 可运行页面 + 异常态复现条件 | 路径 2，必要时路径 3 |
+
+## Route Selection Rules
+
+- 默认把“换肤、补隐藏 surface、补异常态、修交互后样式”视为实施请求：先走路径 1（参考不足时）和路径 2，不要自动进入路径 3。
+- 只有用户明确要求“验收 / review / 审查 / 检查当前改动 / 提供 diff”，或已经直接给出当前相关 diff 时，才进入路径 3。
+- 默认不要查看 `git history`、`git log`、分支列表或提交记录。若路径 3 需要代码证据，只允许查看当前工作区相关 diff；除非用户明确要求历史审查，否则不要扩展到历史记录。
+- 隐藏 surface 和异常态即使带有“回看”“检查”等字样，也默认先按实施问题处理；只有用户明确要求验收结论时，才补路径 3。
+
+## Content Capacity Rules
+
+- 关键内容可读优先，但受结构预算约束；不允许为了展示全文无限拉长控件、打散布局节奏或破坏整体层级。
+- `primary content`（已选值、选项主文案、字段 label、error 核心信息）必须直接可读。
+- `secondary content`（副文案、补充说明、次级标签）可在不破坏结构的前提下受限展示。
+- `overflow content` 不要求始终全文直出，但必须有稳定的补充查看路径；`tooltip` 只能补充，不能是唯一主路径。
+- 默认扩容顺序：合理 `min-width` -> 局部增宽 -> `panel` 宽于 `trigger` -> 最多 2 行 `wrap` -> `ellipsis`。
+- 只有当继续增宽或继续换行会明显破坏整体结构时，才允许 `ellipsis`。
 
 ## Context Sources
 
@@ -141,74 +157,89 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 只抽效果，不复制参考实现、选择器体系或构建产物
    - 覆盖默认态、hover、active、focus、disabled、selected、error 等关键状态
    - 覆盖 value present / value absent、placeholder、长文案、下拉展开态等业务常见状态
-5. 建立语义映射：
+5. 应用内容容量规则：
+   - 对有文字承载职责的组件，先记录内容容量，再做视觉收敛
+   - 至少覆盖 short label、typical label、long label、placeholder-only、mixed icon+text、error/help text
+   - 对 `dropdown / select / cascader / autocomplete / segmented rail`，先保证 `trigger` 可识别和已选内容可读，再调整密度、圆角、边框和对齐
+   - 当参考样式较窄但宿主真实内容更长时，优先使用更稳妥的 `min-width`、`panel` 扩容、局部换行或减少次级信息，而不是直接截断或无限拉长
+   - 若使用 `ellipsis`，必须保证关键信息前缀可读，并提供不依赖 hover 的补充查看路径
+6. 建立语义映射：
    - 按视觉作用和交互语义映射 legacy component -> reference contract
    - 优先共享 token / 主题层，再共享组件覆盖，最后页面补丁
    - 同一类视觉修复如果在 2 个以上页面、弹窗或 surface 中重复出现，默认必须下沉到共享 token、shared override 或共享 layout 层，而不是分别打页面补丁
-6. 固定实施顺序：
+7. 固定实施顺序：
    1. theme / token alias
    2. shared component overrides
    3. shared layout density / spacing
    4. page-level visual patches
    - `page-level visual patch` 只能处理页面特有的结构差异、容器约束或临时过渡，不得承载通用皮肤规则
-7. 仅在无法落地时做最小接线：
+8. 仅在无法落地时做最小接线：
    - 允许 className、data-attribute、纯展示层 wrapper、仅影响外观的 prop
    - 不允许 API、数据流、权限、路由、事件行为改动
-8. 按需读取以下清单做专项扫描：
+9. 按需读取以下清单做专项扫描：
    - [references/common-visual-regressions.md](references/common-visual-regressions.md)
    - [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
    - [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
    - [references/exception-state-checklist.md](references/exception-state-checklist.md)
-9. 如果目标页面较多、触发器较多或需要多人协作，先运行 [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py) 生成统一的覆盖清单，避免漏检和证据漂移。
-10. 如果页面包含隐藏 surface，必须先做一次 interaction sweep，再检查：
+10. 如果目标页面较多、触发器较多或需要多人协作，先运行 [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py) 生成统一的覆盖清单，避免漏检和证据漂移。
+11. 如果页面包含隐藏 surface，必须先做一次 interaction sweep，再检查：
    - 系统枚举所有会改变可见 UI 的触发器，而不是只看文案最显眼的按钮
    - 至少覆盖 click、tab 切换、展开/收起、dropdown item、row action、hover、focus、selection、route jump
    - 每发现一个新 surface，都要补一次布局与状态检查
    - 不得只根据默认初始页断言“页面样式正常”
-11. 如果系统存在罕见异常态，必须补一次 exception sweep：
+12. 如果系统存在罕见异常态，必须补一次 exception sweep：
    - 系统枚举所有会让页面从 happy path 转入 degraded / error / warning / empty-error 的条件
    - 至少覆盖接口失败、后端不可用、表单校验失败、权限不足、功能未开启、空数据异常提示中的可复现项
    - 只允许使用 mock、浏览器 request blocking、测试环境专用开关、隔离数据或其它可逆低风险手段；不得为了看到异常 UI 去停共享服务、改公共地址或破坏真实后端
    - 不得因为“场景少见”就默认忽略其样式质量
-12. 所有布局、对齐、状态和收敛判断都必须基于真实渲染后的实际观察，不得仅凭代码、CSS、DOM、截图命名或静态推断判定“已经对齐”。
-13. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
+13. 所有布局、对齐、状态和收敛判断都必须基于真实渲染后的实际观察，不得仅凭代码、CSS、DOM、截图命名或静态推断判定“已经对齐”。
+14. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
+15. 默认在路径 2 结束；只有用户明确要求验收、审查当前改动或提供了当前 diff 时，才进入路径 3。
 
 ### Path 3: 评审与验收
 
-1. 对照 [references/visual-acceptance-checklist.md](references/visual-acceptance-checklist.md)。
-2. 以组件矩阵而不是单页截图做验收：
+1. 仅在用户明确要求验收、审查当前改动，或已经提供当前 diff 时进入本路径。
+   - 不要为路径 3 主动扩展到 `git log`、历史提交或分支对比
+2. 对照 [references/visual-acceptance-checklist.md](references/visual-acceptance-checklist.md)。
+3. 以组件矩阵而不是单页截图做验收：
    - 同类组件跨页面是否统一
    - 核心状态是否统一
    - 高度、圆角、边框、阴影、密度是否统一
    - 断点下是否正常
-3. 再以“复合场景矩阵”做验收：
+4. 再以“内容承载矩阵”做验收：
+   - `trigger`、`dropdown`、`segmented`、`tab`、`table cell` 中的关键主文案没有因为控件过窄而长期不可读
+   - 组件也没有为了显示全文被异常拉长，挤压同排关键控件或撑坏容器节奏
+   - `dropdown / popover / panel` 可以比 `trigger` 宽，但仍受页面和视口约束，不会撑爆布局
+   - 若存在截断，已证明这是结构预算下的合理取舍，且全量内容有稳定查看路径
+5. 再以“复合场景矩阵”做验收：
    - 空值下拉、placeholder-only trigger 是否收窄或难以识别
    - 下拉面板展开后选项、选中态、hover 态是否可见
    - 混合表单中的 label、control、help text、必填星号是否对齐
    - 弹窗中的说明块、表单块、footer 按钮组是否在同一布局节奏
    - 横向选项组中的长文案、选中徽标、分组间距、overflow / wrap 策略是否正确
    - 只读/禁用态是否仍保持正确的宽度、层级和可读性
-4. 再以“交互态 surface 矩阵”做验收：
+6. 再以“交互态 surface 矩阵”做验收：
    - 所有关键可见状态变化入口是否已做 interaction sweep
    - 新出现的弹窗 / drawer / popover / 内嵌表单是否存在对齐、截断、留白和层级问题
    - 触发前后样式是否连续，不会一打开就退回旧皮肤
-5. 再以“异常态矩阵”做验收：
+7. 再以“异常态矩阵”做验收：
    - 后端不可用、权限不足、校验失败、空数据异常等罕见状态是否已回看
    - 异常 banner / alert / inline error 的图标、文案、边框、背景、间距和层级是否协调
    - 异常态不会因为只在特殊条件下出现而继续沿用旧皮肤
-6. 再复核“验收结论是否来自真实观察”：
+8. 再复核“验收结论是否来自真实观察”：
    - 至少有真实渲染、真实交互或真实异常反馈的观察证据
    - 不能只依据代码 diff、CSS 变量、DOM 结构或人工推断给出通过结论
    - 若某页或某状态无法真实查看，只能标记为未验证
-7. 再复核“可复用内容是否已下沉”：
+9. 再复核“可复用内容是否已下沉”：
    - 跨 2 个以上页面重复出现的视觉修复，已优先下沉到 token、shared override 或共享 layout
    - 页面补丁只承载页面特有结构差异，而不是重复皮肤规则
    - 若仍保留多个相似页面补丁，已明确说明为什么无法收敛到共享层
-8. 复核实现边界：
+10. 若用户要求检查代码边界，只查看当前相关 diff，确认没有非 UI 改动，也没有把共享层该承载的规则散落在页面补丁里。
+11. 复核实现边界：
    - 原组件是否仍为原组件
    - 是否有任何非 UI 层改动
    - 是否引入了新的 UI 运行时依赖或复制参考资源
-9. 报告完成项、剩余差异、假设和风险。
+12. 报告完成项、剩余差异、假设和风险。
 
 ## Reusable Resources
 
@@ -247,7 +278,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 | --- | --- | --- |
 | 路径 1 | 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、命名列表、缺失项说明、必要时附 manifest |
 | 路径 2 | 只改了 presentation layer，且核心页面与关键弹窗/表单/隐藏 surface / 异常态能运行并被真实回看 | 最小测试结果、页面访问结果、前后截图或观察记录、受影响文件摘要、必要时附 manifest |
-| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵、共享层收敛与非 UI 边界均通过 | 验收清单、真实观察证据、共享层 / 页面补丁归因说明、剩余差异列表、断点检查说明 |
+| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵、共享层收敛与非 UI 边界均通过 | 验收清单、真实观察证据、共享层 / 页面补丁归因说明、剩余差异列表、断点检查说明，必要时附当前 diff 摘要 |
 
 ## Failure and Escalation
 
