@@ -1,0 +1,6 @@
+interface:
+  display_name: "XYLINK Legacy Component Skinning"
+  short_description: "Reskin legacy UI against XYLINK UIKit visuals"
+  default_prompt: "Use $xylink-legacy-component-skinning to reskin legacy UI against XYLINK UIKit without replacing components or changing behavior."
+policy:
+  allow_implicit_invocation: false
