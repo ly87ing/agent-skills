@@ -66,6 +66,7 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在
    - 先抓参考包，再做实现，再做验收
    - 参考包必须覆盖核心组件、真实复合场景、交互后 surface、异常态 / 降级态
    - 优先共享 token / shared overrides，其次 shared layout density，最后 page-level patches
+   - 相同 XYLINK 风格修复若在 2 个以上页面或弹窗中重复出现，默认必须下沉到共享层，而不是散落多个页面补丁
    - 主动做 interaction sweep 和 exception sweep，不得只看默认页和 happy path
    - 异常态只允许通过 mock、测试环境专用开关、浏览器级拦截等低风险手段复现，禁止扰动共享环境
    - 验收必须同时覆盖组件矩阵、复合场景矩阵、交互态矩阵、异常态矩阵，以及 copy risk / non-UI boundary
@@ -85,6 +86,7 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在
    2. shared component overrides
    3. shared layout density / spacing
    4. page-level patches
+   - 若相同 XYLINK 皮肤修复跨 2 个以上页面重复出现，默认必须下沉到共享层；`page-level patch` 只能处理页面特有结构差异
 5. 必须额外回看真实业务复合场景，而不只看 UIKit 风格的原子组件：
    - 状态筛选下拉
    - 配置表单
@@ -120,6 +122,7 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在
    - 不是只验证了少数几个示例入口，而是按页面做过系统性入口扫描
    - 特殊异常态下的 banner、提示卡片和反馈文案也已做样式回看
    - 验收结论来自真实渲染与实际回看，而不是代码或静态推断
+   - 可复用的 XYLINK 风格修复已经下沉到共享层，而不是散落在多个页面补丁
 4. 报告 remaining visual gaps，并说明是参考缺失还是 legacy 能力限制。
 
 ## Reusable Resources
@@ -142,7 +145,7 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在
 | --- | --- | --- |
 | 路径 1 | core workflow 已载入或 fallback 规则已明确 | 读取文件路径或执行说明 |
 | 路径 2 | XYLINK 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、组件契约、映射表、必要时附 manifest |
-| 路径 3 | 结果向 XYLINK 规范收敛且未越界，并完成交互态 / 异常态 / copy risk / non-UI boundary 复核 | 验收清单、真实观察证据、最小验证结果、剩余差异、必要时附 manifest |
+| 路径 3 | 结果向 XYLINK 规范收敛且未越界，并完成交互态 / 异常态 / copy risk / non-UI boundary / shared-layer convergence 复核 | 验收清单、真实观察证据、共享层 / 页面补丁归因说明、最小验证结果、剩余差异、必要时附 manifest |
 
 ## Failure and Escalation
 
@@ -151,6 +154,7 @@ description: "当参考视觉规范明确来自 XYLINK UIKit demo，且需要在
 - 只有 XYLINK demo URL，没有可核对截图或真实渲染结果
 - 宿主项目运行方式、目标页面或样式入口不清
 - 无法真实查看宿主页面、交互后 surface 或异常态效果
+- 相同 XYLINK 风格修复已在多个页面重复出现，却仍散落在页面补丁中且无法说明原因
 - 为了更像 XYLINK，开始尝试替换组件或引入新 UI 运行时依赖
 - 为复现异常态准备扰动共享环境、关闭公共服务、修改公共配置或污染真实数据
 - 需要访问受限环境或执行高风险命令但尚未批准
