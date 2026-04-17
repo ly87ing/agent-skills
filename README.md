@@ -1,6 +1,6 @@
 # agent-skills
 
-面向 Codex 与 Claude Code 的开源通用 skill 集合，强调自然语言触发、闭环 workflow、可验证证据和可复用资源。
+面向 Codex、Claude Code 等 agent runtime 的开源通用 skill 集合，强调自然语言触发、闭环 workflow、可验证证据和可复用资源。
 
 ## 项目定位
 
@@ -33,11 +33,10 @@
 - 安全边界明确：什么时候可以自动执行，什么时候必须停下并升级，要写清楚。
 - 渐进加载：`SKILL.md` 保持精炼，细节下沉到 `references/`，脆弱步骤尽量下沉到 `scripts/`。
 
-## 双原生结构
+## 仓库结构
 
 ```text
 agent-skills/
-├── .claude/skills/                     # Claude Code 原生发现入口
 ├── safe-merge-review/
 │   ├── SKILL.md                        # canonical source
 │   ├── agents/openai.yaml
@@ -53,12 +52,7 @@ agent-skills/
     └── references/
 ```
 
-根目录 skill 目录是唯一真源，`.claude/skills/` 只是 Claude Code 的原生 wrapper 层：
-
-- Codex：直接使用根目录 canonical skill
-- Claude Code：通过 `.claude/skills/<skill-name>/SKILL.md` 原生发现，再跳转到根目录 canonical skill
-
-这样做的目的不是维护两份 skill，而是同时满足两种运行时的原生发现机制，同时保持单一内容源。
+根目录 skill 目录就是唯一真源，也是这个仓库公开维护的唯一内容层。
 
 每个 canonical skill 目录都应尽量自包含，通常包括：
 
@@ -69,7 +63,7 @@ agent-skills/
 
 ## 如何使用
 
-你不需要采用某个固定安装器；这个仓库更强调 skill 包本身的可移植性和双运行时兼容性。
+你不需要采用某个固定安装器；这个仓库更强调 skill 包本身的可移植性。
 
 常见用法：
 
@@ -78,16 +72,8 @@ agent-skills/
 3. 确保运行时能够发现 `SKILL.md`。
 4. 让 agent 按 skill 的自然语言触发条件调用，必要时按需读取 `references/` 或运行 `scripts/`。
 
-如果你希望这个仓库直接在 Claude Code 项目中工作：
-
-1. 保留根目录 canonical skill 目录。
-2. 保留 `.claude/skills/` wrapper。
-3. 在修改 canonical skill 后运行：
-
-```bash
-python3 scripts/sync_claude_wrappers.py
-python3 scripts/verify_dual_native_layout.py
-```
+这个仓库本身保持 runtime-neutral，不在仓库里额外维护 Claude Code 或 Codex 的项目级 wrapper。
+如果你要在某个具体运行时里使用这些 skill，应由消费侧把 skill 放到该运行时要求的发现路径中。
 
 如果你在做通用能力设计，推荐优先采用 `core + profile` 结构：
 
@@ -110,25 +96,13 @@ python3 scripts/verify_dual_native_layout.py
 - 只有概念建议、没有执行闭环的长文档
 - 本来更适合做成 lint / script / CI 校验的机械规则
 
-## 维护规则
-
-- 根目录 skill 目录是 canonical source。
-- `.claude/skills/` 不手写完整 skill，只保留薄 wrapper。
-- 修改 skill 时，优先修改根目录 canonical source。
-- 修改后运行：
-
-```bash
-python3 scripts/sync_claude_wrappers.py
-python3 scripts/verify_dual_native_layout.py
-```
-
 ## 贡献建议
 
 - 一个 skill 一个目录，命名尽量清晰直接。
 - `SKILL.md` 只保留核心 workflow，不把 README、CHANGELOG、安装说明塞进 skill 包里。
 - 重复且脆弱的步骤优先下沉到 `scripts/`，不要一遍遍用 prose 复述。
 - 触发条件要写给真实用户请求，而不是写成抽象口号。
-- 如果需要同时适配 Claude Code 和 Codex，不要手工双写两份完整 skill；应保持 canonical source + wrapper 结构。
+- 如果需要同时适配 Claude Code 和 Codex，优先保持 skill 包本身符合 open-standard，避免把运行时专属 wrapper 固化进这个仓库。
 - 如果 skill 面向团队重复使用，至少要能回答：
   - 谁会用
   - 用户会怎么触发
@@ -142,4 +116,4 @@ python3 scripts/verify_dual_native_layout.py
 
 适合放在 GitHub 仓库设置页的简短描述：
 
-`Open-source, team-grade skills for Codex and Claude Code: safe merges, legacy UI skinning, and reusable agent workflows.`
+`Open-source, team-grade skills for safe merges, legacy UI skinning, and reusable agent workflows.`
