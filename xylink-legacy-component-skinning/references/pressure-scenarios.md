@@ -4,8 +4,9 @@
 
 ## 使用边界
 
-- 如果当前环境允许 subagent / delegate，就优先用真实 subagent 跑 `Baseline -> With Skill`
-- 如果当前环境不允许 delegate，就先用这些场景做人工 dry-run 或评审模板演练
+- `subagent / delegate` 只是优先验证手段，不是使用这个 skill 的前置条件
+- 如果当前环境允许 `subagent / delegate`，优先用真实 subagent 跑 `Baseline -> With Skill`
+- 如果当前环境不允许、调用失败或稳定性不足，不要阻塞当前任务；改用这些场景做人工 dry-run、主代理自检或评审模板演练
 - 无论哪种方式，都要记录 agent 是否主动要求 `manifest`、是否标记 `unverified`、是否继续沿深层链路展开
 
 ## Scenario 1: 深层链路补漏

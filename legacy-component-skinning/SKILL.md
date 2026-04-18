@@ -303,7 +303,7 @@ description: "Use when legacy UI must align to a reference visual system without
 - [references/content-layout-checklist.md](references/content-layout-checklist.md)
   排查内容展示不全、长文案、help/error 文案、多行说明和布局节奏问题。
 - [references/pressure-scenarios.md](references/pressure-scenarios.md)
-  提供 `Baseline -> With Skill` 压测场景，用于验证 agent 是否真的要求 manifest、标记 unverified、继续展开深层链路。
+  提供 `Baseline -> With Skill` 压测场景；有 subagent 时优先做真实压测，不可用或调用失败时改用人工 dry-run / 主代理自检，用于验证 agent 是否真的要求 manifest、标记 unverified、继续展开深层链路。
 - [references/review-prompt-templates.md](references/review-prompt-templates.md)
   提供可直接复制的人工补漏 review、验收 review 和证据不足 review prompt。
 - [scripts/lint_surface_manifest.py](scripts/lint_surface_manifest.py)
