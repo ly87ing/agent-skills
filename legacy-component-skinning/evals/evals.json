@@ -40,6 +40,36 @@
       "id": 8,
       "prompt": "这个筛选栏里的下拉和 segmented 很窄，长内容看不全；但也不要为了显示全文把整行控件越拉越长。请按换肤规则处理。",
       "expected_output": "应触发 legacy-component-skinning。结果应应用 content capacity 规则：优先保证 primary content 可读，按 min-width、panel 扩容、有限换行、ellipsis 的顺序处理，并同时避免控件异常拉长破坏整体结构。"
+    },
+    {
+      "id": 9,
+      "prompt": "默认页已经差不多了，但点击编辑后会进入二级配置页，保存时还会再弹一个确认框。这条链路一直没看，也一起收敛。",
+      "expected_output": "应触发 legacy-component-skinning。结果应把编辑后打开的二级配置页和确认弹窗识别为深层 surface，继续沿链路做 interaction sweep，并要求把这些入口写进 manifest，而不是只修默认页。"
+    },
+    {
+      "id": 10,
+      "prompt": "颜色和圆角已经挺像了，但长 label、help text、error text、多行说明还是很乱，很多内容显示不全。不要只看风格，要按页面布局一起处理。",
+      "expected_output": "应触发 legacy-component-skinning。结果应把内容展示和页面布局当作一等验收项，要求补 content/layout cases，覆盖长文案、help text、error text、placeholder-only 和 footer 节奏，而不是只做 token 或边框调整。"
+    },
+    {
+      "id": 11,
+      "prompt": "现在只能看代码 diff，没有浏览器也没有截图。你可以先判断改动方向，但不要直接说已经统一或通过。",
+      "expected_output": "应触发 legacy-component-skinning。结果应明确缺少真实渲染证据，只能给出方向性判断，并把相关页面、深层 surface、异常态或断点标记为 unverified，而不是给出已通过的确定性结论。"
+    },
+    {
+      "id": 12,
+      "prompt": "这个后台的默认页、首层弹窗和 token 我们已经改过一轮了，但现在 QA 说真正有问题的是一条更深的链路：列表页行操作点“编辑”后会打开 drawer，drawer 里切到“高级设置”tab 又会出现一块旧布局，点保存还会弹二次确认框。除此之外，长 label、help text、多行错误提示经常把 footer 按钮组挤乱。你先别做 review，继续按换肤实施把这条链路补齐；如果有些状态现在在本地跑不出来，就明确写哪些没验证。",
+      "expected_output": "应触发 legacy-component-skinning。结果应默认停在实施路径，沿编辑 drawer -> 高级设置 tab -> 二次确认框整条链路继续做 interaction sweep，把深层 surface 和 content/layout cases 一起写进 manifest，并在无法真实回看的状态上显式标记 unverified，而不是只修默认页或直接进入 review。"
+    },
+    {
+      "id": 13,
+      "prompt": "我给你当前 diff 和几张 happy path 截图，帮我判断这次 legacy skinning 能不能对外说“已经统一”。不过先说明一下，表格行里的详情页、编辑后的二级确认弹窗，还有权限不足和后端不可用这些状态我们都还没回看。",
+      "expected_output": "应触发 legacy-component-skinning。结果应进入审查/验收路径，但不能仅凭 happy path 截图和 diff 给出通过结论；应指出深层 surface 与异常态证据缺失，要求以 manifest 补齐覆盖范围，并把详情页、二级确认弹窗、权限不足和后端不可用明确标记为 unverified。"
+    },
+    {
+      "id": 14,
+      "prompt": "这个修复目前只在一个页面里出现，而且是页面特有的容器约束导致按钮组错位。你可以考虑复用，但不要为了复用把它硬抽成一层新的 shared abstraction；如果最后不复用，也要说清楚为什么。",
+      "expected_output": "应触发 legacy-component-skinning。结果应保持共享层优先的默认立场，但识别这是单页特有结构差异时不要为了复用而过度抽象；若保留局部实现，应明确说明没有下沉到共享层的原因。"
     }
   ]
 }

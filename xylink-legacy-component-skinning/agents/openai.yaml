@@ -1,6 +1,6 @@
 interface:
   display_name: "XYLINK Legacy Component Skinning"
-  short_description: "Reskin legacy UI to XYLINK, including hidden and error states"
-  default_prompt: "Use $xylink-legacy-component-skinning when legacy UI must align with XYLINK UIKit from demo URLs or screenshots without replacing components, including hidden interactive surfaces and degraded states while keeping changes in the presentation layer."
+  short_description: "Reskin legacy UI to XYLINK across deep surfaces and layout"
+  default_prompt: "Use $xylink-legacy-component-skinning when legacy UI must align with XYLINK UIKit from demo URLs or screenshots without replacing components, including hidden interactive surfaces, deep edit/detail flows, content layout issues, and degraded states while keeping changes in the presentation layer."
 policy:
   allow_implicit_invocation: true

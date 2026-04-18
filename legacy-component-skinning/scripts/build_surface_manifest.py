@@ -54,15 +54,57 @@ def render_exception_rows(items: Iterable[list[str]]) -> list[str]:
     ]
 
 
+def render_layout_rows(items: Iterable[list[str]]) -> list[str]:
+    rows = []
+    for index, item in enumerate(items, start=1):
+        surface, element, case, expected, observed, evidence, notes = item
+        rows.append(
+            f"| L{index} | {escape_cell(surface)} | {escape_cell(element)} | {escape_cell(case)} | {escape_cell(expected)} | {escape_cell(observed)} | {escape_cell(evidence)} | {escape_cell(notes)} |"
+        )
+    return rows or [
+        "| L1 | TODO | TODO | TODO | TODO | TODO | TODO | TODO |"
+    ]
+
+
+def render_breakpoint_rows(items: Iterable[list[str]]) -> list[str]:
+    rows = []
+    for index, item in enumerate(items, start=1):
+        breakpoint, evidence, notes = item
+        rows.append(
+            f"| B{index} | {escape_cell(breakpoint)} | {escape_cell(evidence)} | {escape_cell(notes)} |"
+        )
+    return rows or [
+        "| B1 | desktop | TODO | TODO |"
+    ]
+
+
+def render_unverified_rows(items: Iterable[list[str]]) -> list[str]:
+    rows = []
+    for index, item in enumerate(items, start=1):
+        item_name, reason, next_step = item
+        rows.append(
+            f"| U{index} | {escape_cell(item_name)} | {escape_cell(reason)} | {escape_cell(next_step)} |"
+        )
+    return rows or [
+        "| U1 | TODO | TODO | TODO |"
+    ]
+
+
 def build_markdown(
     page: str,
     route: str | None,
     composites: list[str],
     interactions: list[list[str]],
     exceptions: list[list[str]],
+    layout_cases: list[list[str]] | None = None,
+    breakpoints: list[list[str]] | None = None,
+    unverified_items: list[list[str]] | None = None,
 ) -> str:
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")
     route_value = route or "(not provided)"
+    layout_cases = layout_cases or []
+    breakpoints = breakpoints or []
+    unverified_items = unverified_items or []
     lines = [
         "# Skinning Surface Manifest",
         "",
@@ -89,6 +131,24 @@ def build_markdown(
         "| --- | --- | --- | --- | --- | --- |",
         *render_exception_rows(exceptions),
         "",
+        "## Content/Layout Cases",
+        "",
+        "| ID | Surface | Element | Case | Expected | Observed | Evidence | Notes |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        *render_layout_rows(layout_cases),
+        "",
+        "## Breakpoint Coverage",
+        "",
+        "| ID | Breakpoint | Evidence | Notes |",
+        "| --- | --- | --- | --- |",
+        *render_breakpoint_rows(breakpoints),
+        "",
+        "## Unverified Items",
+        "",
+        "| ID | Item | Reason | Next Step |",
+        "| --- | --- | --- | --- |",
+        *render_unverified_rows(unverified_items),
+        "",
         "## Boundary Checks",
         "",
         "- [ ] no component replacement",
@@ -96,10 +156,17 @@ def build_markdown(
         "- [ ] no copied reference source code or runtime assets",
         "- [ ] residual gaps and assumptions recorded",
         "",
+        "## Exit Checklist",
+        "",
+        "- [ ] all key interactive surfaces enumerated or explicitly marked out of scope",
+        "- [ ] content/layout cases checked for primary content, help text, and error copy",
+        "- [ ] claims limited to states with real rendered evidence",
+        "- [ ] manifest updated with evidence or explicit unverified reasons",
+        "",
         "## Verification Notes",
         "",
         "- minimal verification:",
-        "- breakpoints checked:",
+        "- breakpoints checked: desktop=`TODO`",
         "- remaining visual gaps:",
     ]
     return "\n".join(lines) + "\n"
@@ -131,6 +198,27 @@ def main() -> int:
         metavar="STATE|SURFACE|SAFE_REPRODUCTION|NOTES",
         help="Exception surface definition. Example: backend-unavailable|page-banner|browser request blocking|登录页顶部告警",
     )
+    parser.add_argument(
+        "--layout-case",
+        action="append",
+        default=[],
+        metavar="SURFACE|ELEMENT|CASE|EXPECTED|OBSERVED|EVIDENCE|NOTES",
+        help="Content/layout case definition. Example: 筛选栏|select trigger|long selected value|主文案可读|仅显示前3字|before=`TODO` / after=`TODO`|需增宽 panel",
+    )
+    parser.add_argument(
+        "--breakpoint",
+        action="append",
+        default=[],
+        metavar="BREAKPOINT|EVIDENCE|NOTES",
+        help="Breakpoint coverage. Example: desktop|before=`TODO` / after=`TODO`|1440 宽度回看",
+    )
+    parser.add_argument(
+        "--unverified",
+        action="append",
+        default=[],
+        metavar="ITEM|REASON|NEXT_STEP",
+        help="Unverified item. Example: 二级编辑页|本地环境未启动成功|待环境可用后回看",
+    )
     parser.add_argument("--output", help="Write the manifest to this path instead of stdout.")
     args = parser.parse_args()
 
@@ -142,6 +230,18 @@ def main() -> int:
         parse_structured(value, expected_parts=4, flag="--exception")
         for value in args.exception
     ]
+    layout_cases = [
+        parse_structured(value, expected_parts=7, flag="--layout-case")
+        for value in args.layout_case
+    ]
+    breakpoints = [
+        parse_structured(value, expected_parts=3, flag="--breakpoint")
+        for value in args.breakpoint
+    ]
+    unverified_items = [
+        parse_structured(value, expected_parts=3, flag="--unverified")
+        for value in args.unverified
+    ]
 
     markdown = build_markdown(
         page=args.page,
@@ -149,6 +249,9 @@ def main() -> int:
         composites=args.composite,
         interactions=interactions,
         exceptions=exceptions,
+        layout_cases=layout_cases,
+        breakpoints=breakpoints,
+        unverified_items=unverified_items,
     )
 
     if args.output:

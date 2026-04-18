@@ -1,6 +1,6 @@
 interface:
   display_name: "Legacy Component Skinning"
-  short_description: "Reskin legacy UI, hidden surfaces, and error states"
-  default_prompt: "Use $legacy-component-skinning when legacy UI must align to a reference visual system without replacing components, including hidden interactive surfaces and degraded states while keeping changes in the presentation layer."
+  short_description: "Reskin legacy UI across deep surfaces, layout, and error states"
+  default_prompt: "Use $legacy-component-skinning when legacy UI must align to a reference visual system without replacing components, including hidden interactive surfaces, deep edit/detail flows, content layout issues, and degraded states while keeping changes in the presentation layer."
 policy:
   allow_implicit_invocation: true

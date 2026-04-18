@@ -1,6 +1,6 @@
 ---
 name: legacy-component-skinning
-description: "当需要在不替换 legacy 前端组件、不改 API / 数据流 / 业务逻辑的前提下，处理参考视觉迁移、隐藏交互界面样式问题、异常态或降级态样式问题，以及在显式要求时做换肤验收时使用。适用于用户提供参考站点、设计稿截图、组件规范文档或视觉契约包，并指出默认页、交互后弹窗/抽屉/二级面板、异常 banner / 表单报错 / 后端不可用提示等需要统一视觉的问题。"
+description: "Use when legacy UI must align to a reference visual system without replacing existing components, especially when hidden interactive surfaces, deep edit/detail flows, degraded states, or content/layout regressions need review or repair."
 ---
 
 # Legacy Component Skinning
@@ -14,6 +14,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 - 改动是否严格停留在 presentation layer
 - 核心组件在多页面、多状态、多断点下是否进入同一视觉体系
 - 真实业务复合场景中的布局、对齐、空态和帮助信息是否也已收敛
+- 编辑、详情、step、二级路由等深层页面链路是否也已进入同一视觉体系
 - 横向选项组、分组 rail、带徽标的 feature card 是否没有截断、挤压和异常留白
 - 通过点击、切换、展开后才出现的隐藏 surface 是否也已被检查
 - 异常态、降级态、故障提示和罕见反馈 surface 是否也已被检查
@@ -44,6 +45,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 | “验收 legacy skinning 是否统一” | QA | 可运行页面、参考包、断点要求 | 路径 3 |
 | “页面能跑，但弹窗、配置表单、空态下拉还是很乱” | Engineering / QA | 真实页面截图或可运行页面 | 路径 2，必要时路径 3 |
 | “有些问题藏在点开之后才出现的界面里” | Engineering / QA | 可运行页面 + 可交互入口 | 路径 2，必要时路径 3 |
+| “编辑后打开的详情页 / 二级页面 / step 页面也要一起看” | Engineering / QA | 可运行页面 + 编辑入口或链路说明 | 路径 2，必要时路径 3 |
 | “特殊报错、后端不可用、异常提示样式也要一起检查” | Engineering / QA | 可运行页面 + 异常态复现条件 | 路径 2，必要时路径 3 |
 
 ## Route Selection Rules
@@ -52,6 +54,14 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 - 只有用户明确要求“验收 / review / 审查 / 检查当前改动 / 提供 diff”，或已经直接给出当前相关 diff 时，才进入路径 3。
 - 默认不要查看 `git history`、`git log`、分支列表或提交记录。若路径 3 需要代码证据，只允许查看当前工作区相关 diff；除非用户明确要求历史审查，否则不要扩展到历史记录。
 - 隐藏 surface 和异常态即使带有“回看”“检查”等字样，也默认先按实施问题处理；只有用户明确要求验收结论时，才补路径 3。
+
+## Mandatory Gates
+
+- 只要页面存在会打开新 surface 的入口，就必须先枚举入口，再声称“已检查”或“已统一”。这些入口包括编辑、详情、step、二级路由、tab panel、row action、hover/focus reveal，而不只是默认页上的显眼按钮。
+- 只要页面承载真实业务内容，就必须把 `content / layout` 作为一等验收项，而不是附属观察。颜色、圆角、边框接近参考，不等于内容展示正确。
+- 只要存在无法真实查看的页面、状态、断点或异常态，就必须在 manifest 或最终汇报里明确标为 `unverified`；没有真实渲染证据时，不得给出“已统一 / 已通过 / 已验证”的确定性结论。
+- 只要存在多页面、深层编辑链路、明显内容承载风险或异常态，就必须生成并更新 surface manifest；manifest 未补证据或未写清未验证原因时，不得宣称完成。
+- 默认优先复用共享层；只有当修复确实是页面特有结构差异、一次性场景，或下沉会引入错误耦合时，才允许局部实现，并且必须记录原因。
 
 ## Content Capacity Rules
 
@@ -106,8 +116,12 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 - 盘点 legacy 组件与共享覆盖点时，读取 [references/legacy-component-map-template.md](references/legacy-component-map-template.md)
 - 抽取视觉契约时，读取 [references/component-visual-contract-template.md](references/component-visual-contract-template.md)
 - 发现复合业务页错位时，读取 [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
+- 发现编辑后页面、step、二级路由、二次确认弹窗容易漏检时，读取 [references/deep-surface-discovery-checklist.md](references/deep-surface-discovery-checklist.md)
+- 发现内容显示不全、布局节奏失衡、help/error 文案挤压时，读取 [references/content-layout-checklist.md](references/content-layout-checklist.md)
+- 需要按 `writing-skills` 口径做 Baseline / With Skill 压测时，读取 [references/pressure-scenarios.md](references/pressure-scenarios.md)
 - 发现隐藏 surface 问题时，读取 [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
 - 发现异常态或降级态问题时，读取 [references/exception-state-checklist.md](references/exception-state-checklist.md)
+- 需要给人工发起补漏 review、验收 review 或证据不足 review 时，读取 [references/review-prompt-templates.md](references/review-prompt-templates.md)
 - 最终验收时，读取 [references/visual-acceptance-checklist.md](references/visual-acceptance-checklist.md)
 
 ## Workflow Paths
@@ -120,7 +134,9 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 如果只有原子组件截图，但缺少真实业务布局中的复合场景，也视为不足。
    - 如果页面存在横向选项组或特性分组，但参考包未覆盖其长文案、选中态和窄容器表现，也视为不足。
    - 如果页面中大量界面需要交互后才出现，但参考包未覆盖这些交互后 surface，也视为不足。
+   - 如果页面里存在编辑后打开的详情页、二级路由、wizard step、二次确认弹窗，但参考包没有这些链路的真实渲染结果，也视为不足。
    - 如果系统存在异常横幅、错误提示、后端不可用等特殊状态，但参考包未覆盖这些罕见状态，也视为不足。
+   - 如果核心页面存在长文案、help text、error text、多行说明或窄容器布局，但参考包没有对应内容承载样例，也视为不足。
 2. 按需读取 [references/reference-capture-requirements.md](references/reference-capture-requirements.md)。
 3. 抓取或整理最小参考包：
    - 逐组件抓取真实渲染结果
@@ -137,6 +153,8 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - [references/host-project-context-template.md](references/host-project-context-template.md)
    - [references/legacy-component-map-template.md](references/legacy-component-map-template.md)
    - [references/component-visual-contract-template.md](references/component-visual-contract-template.md)
+   - 只要怀疑存在漏检的深层链路，就读取 [references/deep-surface-discovery-checklist.md](references/deep-surface-discovery-checklist.md)
+   - 只要怀疑存在内容展示或排版问题，就读取 [references/content-layout-checklist.md](references/content-layout-checklist.md)
 2. 盘点 legacy 组件：
    - 组件名、来源、页面位置、当前 variant / size / state
    - 样式入口、共享层可改点、局部补丁需求
@@ -145,6 +163,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 列表页顶部操作区
    - 配置表单、日志筛选区、告警配置页
    - 编辑弹窗、抽屉、上传配置弹框
+   - 编辑后打开的详情页、二级路由、step 页面、二次确认弹窗
    - 带说明文案、提示块、禁用态、空态下拉的页面
    - 卡片内横向选项组、特性分组、segmented rail
    - 交互后才出现的隐藏 surface，如二级弹窗、drawer、popover、行内展开区、切 tab 后面板、hover/focus 后出现的操作区
@@ -158,11 +177,13 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 覆盖默认态、hover、active、focus、disabled、selected、error 等关键状态
    - 覆盖 value present / value absent、placeholder、长文案、下拉展开态等业务常见状态
 5. 应用内容容量规则：
+   - 页面内容布局是强制验收项，不是“视觉差不多后顺手看一下”
    - 对有文字承载职责的组件，先记录内容容量，再做视觉收敛
    - 至少覆盖 short label、typical label、long label、placeholder-only、mixed icon+text、error/help text
    - 对 `dropdown / select / cascader / autocomplete / segmented rail`，先保证 `trigger` 可识别和已选内容可读，再调整密度、圆角、边框和对齐
    - 当参考样式较窄但宿主真实内容更长时，优先使用更稳妥的 `min-width`、`panel` 扩容、局部换行或减少次级信息，而不是直接截断或无限拉长
    - 若使用 `ellipsis`，必须保证关键信息前缀可读，并提供不依赖 hover 的补充查看路径
+   - 对页面级布局至少补一轮 `content / layout cases`，覆盖 label/control/help text、error text、多行说明、footer 按钮组、空态/placeholder、窄容器和长文案
 6. 建立语义映射：
    - 按视觉作用和交互语义映射 legacy component -> reference contract
    - 优先共享 token / 主题层，再共享组件覆盖，最后页面补丁
@@ -179,12 +200,20 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 9. 按需读取以下清单做专项扫描：
    - [references/common-visual-regressions.md](references/common-visual-regressions.md)
    - [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
+   - [references/deep-surface-discovery-checklist.md](references/deep-surface-discovery-checklist.md)
+   - [references/content-layout-checklist.md](references/content-layout-checklist.md)
    - [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
    - [references/exception-state-checklist.md](references/exception-state-checklist.md)
-10. 如果目标页面较多、触发器较多或需要多人协作，先运行 [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py) 生成统一的覆盖清单，避免漏检和证据漂移。
+10. 出现以下任一情况时，必须先运行 [scripts/build_surface_manifest.py](scripts/build_surface_manifest.py) 生成统一的覆盖清单，避免漏检和证据漂移：
+   - 目标页面多于 1 个
+   - 存在编辑后打开的详情页、二级路由、step 页面或二次确认弹窗
+   - 存在明显内容承载风险，如长文案、help/error text、多行说明、窄容器
+   - 存在异常态
+   - 需要多人协作或批量回看
 11. 如果页面包含隐藏 surface，必须先做一次 interaction sweep，再检查：
    - 系统枚举所有会改变可见 UI 的触发器，而不是只看文案最显眼的按钮
    - 至少覆盖 click、tab 切换、展开/收起、dropdown item、row action、hover、focus、selection、route jump
+   - 如果某个触发器会继续打开二级页面、二级弹窗或确认弹窗，要把整条链路继续展开，而不是停在第一层
    - 每发现一个新 surface，都要补一次布局与状态检查
    - 不得只根据默认初始页断言“页面样式正常”
 12. 如果系统存在罕见异常态，必须补一次 exception sweep：
@@ -193,8 +222,10 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 只允许使用 mock、浏览器 request blocking、测试环境专用开关、隔离数据或其它可逆低风险手段；不得为了看到异常 UI 去停共享服务、改公共地址或破坏真实后端
    - 不得因为“场景少见”就默认忽略其样式质量
 13. 所有布局、对齐、状态和收敛判断都必须基于真实渲染后的实际观察，不得仅凭代码、CSS、DOM、截图命名或静态推断判定“已经对齐”。
-14. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
-15. 默认在路径 2 结束；只有用户明确要求验收、审查当前改动或提供了当前 diff 时，才进入路径 3。
+14. 必须在 manifest 中补齐 `Content/Layout Cases`、`Breakpoint Coverage`、`Unverified Items` 和 `Exit Checklist`；未补齐前不得声称完成。
+15. 在声称完成、统一或通过前，运行 [scripts/lint_surface_manifest.py](scripts/lint_surface_manifest.py) 校验 manifest 已去除 `TODO` 占位、Exit Checklist 已勾选、证据字段已填写；lint 未通过时，不得宣称完成。
+16. 执行最小相关验证，并至少回看 2-3 个真实业务页面，而不是只看组件 playground。
+17. 默认在路径 2 结束；只有用户明确要求验收、审查当前改动或提供了当前 diff 时，才进入路径 3。
 
 ### Path 3: 评审与验收
 
@@ -216,6 +247,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 下拉面板展开后选项、选中态、hover 态是否可见
    - 混合表单中的 label、control、help text、必填星号是否对齐
    - 弹窗中的说明块、表单块、footer 按钮组是否在同一布局节奏
+   - 编辑后打开的详情页、step 页面、二次确认弹窗是否也进入同一布局节奏
    - 横向选项组中的长文案、选中徽标、分组间距、overflow / wrap 策略是否正确
    - 只读/禁用态是否仍保持正确的宽度、层级和可读性
 6. 再以“交互态 surface 矩阵”做验收：
@@ -230,6 +262,7 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
    - 至少有真实渲染、真实交互或真实异常反馈的观察证据
    - 不能只依据代码 diff、CSS 变量、DOM 结构或人工推断给出通过结论
    - 若某页或某状态无法真实查看，只能标记为未验证
+   - manifest 中的 `Unverified Items` 必须与最终汇报一致，不得隐去风险
 9. 再复核“可复用内容是否已下沉”：
    - 跨 2 个以上页面重复出现的视觉修复，已优先下沉到 token、shared override 或共享 layout
    - 页面补丁只承载页面特有结构差异，而不是重复皮肤规则
@@ -265,6 +298,16 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
   排查常见工程化视觉陷阱。
 - [references/composite-surface-checklist.md](references/composite-surface-checklist.md)
   排查真实业务页里的对齐、空态、弹窗和表单布局问题。
+- [references/deep-surface-discovery-checklist.md](references/deep-surface-discovery-checklist.md)
+  排查编辑后页面、step、二级路由、二次确认弹窗等深层 surface 是否被漏检。
+- [references/content-layout-checklist.md](references/content-layout-checklist.md)
+  排查内容展示不全、长文案、help/error 文案、多行说明和布局节奏问题。
+- [references/pressure-scenarios.md](references/pressure-scenarios.md)
+  提供 `Baseline -> With Skill` 压测场景，用于验证 agent 是否真的要求 manifest、标记 unverified、继续展开深层链路。
+- [references/review-prompt-templates.md](references/review-prompt-templates.md)
+  提供可直接复制的人工补漏 review、验收 review 和证据不足 review prompt。
+- [scripts/lint_surface_manifest.py](scripts/lint_surface_manifest.py)
+  在宣称完成前校验 manifest 是否仍含 `TODO`、是否遗漏 Exit Checklist 勾选或关键证据。
 - [references/interactive-surface-checklist.md](references/interactive-surface-checklist.md)
   排查点击后才出现的隐藏页面、二级弹窗和延迟渲染区域。
 - [references/exception-state-checklist.md](references/exception-state-checklist.md)
@@ -276,9 +319,9 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 
 | Path | Check | Evidence |
 | --- | --- | --- |
-| 路径 1 | 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface 和异常态 | 截图清单、命名列表、缺失项说明、必要时附 manifest |
-| 路径 2 | 只改了 presentation layer，且核心页面与关键弹窗/表单/隐藏 surface / 异常态能运行并被真实回看 | 最小测试结果、页面访问结果、前后截图或观察记录、受影响文件摘要、必要时附 manifest |
-| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵、共享层收敛与非 UI 边界均通过 | 验收清单、真实观察证据、共享层 / 页面补丁归因说明、剩余差异列表、断点检查说明，必要时附当前 diff 摘要 |
+| 路径 1 | 参考包覆盖核心组件、关键状态、真实复合场景、交互后 surface、深层编辑链路、异常态和内容承载样例 | 截图清单、命名列表、缺失项说明、必要时附 manifest |
+| 路径 2 | 只改了 presentation layer，且核心页面与关键弹窗/表单/隐藏 surface / 深层页面 / 异常态能运行并被真实回看 | 最小测试结果、页面访问结果、前后截图或观察记录、受影响文件摘要、已填写的 manifest（含 content/layout、breakpoint、unverified），必要时附命令摘要 |
+| 路径 3 | 组件矩阵、复合场景矩阵、交互态 surface 矩阵、异常态矩阵、内容承载矩阵、共享层收敛与非 UI 边界均通过或明确标记未验证 | 验收清单、真实观察证据、共享层 / 页面补丁归因说明、剩余差异列表、断点检查说明、manifest 未验证项摘要，必要时附当前 diff 摘要 |
 
 ## Failure and Escalation
 
@@ -303,11 +346,14 @@ description: "当需要在不替换 legacy 前端组件、不改 API / 数据流
 - legacy components kept unchanged:
 - composite surfaces checked:
 - interactive surfaces checked:
+- deep edit/detail flows checked:
 - exception surfaces checked:
+- content/layout cases checked:
 - shared theme / token changes:
 - shared component skin overrides:
 - page-level visual patches:
 - verification:
+- unverified items:
 - copied reference code/assets: none
 - component replacements: none
 - non-UI changes: none
