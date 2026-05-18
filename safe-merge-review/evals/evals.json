@@ -25,6 +25,21 @@
       "id": 5,
       "prompt": "帮我写一个 Python merge sort，并顺手解释一下时间复杂度。",
       "expected_output": "不应触发 safe-merge-review；这不是分支合并、merge 审计或冲突复核任务。"
+    },
+    {
+      "id": 6,
+      "prompt": "我用 squash merge 把 feature/payment 合进来了，帮我验证改动是否真的完整落地，别用 is-ancestor。",
+      "expected_output": "应触发 safe-merge-review。结果应识别为 squash merge 审计，使用 patch-equivalent 或 tree-diff 方法验证完整性，并在证据中标注 proof-method，不使用 is-ancestor。"
+    },
+    {
+      "id": 7,
+      "prompt": "当前有未提交改动，帮我把 origin/hotfix/db-lock 合进来。",
+      "expected_output": "应触发 safe-merge-review。结果应检测到 dirty worktree，停止或升级确认，说明风险并要求用户先处理未提交改动，而不是直接执行 merge。"
+    },
+    {
+      "id": 8,
+      "prompt": "帮我把那个分支合一下，就是最近那条线。",
+      "expected_output": "应触发 safe-merge-review。结果应拒绝猜测来源 ref，要求用户明确提供分支名或 remote ref，不能用模糊描述直接开始 merge。"
     }
   ]
 }

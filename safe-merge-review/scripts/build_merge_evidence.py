@@ -57,6 +57,9 @@ def build_markdown(args: argparse.Namespace) -> str:
     return "\n".join(lines)
 
 
+VALID_PROOF_METHODS = {"is-ancestor", "patch-equivalent", "tree-diff", "cherry-pick-noop"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Build a markdown evidence summary for safe merge review."
@@ -68,7 +71,7 @@ def main() -> int:
     parser.add_argument("--left-right-counts")
     parser.add_argument("--merge-strategy")
     parser.add_argument("--completeness-proof")
-    parser.add_argument("--proof-method")
+    parser.add_argument("--proof-method", choices=sorted(VALID_PROOF_METHODS))
     parser.add_argument("--semantic-review")
     parser.add_argument("--push-status")
     parser.add_argument("--incoming-commit", action="append", default=[])
