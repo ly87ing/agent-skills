@@ -99,9 +99,10 @@ description: 在用户要把一个 branch、remote ref 或一组相关仓库中�
 2. 用三方证据处理冲突。
    - 对每个冲突文件看 base / ours / theirs
    - 记录最终保留方案以及为什么没有丢失另一侧必要语义
-3. 证明“完整合并”。
+3. 证明”完整合并”。
    - 证明来源 ref 已被包含于 `HEAD`
    - 证明 `HEAD..<source-ref>` 为空
+   - 如果是 squash merge，`is-ancestor` 不适用；按 [references/merge-workflow.md](references/merge-workflow.md) 7.5 节选择替代证明方法，并标注 `proof-method`
    - 列出最终真正落地的文件与差异
 4. 再做一次 merge 后语义复查。
    - 检查最终代码是否只是某一边逻辑误胜
@@ -175,6 +176,7 @@ description: 在用户要把一个 branch、remote ref 或一组相关仓库中�
 - merge strategy:
 - conflicted files and reasoning:
 - completeness proof:
+- proof method: (is-ancestor | patch-equivalent | tree-diff | cherry-pick-noop)
 - semantic review conclusion:
 - verification command(s):
 - push status:

@@ -151,6 +151,7 @@ merge 后至少再确认一次：
 
 - 来源 ref 已是 `HEAD` 的祖先
 - `HEAD..<source-ref>` 为空
+- 如果是 squash merge，`is-ancestor` 不适用；必须用 patch-equivalent、tree-diff 或 cherry-pick 空操作验证，并在证据中标注 `proof-method`
 - 实际落地文件与预期文件一致
 - 没有 conflict marker 残留
 - 没有“以为合了其实没落到工作分支”的情况
@@ -174,6 +175,7 @@ merge 后至少再确认一次：
 | Merge strategy | |
 | Conflicted files | |
 | Completeness proof | |
+| Proof method | is-ancestor / patch-equivalent / tree-diff / cherry-pick-noop |
 | Semantic review conclusion | |
 | Verification command(s) | |
 | Push status | |

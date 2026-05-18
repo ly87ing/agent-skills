@@ -286,6 +286,58 @@ git diff --name-only "$PRE_MERGE_HEAD"..HEAD
 
 如果是多仓 merge，要逐仓做这一步。
 
+### 7.5 squash merge 完整性验证
+
+`git merge-base --is-ancestor` 对 squash merge 不适用，因为原始提交不是 HEAD 的祖先。需要替代证明路径。
+
+**方法一：patch-equivalent 检查**
+
+验证来源分支的所有改动是否已等价存在于当前分支：
+
+```bash
+BASE=$(git merge-base HEAD <source-ref>)
+git diff "$BASE"..<source-ref> > /tmp/source.patch
+git diff "$BASE"..HEAD > /tmp/current.patch
+```
+
+如果 source.patch 的所有 hunk 都已包含在 current.patch 中，说明改动已被等价合入。
+
+更精确的方法是逐文件比较最终状态：
+
+```bash
+git diff HEAD <source-ref> -- <hotspot-files>
+```
+
+如果热点文件的 diff 为空或只包含当前分支独有的后续改动，说明来源改动已落地。
+
+**方法二：cherry-pick --no-commit 空操作检查**
+
+```bash
+git stash
+git cherry-pick --no-commit <source-commits>
+git diff --cached --stat
+git cherry-pick --abort
+git stash pop
+```
+
+如果 cherry-pick 后 staged 区为空或只有冲突（因为改动已存在），说明内容已被包含。
+
+**方法三：tree-level diff**
+
+直接比较来源分支与当前分支在关键路径上的最终文件状态：
+
+```bash
+git diff HEAD <source-ref> --stat
+```
+
+逐文件确认：差异仅来自当前分支的后续演进，而非来源分支遗漏。
+
+squash merge 场景的判定规则：
+
+- 不能用 `is-ancestor` 作为唯一完整性证据
+- 必须至少使用上述方法之一，并在证据矩阵中标注 `proof-method: patch-equivalent` 或 `proof-method: tree-diff`
+- 如果来源分支在 squash 后仍有新提交，必须重新检查而不是沿用旧结论
+
 ## 8. 最小相关验证与 push 决策
 
 根据实际改动选择最小但真实可失败的验证：

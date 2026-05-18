@@ -29,6 +29,7 @@ def build_markdown(args: argparse.Namespace) -> str:
         f"- left/right counts: {render_value(args.left_right_counts)}",
         f"- merge strategy: {render_value(args.merge_strategy)}",
         f"- completeness proof: {render_value(args.completeness_proof)}",
+        f"- proof method: {render_value(args.proof_method, 'is-ancestor')}",
         f"- semantic review conclusion: {render_value(args.semantic_review)}",
         f"- push status: {render_value(args.push_status)}",
         "",
@@ -67,6 +68,7 @@ def main() -> int:
     parser.add_argument("--left-right-counts")
     parser.add_argument("--merge-strategy")
     parser.add_argument("--completeness-proof")
+    parser.add_argument("--proof-method")
     parser.add_argument("--semantic-review")
     parser.add_argument("--push-status")
     parser.add_argument("--incoming-commit", action="append", default=[])
