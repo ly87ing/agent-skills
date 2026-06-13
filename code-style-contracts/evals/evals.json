@@ -1,0 +1,35 @@
+{
+  "skill_name": "code-style-contracts",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我加的这段代码 lint 报了几个新 warning，跑 prettier 又跟仓库现有风格不一样，帮我处理下。",
+      "expected_output": "应触发 code-style-contracts。结果应优先沿用仓库既有的 formatter、lint、类型检查和文件布局，把新引入的 warning 视为回归处理，而不是放宽规则或重排无关文件。"
+    },
+    {
+      "id": 2,
+      "prompt": "这几个变量我随手命名成了 a、tmp、data2，还顺手把对外返回的 userId 字段改成了 uid，帮我看看。",
+      "expected_output": "应触发 code-style-contracts。结果应要求使用有业务含义的命名、避免不清晰缩写，并保持公共字段/配置键与既有契约一致，不随意改对外字段名。"
+    },
+    {
+      "id": 3,
+      "prompt": "这个接口收到非法或缺字段的参数时，我现在是默默给个默认值兜底，你看这样行不行。",
+      "expected_output": "应触发 code-style-contracts。结果应要求对畸形、不支持或有歧义的外部输入与配置 fail-close 拒绝，除非有既有兼容契约要求，否则不要静默 coerce。"
+    },
+    {
+      "id": 4,
+      "prompt": "我想给这个 JSON 响应的 schema 删掉一个旧字段、再加一个新字段，直接改就行吧？",
+      "expected_output": "应触发 code-style-contracts。结果应把它当成数据契约变更，要求给出兼容或迁移说明；若缺少兼容/迁移故事，应按 stop condition 停下。"
+    },
+    {
+      "id": 5,
+      "prompt": "帮我把这份周会纪要整理成对外发布的 Markdown 公告。",
+      "expected_output": "不应触发 code-style-contracts；这是面向读者的写作任务，不涉及代码、配置或数据契约。"
+    },
+    {
+      "id": 6,
+      "prompt": "我在犹豫要不要为这个功能新建一个独立服务模块、把依赖方向也调一下，帮我评估边界。",
+      "expected_output": "不应触发 code-style-contracts；这是架构与依赖边界评估，更适合架构审查类 skill，而非代码风格与契约约束。"
+    }
+  ]
+}
