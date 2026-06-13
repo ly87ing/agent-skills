@@ -20,14 +20,14 @@
 
 | Skill | 说明 |
 | --- | --- |
-| [safe-merge-review](./safe-merge-review/SKILL.md) | 把“merge 成功”和“merge 正确”分开处理，强调差异建模、热点交集审查、完整性验证和 push 决策。 |
-| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。项目中立（按可发现的 project profile 接入任意 ONES 项目）；根因须有 ≥2 条独立证据交叉印证才进入修复，改动大或有风险时先停下征询用户。 |
-| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。项目中立：登录方式 / 环境入口 / 前端路由源等都按项目发现，不绑定单一工程。 |
-| [architecture-change-review](./architecture-change-review/SKILL.md) | 在修改架构、接口、依赖边界、配置 schema 或跨模块契约前做边界复核。 |
-| [code-style-contracts](./code-style-contracts/SKILL.md) | 处理代码风格、配置、数据契约、命名、校验和注释约束，避免把规则细节塞进 always-on 上下文。 |
-| [frontend-verification](./frontend-verification/SKILL.md) | 处理 UI、浏览器自动化、交互 HTML、响应式状态和前端验证工具选择。 |
-| [artifact-hygiene](./artifact-hygiene/SKILL.md) | 判断生成文件、调试产物、Playwright 证据、下载件和临时脚本的放置与清理边界。 |
-| [reader-facing-writing](./reader-facing-writing/SKILL.md) | 编写或改写面向读者的计划、报告、提案、规格、清单、Markdown 和 HTML 文档。 |
+| [safe-merge-review](./safe-merge-review/SKILL.md) | 把“merge 成功”和“merge 正确”分开处理，强调差异建模、热点交集审查、完整性验证和 push 决策；附触发判别 evals。 |
+| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。项目中立（按可发现的 project profile 接入任意 ONES 项目）；根因须有 ≥2 条独立证据交叉印证才进入修复，改动大或有风险时先停下征询用户；附触发判别 evals。 |
+| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。项目中立：登录方式 / 环境入口 / 前端路由源等都按项目发现，不绑定单一工程；附触发判别 evals。 |
+| [architecture-change-review](./architecture-change-review/SKILL.md) | 在修改架构、接口、依赖边界、配置 schema 或跨模块契约前做边界复核；附触发判别 evals。 |
+| [code-style-contracts](./code-style-contracts/SKILL.md) | 处理代码风格、配置、数据契约、命名、校验和注释约束，避免把规则细节塞进 always-on 上下文；附触发判别 evals。 |
+| [frontend-verification](./frontend-verification/SKILL.md) | 处理 UI、浏览器自动化、交互 HTML、响应式状态和前端验证工具选择；附触发判别 evals。 |
+| [artifact-hygiene](./artifact-hygiene/SKILL.md) | 判断生成文件、调试产物、Playwright 证据、下载件和临时脚本的放置与清理边界；附触发判别 evals。 |
+| [reader-facing-writing](./reader-facing-writing/SKILL.md) | 编写或改写面向读者的计划、报告、提案、规格、清单、Markdown 和 HTML 文档；附触发判别 evals。 |
 
 ## 设计原则
 
