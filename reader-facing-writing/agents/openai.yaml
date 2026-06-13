@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reader-facing Writing"
+  short_description: "Write plans, reports, specs, and decks"
+  default_prompt: "Use $reader-facing-writing to draft or revise this reader-facing document."

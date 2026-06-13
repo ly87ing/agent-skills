@@ -1,0 +1,4 @@
+interface:
+  display_name: "Artifact Hygiene"
+  short_description: "Place debug and generated artifacts safely"
+  default_prompt: "Use $artifact-hygiene to decide where these generated or debug artifacts belong."

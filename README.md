@@ -21,8 +21,13 @@
 | Skill | 说明 |
 | --- | --- |
 | [safe-merge-review](./safe-merge-review/SKILL.md) | 把“merge 成功”和“merge 正确”分开处理，强调差异建模、热点交集审查、完整性验证和 push 决策。 |
-| [legacy-component-skinning](./legacy-component-skinning/SKILL.md) | 在不替换现有前端组件的前提下，对 legacy UI 做展示层换肤、隐藏 surface 检查、异常态检查与视觉验收。 |
-| [legacy-component-skinning](./legacy-component-skinning/SKILL.md) | 基于通用 `legacy-component-skinning` 的 profile 样例，展示如何在通用 core 之上叠加品牌 / 产品专属约束。 |
+| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。 |
+| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。 |
+| [architecture-change-review](./architecture-change-review/SKILL.md) | 在修改架构、接口、依赖边界、配置 schema 或跨模块契约前做边界复核。 |
+| [code-style-contracts](./code-style-contracts/SKILL.md) | 处理代码风格、配置、数据契约、命名、校验和注释约束，避免把规则细节塞进 always-on 上下文。 |
+| [frontend-verification](./frontend-verification/SKILL.md) | 处理 UI、浏览器自动化、交互 HTML、响应式状态和前端验证工具选择。 |
+| [artifact-hygiene](./artifact-hygiene/SKILL.md) | 判断生成文件、调试产物、Playwright 证据、下载件和临时脚本的放置与清理边界。 |
+| [reader-facing-writing](./reader-facing-writing/SKILL.md) | 编写或改写面向读者的计划、报告、提案、规格、清单、Markdown 和 HTML 文档。 |
 
 ## 设计原则
 
@@ -41,15 +46,28 @@ agent-skills/
 │   ├── SKILL.md                        # canonical source
 │   ├── agents/openai.yaml
 │   └── references/
-├── legacy-component-skinning/
-│   ├── SKILL.md                        # canonical source
-│   ├── agents/openai.yaml
+├── fix-ones-bug/
+│   ├── SKILL.md
+│   └── references/
+├── qa-self-verify/
+│   ├── SKILL.md
 │   ├── references/
 │   └── scripts/
-└── legacy-component-skinning/
-    ├── SKILL.md                        # canonical source
-    ├── agents/openai.yaml
-    └── references/
+├── architecture-change-review/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+├── code-style-contracts/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+├── frontend-verification/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+├── artifact-hygiene/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+└── reader-facing-writing/
+    ├── SKILL.md
+    └── agents/openai.yaml
 ```
 
 根目录 skill 目录就是唯一真源，也是这个仓库公开维护的唯一内容层。
@@ -75,12 +93,7 @@ agent-skills/
 这个仓库本身保持 runtime-neutral，不在仓库里额外维护 Claude Code 或 Codex 的项目级 wrapper。
 如果你要在某个具体运行时里使用这些 skill，应由消费侧把 skill 放到该运行时要求的发现路径中。
 
-如果你在做通用能力设计，推荐优先采用 `core + profile` 结构：
-
-- 把可复用 workflow 放在通用 core skill
-- 把品牌、产品线、内部规范等专属约束放在 profile skill
-
-当前仓库里的 `legacy-component-skinning` 与 `legacy-component-skinning` 就是这个模式的一个公开样例。
+从规则体系拆出来的 skill 应只承载低频、专题化、需要按需加载的 workflow。Always-on 规则只保留触发条件、约束边界和最小协作协议；执行步骤、检查清单、失败边界和验证细节放在对应 skill 中维护。
 
 ## 适合放进这个仓库的 skill
 
@@ -116,4 +129,4 @@ agent-skills/
 
 适合放在 GitHub 仓库设置页的简短描述：
 
-`Open-source, team-grade skills for safe merges, legacy UI skinning, and reusable agent workflows.`
+`Open-source, team-grade skills for safe merges, rule-derived workflows, and reusable agent execution.`

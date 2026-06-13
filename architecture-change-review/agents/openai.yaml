@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture Change Review"
+  short_description: "Review architecture and interface changes"
+  default_prompt: "Use $architecture-change-review to review this architecture or interface change."
