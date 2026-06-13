@@ -1,0 +1,35 @@
+{
+  "skill_name": "frontend-verification",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我改了下单页的校验逻辑，想加个能进 CI、可复现的检查，确认空购物车不能提交。",
+      "expected_output": "应触发 frontend-verification。结果应先定义 UI surface 与用户可见成功标准，按意图选择 Playwright 做可复现断言和回归覆盖，而不是只做一次性人工查看。"
+    },
+    {
+      "id": 2,
+      "prompt": "这个页面首屏有点卡，帮我一次性看看布局抖动和 Core Web Vitals，不用写测试。",
+      "expected_output": "应触发 frontend-verification。结果应选择 Chrome DevTools 做一次性视觉/布局诊断、性能 trace 和 Core Web Vitals，明确这是 ad hoc investigation，不把它当成持久回归覆盖。"
+    },
+    {
+      "id": 3,
+      "prompt": "帮我用浏览器登录后台、进到订单详情页把状态截图存证，注意我已经有登录态了。",
+      "expected_output": "应触发 frontend-verification。结果应使用 session-aware 浏览器并刻意保留已认证上下文，不假设全新隔离浏览器自带 cookie/profile/权限；若浏览器无法启动或附着，应先报告工具失败再考虑回退。"
+    },
+    {
+      "id": 4,
+      "prompt": "我做了个交互式 HTML 看板要发给团队，帮我确认能正常用。",
+      "expected_output": "应触发 frontend-verification。结果应加载渲染后的产物，检查 console 报错、关键元素与交互、可缩放文本、命中区域、modal/focus 可访问性，并留一张规范截图；同时按运行环境匹配 online/offline 依赖策略。"
+    },
+    {
+      "id": 5,
+      "prompt": "帮我优化这条只跑在后端的 SQL 聚合查询的性能，没有任何前端改动。",
+      "expected_output": "不应触发 frontend-verification；这是纯后端/数据层改动，不涉及 UI、浏览器或可渲染产物。"
+    },
+    {
+      "id": 6,
+      "prompt": "帮我把这次迭代的进展写成一份纯文字的项目周报。",
+      "expected_output": "不应触发 frontend-verification；这是面向读者的纯文字写作，没有需要在浏览器中验证的 UI 或 HTML 交付物。"
+    }
+  ]
+}
