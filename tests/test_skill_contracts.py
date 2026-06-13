@@ -6,6 +6,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+MAINTAINED_SKILLS = {
+    "architecture-change-review",
+    "artifact-hygiene",
+    "code-style-contracts",
+    "fix-ones-bug",
+    "frontend-verification",
+    "qa-self-verify",
+    "reader-facing-writing",
+    "safe-merge-review",
+}
 RULE_DERIVED_SKILLS = {
     "architecture-change-review",
     "artifact-hygiene",
@@ -16,6 +26,17 @@ RULE_DERIVED_SKILLS = {
 RETIRED_SKILLS = {
     "legacy-component-skinning",
     "legacy-component-skinning",
+}
+RUNTIME_ADAPTERS = {
+    "claude.md",
+    "codex.md",
+}
+FORBIDDEN_CORE_RUNTIME_TERMS = {
+    "AskUserQuestion",
+    "TaskCreate",
+    "TodoWrite",
+    "Read 工具",
+    "update_plan",
 }
 
 
@@ -40,6 +61,11 @@ def read_frontmatter(skill_dir: Path) -> dict[str, str]:
 
 
 class SkillContractTests(unittest.TestCase):
+    def test_current_skill_inventory_matches_maintained_set(self):
+        current = {path.name for path in skill_dirs()}
+
+        self.assertEqual(current, MAINTAINED_SKILLS)
+
     def test_all_skills_have_open_standard_frontmatter(self):
         for skill_dir in skill_dirs():
             frontmatter = read_frontmatter(skill_dir)
@@ -52,6 +78,40 @@ class SkillContractTests(unittest.TestCase):
             self.assertGreaterEqual(len(description), 40, name)
             self.assertLessEqual(len(description), 1024, name)
             self.assertNotIn("TODO", (skill_dir / "SKILL.md").read_text(encoding="utf-8"), name)
+
+    def test_skill_bodies_are_runtime_neutral(self):
+        for skill_dir in skill_dirs():
+            skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            for runtime_term in FORBIDDEN_CORE_RUNTIME_TERMS:
+                self.assertNotIn(runtime_term, skill_text, skill_dir.name)
+
+    def test_skill_bodies_stay_progressively_disclosed(self):
+        for skill_dir in skill_dirs():
+            skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            self.assertLessEqual(len(skill_text.splitlines()), 500, skill_dir.name)
+
+            for forbidden_doc_name in ("README.md", "CHANGELOG.md", "INSTALL.md", "INSTALLATION.md"):
+                self.assertFalse((skill_dir / forbidden_doc_name).exists(), f"{skill_dir.name}/{forbidden_doc_name}")
+
+            references_dir = skill_dir / "references"
+            if references_dir.exists():
+                for reference_path in references_dir.glob("**/*"):
+                    if reference_path.is_file():
+                        self.assertEqual(reference_path.parent, references_dir, str(reference_path))
+
+            scripts_dir = skill_dir / "scripts"
+            if scripts_dir.exists():
+                for script_path in scripts_dir.glob("**/*"):
+                    if "__pycache__" in script_path.parts or script_path.suffix == ".pyc":
+                        continue
+                    if script_path.is_file():
+                        self.assertEqual(script_path.parent, scripts_dir, str(script_path))
+
+            agents_dir = skill_dir / "agents"
+            self.assertTrue(agents_dir.exists(), skill_dir.name)
+            allowed_agent_files = {"openai.yaml"} | RUNTIME_ADAPTERS
+            current_agent_files = {path.name for path in agents_dir.iterdir() if path.is_file()}
+            self.assertEqual(current_agent_files, allowed_agent_files, skill_dir.name)
 
     def test_rule_derived_skills_exist_and_retired_skinning_skills_are_absent(self):
         current = {path.name for path in skill_dirs()}
@@ -94,13 +154,36 @@ class SkillContractTests(unittest.TestCase):
             for phrase in phrases:
                 self.assertIn(phrase, text, skill_name)
 
-    def test_openai_metadata_default_prompts_reference_skill_names(self):
+    def test_openai_metadata_is_present_and_references_skill_names(self):
         for skill_dir in skill_dirs():
             metadata_path = skill_dir / "agents" / "openai.yaml"
-            if not metadata_path.exists():
-                continue
+            self.assertTrue(metadata_path.exists(), skill_dir.name)
+
             metadata = metadata_path.read_text(encoding="utf-8")
+            self.assertIn("interface:", metadata, skill_dir.name)
+            self.assertRegex(metadata, r'(?m)^\s+display_name: ".+"$', skill_dir.name)
+            short_description = re.search(r'(?m)^\s+short_description: "(.+)"$', metadata)
+            self.assertIsNotNone(short_description, skill_dir.name)
+            self.assertGreaterEqual(len(short_description.group(1)), 25, skill_dir.name)
+            self.assertLessEqual(len(short_description.group(1)), 64, skill_dir.name)
+            self.assertRegex(metadata, r'(?m)^\s+default_prompt: ".+"$', skill_dir.name)
             self.assertIn(f"${skill_dir.name}", metadata)
+
+    def test_runtime_adapters_are_thin_and_core_referenced(self):
+        for skill_dir in skill_dirs():
+            for adapter_name in RUNTIME_ADAPTERS:
+                adapter_path = skill_dir / "agents" / adapter_name
+                self.assertTrue(adapter_path.exists(), f"{skill_dir.name}/{adapter_name}")
+                adapter = adapter_path.read_text(encoding="utf-8")
+
+                self.assertIn("Core source of truth: `SKILL.md`.", adapter, f"{skill_dir.name}/{adapter_name}")
+                self.assertIn("Do not duplicate or weaken", adapter, f"{skill_dir.name}/{adapter_name}")
+                self.assertLessEqual(len(adapter.splitlines()), 20, f"{skill_dir.name}/{adapter_name}")
+
+            claude_adapter = (skill_dir / "agents" / "claude.md").read_text(encoding="utf-8")
+            codex_adapter = (skill_dir / "agents" / "codex.md").read_text(encoding="utf-8")
+            self.assertIn(f"/{skill_dir.name}", claude_adapter, skill_dir.name)
+            self.assertIn(f"${skill_dir.name}", codex_adapter, skill_dir.name)
 
 
 if __name__ == "__main__":

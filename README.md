@@ -43,41 +43,56 @@
 ```text
 agent-skills/
 ├── safe-merge-review/
-│   ├── SKILL.md                        # canonical source
-│   ├── agents/openai.yaml
+│   ├── SKILL.md                        # runtime-neutral source
+│   ├── agents/
+│   │   ├── openai.yaml                 # Codex/OpenAI UI metadata
+│   │   ├── codex.md                    # Codex tool mapping notes
+│   │   └── claude.md                   # Claude Code tool mapping notes
 │   └── references/
 ├── fix-ones-bug/
 │   ├── SKILL.md
+│   ├── agents/{openai.yaml,codex.md,claude.md}
 │   └── references/
 ├── qa-self-verify/
 │   ├── SKILL.md
+│   ├── agents/{openai.yaml,codex.md,claude.md}
 │   ├── references/
 │   └── scripts/
 ├── architecture-change-review/
 │   ├── SKILL.md
-│   └── agents/openai.yaml
+│   └── agents/{openai.yaml,codex.md,claude.md}
 ├── code-style-contracts/
 │   ├── SKILL.md
-│   └── agents/openai.yaml
+│   └── agents/{openai.yaml,codex.md,claude.md}
 ├── frontend-verification/
 │   ├── SKILL.md
-│   └── agents/openai.yaml
+│   └── agents/{openai.yaml,codex.md,claude.md}
 ├── artifact-hygiene/
 │   ├── SKILL.md
-│   └── agents/openai.yaml
+│   └── agents/{openai.yaml,codex.md,claude.md}
 └── reader-facing-writing/
     ├── SKILL.md
-    └── agents/openai.yaml
+    └── agents/{openai.yaml,codex.md,claude.md}
 ```
 
 根目录 skill 目录就是唯一真源，也是这个仓库公开维护的唯一内容层。
 
 每个 canonical skill 目录都应尽量自包含，通常包括：
 
-- `SKILL.md`：触发条件与主 workflow
-- `agents/openai.yaml`：UI 元数据与默认调用提示
+- `SKILL.md`：跨运行时触发条件与主 workflow，保持 open-standard 和 runtime-neutral
+- `agents/openai.yaml`：Codex/OpenAI UI 元数据与默认调用提示
+- `agents/codex.md`：Codex 工具映射、进度跟踪和验证入口的薄适配说明
+- `agents/claude.md`：Claude Code 命令、工具映射和安全注意事项的薄适配说明
 - `references/`：按需加载的参考资料
 - `scripts/`：适合沉淀为 deterministic helper 的脆弱步骤
+
+运行时适配规则：
+
+- `SKILL.md` 是唯一 workflow 真源；adapter 只能映射工具、调用方式和运行时安全限制。
+- Codex/OpenAI 专属配置放在 `agents/openai.yaml`，并让 `default_prompt` 显式引用 `$skill-name`。
+- Claude Code 专属调用方式、工具名、动态上下文注入限制放在 `agents/claude.md`，不写进 core。
+- Codex 专属工具习惯（如计划跟踪、本地浏览器选择、图片查看方式）放在 `agents/codex.md`，不写进 core。
+- adapter 不允许新增、删除或放宽 `SKILL.md` 里的验证 gate、停止条件和状态流转要求。
 
 ## 如何使用
 
@@ -115,7 +130,7 @@ agent-skills/
 - `SKILL.md` 只保留核心 workflow，不把 README、CHANGELOG、安装说明塞进 skill 包里。
 - 重复且脆弱的步骤优先下沉到 `scripts/`，不要一遍遍用 prose 复述。
 - 触发条件要写给真实用户请求，而不是写成抽象口号。
-- 如果需要同时适配 Claude Code 和 Codex，优先保持 skill 包本身符合 open-standard，避免把运行时专属 wrapper 固化进这个仓库。
+- 同时适配 Claude Code 和 Codex 时，保持 `SKILL.md` open-standard，把运行时差异收敛到 `agents/` adapter。
 - 如果 skill 面向团队重复使用，至少要能回答：
   - 谁会用
   - 用户会怎么触发
