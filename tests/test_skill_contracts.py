@@ -28,6 +28,7 @@ RETIRED_SKILLS = {
     "legacy-component-skinning",
 }
 RUNTIME_ADAPTERS = {
+    "antigravity.md",
     "claude.md",
     "codex.md",
 }
@@ -182,8 +183,11 @@ class SkillContractTests(unittest.TestCase):
 
             claude_adapter = (skill_dir / "agents" / "claude.md").read_text(encoding="utf-8")
             codex_adapter = (skill_dir / "agents" / "codex.md").read_text(encoding="utf-8")
+            antigravity_adapter = (skill_dir / "agents" / "antigravity.md").read_text(encoding="utf-8")
             self.assertIn(f"/{skill_dir.name}", claude_adapter, skill_dir.name)
             self.assertIn(f"${skill_dir.name}", codex_adapter, skill_dir.name)
+            self.assertIn("Antigravity CLI", antigravity_adapter, skill_dir.name)
+            self.assertIn(skill_dir.name, antigravity_adapter, skill_dir.name)
 
 
 if __name__ == "__main__":

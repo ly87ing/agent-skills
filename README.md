@@ -1,6 +1,6 @@
 # agent-skills
 
-面向 Codex、Claude Code 等 agent runtime 的开源通用 skill 集合，强调自然语言触发、闭环 workflow、可验证证据和可复用资源。
+面向 Codex、Claude Code、Antigravity CLI 等 agent runtime 的开源通用 skill 集合，强调自然语言触发、闭环 workflow、可验证证据和可复用资源。
 
 ## 项目定位
 
@@ -47,32 +47,33 @@ agent-skills/
 │   ├── agents/
 │   │   ├── openai.yaml                 # Codex/OpenAI UI metadata
 │   │   ├── codex.md                    # Codex tool mapping notes
-│   │   └── claude.md                   # Claude Code tool mapping notes
+│   │   ├── claude.md                   # Claude Code tool mapping notes
+│   │   └── antigravity.md              # Antigravity CLI tool mapping notes
 │   └── references/
 ├── fix-ones-bug/
 │   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md}
+│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   └── references/
 ├── qa-self-verify/
 │   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md}
+│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   ├── references/
 │   └── scripts/
 ├── architecture-change-review/
 │   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md}
+│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ├── code-style-contracts/
 │   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md}
+│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ├── frontend-verification/
 │   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md}
+│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ├── artifact-hygiene/
 │   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md}
+│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 └── reader-facing-writing/
     ├── SKILL.md
-    └── agents/{openai.yaml,codex.md,claude.md}
+    └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ```
 
 根目录 skill 目录就是唯一真源，也是这个仓库公开维护的唯一内容层。
@@ -83,6 +84,7 @@ agent-skills/
 - `agents/openai.yaml`：Codex/OpenAI UI 元数据与默认调用提示
 - `agents/codex.md`：Codex 工具映射、进度跟踪和验证入口的薄适配说明
 - `agents/claude.md`：Claude Code 命令、工具映射和安全注意事项的薄适配说明
+- `agents/antigravity.md`：Antigravity CLI 调用方式、进度跟踪和工具边界的薄适配说明
 - `references/`：按需加载的参考资料
 - `scripts/`：适合沉淀为 deterministic helper 的脆弱步骤
 
@@ -92,6 +94,7 @@ agent-skills/
 - Codex/OpenAI 专属配置放在 `agents/openai.yaml`，并让 `default_prompt` 显式引用 `$skill-name`。
 - Claude Code 专属调用方式、工具名、动态上下文注入限制放在 `agents/claude.md`，不写进 core。
 - Codex 专属工具习惯（如计划跟踪、本地浏览器选择、图片查看方式）放在 `agents/codex.md`，不写进 core。
+- Antigravity CLI 专属调用方式、计划 / 状态表面和工具边界放在 `agents/antigravity.md`，不写进 core。
 - adapter 不允许新增、删除或放宽 `SKILL.md` 里的验证 gate、停止条件和状态流转要求。
 
 ## 如何使用
@@ -105,7 +108,7 @@ agent-skills/
 3. 确保运行时能够发现 `SKILL.md`。
 4. 让 agent 按 skill 的自然语言触发条件调用，必要时按需读取 `references/` 或运行 `scripts/`。
 
-这个仓库本身保持 runtime-neutral，不在仓库里额外维护 Claude Code 或 Codex 的项目级 wrapper。
+这个仓库本身保持 runtime-neutral，不在仓库里额外维护 Claude Code、Codex 或 Antigravity CLI 的项目级 wrapper。
 如果你要在某个具体运行时里使用这些 skill，应由消费侧把 skill 放到该运行时要求的发现路径中。
 
 从规则体系拆出来的 skill 应只承载低频、专题化、需要按需加载的 workflow。Always-on 规则只保留触发条件、约束边界和最小协作协议；执行步骤、检查清单、失败边界和验证细节放在对应 skill 中维护。
@@ -130,7 +133,7 @@ agent-skills/
 - `SKILL.md` 只保留核心 workflow，不把 README、CHANGELOG、安装说明塞进 skill 包里。
 - 重复且脆弱的步骤优先下沉到 `scripts/`，不要一遍遍用 prose 复述。
 - 触发条件要写给真实用户请求，而不是写成抽象口号。
-- 同时适配 Claude Code 和 Codex 时，保持 `SKILL.md` open-standard，把运行时差异收敛到 `agents/` adapter。
+- 同时适配 Claude Code、Codex 和 Antigravity CLI 时，保持 `SKILL.md` open-standard，把运行时差异收敛到 `agents/` adapter。
 - 如果 skill 面向团队重复使用，至少要能回答：
   - 谁会用
   - 用户会怎么触发
