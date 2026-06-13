@@ -85,8 +85,11 @@ agent-skills/
 - `agents/codex.md`：Codex 工具映射、进度跟踪和验证入口的薄适配说明
 - `agents/claude.md`：Claude Code 命令、工具映射和安全注意事项的薄适配说明
 - `agents/antigravity.md`：Antigravity CLI 调用方式、进度跟踪和工具边界的薄适配说明
-- `references/`：按需加载的参考资料
+- `references/`：按需加载的参考资料（单文件超过 100 行时在顶部放一份目录，保证部分读取也能看到全貌）
 - `scripts/`：适合沉淀为 deterministic helper 的脆弱步骤
+- `evals/evals.json`：触发判别与行为评估用例，正例覆盖 `description` 的触发场景、反例防误触发或确认路由到兄弟 skill
+
+当前 8 个 skill 均已附带 `evals/evals.json`，对齐 Anthropic「先建评估」的 skill authoring 实践。
 
 运行时适配规则：
 
