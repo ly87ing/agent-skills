@@ -1,0 +1,35 @@
+{
+  "skill_name": "artifact-hygiene",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "排查这个问题时我写了个临时脚本，还 dump 了几份 JSON 到处看，这些文件放哪比较好？",
+      "expected_output": "应触发 artifact-hygiene。结果应把临时脚本和 JSON dump 归为 disposable run artifacts，放 mktemp -d / $TMPDIR / /tmp，并在完成前删除项目内的临时产物，除非用户要求保留。"
+    },
+    {
+      "id": 2,
+      "prompt": "我刚跑了一轮 Playwright 调试，留下了 trace、视频和几张截图，要不要提交到仓库？",
+      "expected_output": "应触发 artifact-hygiene。结果应把一次性 trace/视频/截图归为 disposable，绝不放仓库根、docs/、scripts/、tests/fixtures/ 等会被提交的路径，而是放临时目录。"
+    },
+    {
+      "id": 3,
+      "prompt": "我们 CI 已经在用 playwright-report 和 test-results 了，这些输出该怎么放？",
+      "expected_output": "应触发 artifact-hygiene。结果应把它们识别为 workflow-consumed artifacts（仓库工作流已依赖），放进项目既有的 gitignored 输出路径，而不是当成 disposable 删掉或新建目录。"
+    },
+    {
+      "id": 4,
+      "prompt": "我想给这些调试产物在仓库里建个 debug-output/ 目录，再往 .gitignore 加一条，方便以后放，行不行？",
+      "expected_output": "应触发 artifact-hygiene。结果应按 hard boundary 拒绝：不为承载 disposable 产物而新建或拓宽 .gitignore、配置约定或仓库目录；不确定的产物按 disposable 处理，放临时目录。"
+    },
+    {
+      "id": 5,
+      "prompt": "帮我修一下这个登录态判断的逻辑 bug，没有要生成什么文件。",
+      "expected_output": "不应触发 artifact-hygiene；这是代码逻辑修复，不涉及生成文件、调试产物或下载件的放置与清理。"
+    },
+    {
+      "id": 6,
+      "prompt": "帮我看看这段代码的命名和注释是否规范。",
+      "expected_output": "不应触发 artifact-hygiene；这是代码风格与契约审查，不是判断生成/调试产物该放哪。"
+    }
+  ]
+}
