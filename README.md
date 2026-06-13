@@ -21,8 +21,8 @@
 | Skill | 说明 |
 | --- | --- |
 | [safe-merge-review](./safe-merge-review/SKILL.md) | 把“merge 成功”和“merge 正确”分开处理，强调差异建模、热点交集审查、完整性验证和 push 决策。 |
-| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。 |
-| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。 |
+| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。项目中立（按可发现的 project profile 接入任意 ONES 项目）；根因须有 ≥2 条独立证据交叉印证才进入修复，改动大或有风险时先停下征询用户。 |
+| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。项目中立：登录方式 / 环境入口 / 前端路由源等都按项目发现，不绑定单一工程。 |
 | [architecture-change-review](./architecture-change-review/SKILL.md) | 在修改架构、接口、依赖边界、配置 schema 或跨模块契约前做边界复核。 |
 | [code-style-contracts](./code-style-contracts/SKILL.md) | 处理代码风格、配置、数据契约、命名、校验和注释约束，避免把规则细节塞进 always-on 上下文。 |
 | [frontend-verification](./frontend-verification/SKILL.md) | 处理 UI、浏览器自动化、交互 HTML、响应式状态和前端验证工具选择。 |
@@ -35,6 +35,7 @@
 - 闭环优先：从触发、上下文、执行、验证到汇报形成完整路径。
 - 共享优先：可复用规则应下沉到共享层，而不是散落在页面补丁或临时说明里。
 - 工具中立：强制真实观察效果，但不强绑某一个具体工具。
+- 项目中立：skill 不硬编码单一项目的绝对路径、仓库名、分支、内部 UUID 或凭据位置；项目专属信息靠可发现的 project profile（按需解析或问用户）注入，让同一个 skill 能跨项目复用。
 - 安全边界明确：什么时候可以自动执行，什么时候必须停下并升级，要写清楚。
 - 渐进加载：`SKILL.md` 保持精炼，细节下沉到 `references/`，脆弱步骤尽量下沉到 `scripts/`。
 
