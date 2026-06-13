@@ -1,0 +1,35 @@
+{
+  "skill_name": "reader-facing-writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "这份 30 页的技术方案太长了，帮我压成两页给评审会，但别把关键结构搞丢。",
+      "expected_output": "应触发 reader-facing-writing。结果应先锁定读者与决策、开门见山，压缩时保留来源框架（改写一层而非删层），不确定的术语/数字/名称沿用原文，未知值标 TBD 或删去，不臆造。"
+    },
+    {
+      "id": 2,
+      "prompt": "帮我给老板写一份是否上这个项目的决策简报。",
+      "expected_output": "应触发 reader-facing-writing。结果应先确定读者要做的决策、把要点放在最前，按扫描式结构组织，措辞平实、术语一致，并以目标读者视角复核。"
+    },
+    {
+      "id": 3,
+      "prompt": "把这次迭代的待办整理成带时间和完成标准的行动计划。",
+      "expected_output": "应触发 reader-facing-writing。结果应为每个行动项给出时间（已承诺用绝对日期，否则用具体周/阶段）和完成标准，且不得把未来/期望状态写成当前状态。"
+    },
+    {
+      "id": 4,
+      "prompt": "帮我做一页交互式 HTML 看板，把这些指标和趋势讲清楚发给团队。",
+      "expected_output": "应触发 reader-facing-writing。结果应用可缩放可读字号、足够对比度、兼容 200% 缩放，先定 online/offline 依赖，每条流程用一个规范图示，并在声明完成前验证渲染结果。"
+    },
+    {
+      "id": 5,
+      "prompt": "帮我把这个数据处理函数重构得更清晰一点。",
+      "expected_output": "不应触发 reader-facing-writing；这是改代码，不是写给人读的文档、计划或报告。"
+    },
+    {
+      "id": 6,
+      "prompt": "帮我用浏览器把这个已经上线的下单流程点一遍，确认没坏。",
+      "expected_output": "不应触发 reader-facing-writing；这是对既有 UI 的浏览器验证任务，属于前端验证，而非撰写或改写面向读者的文档。"
+    }
+  ]
+}
