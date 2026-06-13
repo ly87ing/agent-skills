@@ -1,0 +1,35 @@
+{
+  "skill_name": "architecture-change-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想抽一个通用的 RequestContext 抽象出来，目前只有订单服务一个地方用，先把它建起来后面别人也能复用。",
+      "expected_output": "应触发 architecture-change-review。结果应指出当前只有单一消费者、缺少具体边界问题，按 stop condition 停下或建议先做最小本地改动，不要为“将来可能复用”提前引入抽象。"
+    },
+    {
+      "id": 2,
+      "prompt": "这个改动要把 UserService 的公共方法签名改一下，调用方有 Web 层和几个后台任务，帮我看看怎么改安全。",
+      "expected_output": "应触发 architecture-change-review。结果应先定位 entry point、callers、owners 和生成/同步产物，判定改动是 shared/cross-module，检查依赖方向，并把契约变更（默认值、失败模式、rollback path、是否需要迁移）显式写清楚。"
+    },
+    {
+      "id": 3,
+      "prompt": "我准备把配置项 cache.ttl 的默认值从 60 改成 300，还要加个 schema 迁移，帮我评估下。",
+      "expected_output": "应触发 architecture-change-review。结果应把它当成 config/schema 契约变更，显式说明新默认值、失败模式、rollback path 以及迁移是否必需，并要求用最小测试验证边界。"
+    },
+    {
+      "id": 4,
+      "prompt": "基础设施层的这个数据库客户端，能不能直接在 domain 实体里 import 来用，省得再包一层？",
+      "expected_output": "应触发 architecture-change-review。结果应识别这是把基础设施细节泄漏进内层、违反依赖方向，建议保留 adapter 边界，并在仅为让当前补丁更省事而跨越边界时按 stop condition 停下。"
+    },
+    {
+      "id": 5,
+      "prompt": "这个函数内部有个 off-by-one 的小 bug，帮我在原地修一下，不动任何接口。",
+      "expected_output": "不应触发 architecture-change-review；这是不涉及边界、接口、依赖方向或契约的本地实现修复。"
+    },
+    {
+      "id": 6,
+      "prompt": "帮我写一个快速排序并解释下平均时间复杂度。",
+      "expected_output": "不应触发 architecture-change-review；这不是架构、接口、依赖边界或契约审查任务。"
+    }
+  ]
+}
