@@ -132,7 +132,7 @@ Typical signs:
 
 - Tests are deleted, downgraded, or skipped
 - The build gate, validation scripts, or packaging guards are removed
-- The smoke no longer covers the real risk
+- The smoke test no longer covers the real risk
 
 ## 5. Multi-repo coordination review
 
