@@ -21,6 +21,7 @@ description: Apply disciplined code style, config, data contract, naming, valida
    - Do not narrate obvious line-by-line behavior.
 5. Re-read the diff before completion.
    - Remove accidental churn, dead code, debug leftovers, misleading names, and stale comments.
+   - Before deleting code, confirm why it exists (check version-control history) and that it is truly dead.
 
 ## Stop Conditions
 

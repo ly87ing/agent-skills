@@ -13,6 +13,7 @@ description: Review architecture, shared interfaces, dependency boundaries, conf
 2. Prefer the smallest local change.
    - Do not introduce a new abstraction unless there are at least two real consumers or a clear boundary problem.
    - Keep existing framework, helpers, and dependency direction unless the current boundary is the bug.
+   - When a file or function has grown large and mixes responsibilities, split it along existing responsibility seams (extract a module or function), not by an arbitrary line count; leave generated artifacts, data, vendored code, and large test files alone.
 3. Check dependency direction.
    - UI or CLI may depend on application/service code.
    - Application code may depend on domain code.
@@ -29,3 +30,4 @@ description: Review architecture, shared interfaces, dependency boundaries, conf
 - The proposed abstraction has no concrete caller.
 - The migration or rollback path is unknown.
 - A dependency boundary would be crossed only to make the current patch easier.
+- A split would only chase a size threshold, with no responsibility boundary behind it.

@@ -30,6 +30,11 @@
       "id": 6,
       "prompt": "Help me write a quicksort and explain its average time complexity.",
       "expected_output": "Should NOT trigger architecture-change-review; this is not an architecture, interface, dependency-boundary, or contract review task."
+    },
+    {
+      "id": 7,
+      "prompt": "This module has grown to over 4,000 lines and now mixes a dozen unrelated responsibilities. Should I split it up, and how?",
+      "expected_output": "Should trigger architecture-change-review. The result should treat this as a module-ownership and boundary concern, recommend splitting along existing responsibility seams (extract modules or functions) rather than by an arbitrary line count, leave generated artifacts, data, vendored code, and large test files alone, and stop if a split would only chase a size threshold with no responsibility boundary behind it."
     }
   ]
 }
