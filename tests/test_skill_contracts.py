@@ -209,10 +209,14 @@ class SkillContractTests(unittest.TestCase):
                 )
 
     def test_skill_descriptions_stay_third_person(self):
+        # The skill must describe itself in third person, but quoted trigger
+        # examples may quote a user's own words ("fix my bugs"), so strip
+        # quoted spans before checking the skill's own voice.
         first_second_person = re.compile(r"\b(I|I'm|I'll|my|we|We|us|our|Our|you|You|your|Your|yours)\b")
         for skill_dir in skill_dirs():
             description = read_frontmatter(skill_dir).get("description", "")
-            match = first_second_person.search(description)
+            unquoted = re.sub(r"\"[^\"]*\"|'[^']*'", "", description)
+            match = first_second_person.search(unquoted)
             self.assertIsNone(
                 match,
                 f"{skill_dir.name}: description must be third person, found '{match.group(0) if match else ''}'",

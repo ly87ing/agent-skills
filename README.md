@@ -1,45 +1,45 @@
 # agent-skills
 
-面向 Codex、Claude Code、Antigravity CLI 等 agent runtime 的开源通用 skill 集合，强调自然语言触发、闭环 workflow、可验证证据和可复用资源。
+An open-source collection of general-purpose skills for agent runtimes such as Codex, Claude Code, and Antigravity CLI, with an emphasis on natural-language triggering, closed-loop workflows, verifiable evidence, and reusable resources.
 
-## 项目定位
+## Project Scope
 
-这个仓库收集的是可直接复用的 `SKILL.md` 包，而不是零散提示词。
+This repository collects directly reusable `SKILL.md` packages, not scattered prompts.
 
-目标是把高频、易出错、需要稳定执行的工程工作流沉淀成团队可复用的 skill：
+The goal is to distill high-frequency, error-prone engineering workflows that require reliable execution into team-reusable skills:
 
-- 有清晰的触发条件
-- 有最小上下文要求
-- 有可执行的 workflow
-- 有验证与失败边界
-- 有可下沉的 `references/` 与 `scripts/`
+- with clear trigger conditions
+- with minimal context requirements
+- with an executable workflow
+- with verification and failure boundaries
+- with `references/` and `scripts/` that can be pushed down into shared resources
 
-如果一个 skill 只能回答“怎么做”，却不能稳定把任务做完、验完、报完，这类内容不属于这个仓库的目标形态。
+If a skill can only answer "how to do it" but cannot reliably get the task done, verified, and reported, that kind of content does not fit this repository's intended form.
 
-## 当前收录
+## Current Catalog
 
-| Skill | 说明 |
+| Skill | Description |
 | --- | --- |
-| [safe-merge-review](./safe-merge-review/SKILL.md) | 把“merge 成功”和“merge 正确”分开处理，强调差异建模、热点交集审查、完整性验证和 push 决策；附触发判别 evals。 |
-| [fix-ones-bug](./fix-ones-bug/SKILL.md) | 批量处理“一个负责人 × 一个迭代/版本”的 ONES 缺陷，覆盖排查、修复、回归、证据和流转。项目中立（按可发现的 project profile 接入任意 ONES 项目）；根因须有 ≥2 条独立证据交叉印证才进入修复，改动大或有风险时先停下征询用户；附触发判别 evals。 |
-| [qa-self-verify](./qa-self-verify/SKILL.md) | 在真实 QA/远端环境批量自验证已修复缺陷，采集 UI 证据并回填 ONES，不写代码。项目中立：登录方式 / 环境入口 / 前端路由源等都按项目发现，不绑定单一工程；附触发判别 evals。 |
-| [architecture-change-review](./architecture-change-review/SKILL.md) | 在修改架构、接口、依赖边界、配置 schema 或跨模块契约前做边界复核；附触发判别 evals。 |
-| [code-style-contracts](./code-style-contracts/SKILL.md) | 处理代码风格、配置、数据契约、命名、校验和注释约束，避免把规则细节塞进 always-on 上下文；附触发判别 evals。 |
-| [frontend-verification](./frontend-verification/SKILL.md) | 处理 UI、浏览器自动化、交互 HTML、响应式状态和前端验证工具选择；附触发判别 evals。 |
-| [artifact-hygiene](./artifact-hygiene/SKILL.md) | 判断生成文件、调试产物、Playwright 证据、下载件和临时脚本的放置与清理边界；附触发判别 evals。 |
-| [reader-facing-writing](./reader-facing-writing/SKILL.md) | 编写或改写面向读者的计划、报告、提案、规格、清单、Markdown 和 HTML 文档；附触发判别 evals。 |
+| [safe-merge-review](./safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
+| [fix-ones-bug](./fix-ones-bug/SKILL.md) | Batch-processes ONES defects for "one owner x one iteration/version," covering investigation, fixing, regression, evidence, and status transition. Project-neutral (connects to any ONES project via a discoverable project profile); a root cause must be cross-confirmed by >=2 independent pieces of evidence before fixing, and stops to consult the user when changes are large or risky; ships with triggering evals. |
+| [qa-self-verify](./qa-self-verify/SKILL.md) | Batch self-verifies fixed defects in a real QA/remote environment, captures UI evidence and writes it back to ONES, without writing code. Project-neutral: login method / environment entry / frontend route source are all discovered per project, not bound to a single codebase; ships with triggering evals. |
+| [architecture-change-review](./architecture-change-review/SKILL.md) | Runs a boundary review before changing architecture, interfaces, dependency boundaries, config schemas, or cross-module contracts; ships with triggering evals. |
+| [code-style-contracts](./code-style-contracts/SKILL.md) | Handles code style, config, data contract, naming, validation, and comment constraints, avoiding stuffing rule details into always-on context; ships with triggering evals. |
+| [frontend-verification](./frontend-verification/SKILL.md) | Handles UI, browser automation, interactive HTML, responsive states, and frontend verification tool selection; ships with triggering evals. |
+| [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
+| [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents; ships with triggering evals. |
 
-## 设计原则
+## Design Principles
 
-- 证据优先：不靠猜测下结论，必须说明验证方式与结果。
-- 闭环优先：从触发、上下文、执行、验证到汇报形成完整路径。
-- 共享优先：可复用规则应下沉到共享层，而不是散落在页面补丁或临时说明里。
-- 工具中立：强制真实观察效果，但不强绑某一个具体工具。
-- 项目中立：skill 不硬编码单一项目的绝对路径、仓库名、分支、内部 UUID 或凭据位置；项目专属信息靠可发现的 project profile（按需解析或问用户）注入，让同一个 skill 能跨项目复用。
-- 安全边界明确：什么时候可以自动执行，什么时候必须停下并升级，要写清楚。
-- 渐进加载：`SKILL.md` 保持精炼，细节下沉到 `references/`，脆弱步骤尽量下沉到 `scripts/`。
+- Evidence first: do not reach conclusions by guessing; the verification method and result must be stated.
+- Closed loop first: form a complete path from trigger, context, execution, and verification through to reporting.
+- Sharing first: reusable rules should be pushed down into a shared layer, not scattered across page patches or ad hoc notes.
+- Tool-neutral: enforce real observation of effects, but do not hard-bind to any one specific tool.
+- Project-neutral: skills do not hardcode a single project's absolute paths, repo names, branches, internal UUIDs, or credential locations; project-specific information is injected via a discoverable project profile (resolved on demand or by asking the user), so the same skill can be reused across projects.
+- Clear safety boundaries: spell out when it is okay to act automatically and when you must stop and escalate.
+- Progressive loading: keep `SKILL.md` concise, push details down into `references/`, and push fragile steps into `scripts/` where possible.
 
-## 仓库结构
+## Repository Structure
 
 ```text
 agent-skills/
@@ -77,78 +77,78 @@ agent-skills/
     └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ```
 
-根目录 skill 目录就是唯一真源，也是这个仓库公开维护的唯一内容层。
+The top-level skill directories are the single source of truth, and the only content layer this repository maintains publicly.
 
-每个 canonical skill 目录都应尽量自包含，通常包括：
+Each canonical skill directory should be as self-contained as possible, typically including:
 
-- `SKILL.md`：跨运行时触发条件与主 workflow，保持 open-standard 和 runtime-neutral
-- `agents/openai.yaml`：Codex/OpenAI UI 元数据与默认调用提示
-- `agents/codex.md`：Codex 工具映射、进度跟踪和验证入口的薄适配说明
-- `agents/claude.md`：Claude Code 命令、工具映射和安全注意事项的薄适配说明
-- `agents/antigravity.md`：Antigravity CLI 调用方式、进度跟踪和工具边界的薄适配说明
-- `references/`：按需加载的参考资料（单文件超过 100 行时在顶部放一份目录，保证部分读取也能看到全貌）
-- `scripts/`：适合沉淀为 deterministic helper 的脆弱步骤
-- `evals/evals.json`：触发判别与行为评估用例，正例覆盖 `description` 的触发场景、反例防误触发或确认路由到兄弟 skill
+- `SKILL.md`: cross-runtime trigger conditions and the main workflow, kept open-standard and runtime-neutral
+- `agents/openai.yaml`: Codex/OpenAI UI metadata and default invocation hints
+- `agents/codex.md`: a thin adapter note for Codex tool mapping, progress tracking, and verification entry points
+- `agents/claude.md`: a thin adapter note for Claude Code commands, tool mapping, and safety considerations
+- `agents/antigravity.md`: a thin adapter note for Antigravity CLI invocation, progress tracking, and tool boundaries
+- `references/`: reference material loaded on demand (when a single file exceeds 100 lines, put a table of contents at the top so a partial read still conveys the full picture)
+- `scripts/`: fragile steps suitable for distilling into deterministic helpers
+- `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
 
-当前 8 个 skill 均已附带 `evals/evals.json`，对齐 Anthropic「先建评估」的 skill authoring 实践。
+All 8 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
-运行时适配规则：
+Runtime adaptation rules:
 
-- `SKILL.md` 是唯一 workflow 真源；adapter 只能映射工具、调用方式和运行时安全限制。
-- Codex/OpenAI 专属配置放在 `agents/openai.yaml`，并让 `default_prompt` 显式引用 `$skill-name`。
-- Claude Code 专属调用方式、工具名、动态上下文注入限制放在 `agents/claude.md`，不写进 core。
-- Codex 专属工具习惯（如计划跟踪、本地浏览器选择、图片查看方式）放在 `agents/codex.md`，不写进 core。
-- Antigravity CLI 专属调用方式、计划 / 状态表面和工具边界放在 `agents/antigravity.md`，不写进 core。
-- adapter 不允许新增、删除或放宽 `SKILL.md` 里的验证 gate、停止条件和状态流转要求。
+- `SKILL.md` is the single source of truth for the workflow; adapters may only map tools, invocation methods, and runtime safety restrictions.
+- Codex/OpenAI-specific config goes in `agents/openai.yaml`, with `default_prompt` explicitly referencing `$skill-name`.
+- Claude Code-specific invocation methods, tool names, and dynamic context-injection restrictions go in `agents/claude.md`, not in core.
+- Codex-specific tool conventions (such as plan tracking, local browser selection, image viewing) go in `agents/codex.md`, not in core.
+- Antigravity CLI-specific invocation methods, plan / status surfaces, and tool boundaries go in `agents/antigravity.md`, not in core.
+- Adapters may not add, remove, or relax the verification gates, stop conditions, and status-transition requirements in `SKILL.md`.
 
-## 如何使用
+## How to Use
 
-你不需要采用某个固定安装器；这个仓库更强调 skill 包本身的可移植性。
+You don't need to adopt any fixed installer; this repository emphasizes the portability of the skill packages themselves.
 
-常见用法：
+Common usage:
 
-1. 选择需要的 skill 目录。
-2. 把该目录复制到你的 agent skills 路径，或作为子目录 / 子模块引入自己的仓库。
-3. 确保运行时能够发现 `SKILL.md`。
-4. 让 agent 按 skill 的自然语言触发条件调用，必要时按需读取 `references/` 或运行 `scripts/`。
+1. Pick the skill directory you need.
+2. Copy that directory into your agent skills path, or bring it into your own repo as a subdirectory / submodule.
+3. Make sure the runtime can discover `SKILL.md`.
+4. Let the agent invoke it via the skill's natural-language trigger conditions, reading `references/` or running `scripts/` on demand as needed.
 
-这个仓库本身保持 runtime-neutral，不在仓库里额外维护 Claude Code、Codex 或 Antigravity CLI 的项目级 wrapper。
-如果你要在某个具体运行时里使用这些 skill，应由消费侧把 skill 放到该运行时要求的发现路径中。
+The repository itself stays runtime-neutral and does not additionally maintain project-level wrappers for Claude Code, Codex, or Antigravity CLI.
+If you want to use these skills within a specific runtime, the consuming side should place the skill in that runtime's required discovery path.
 
-从规则体系拆出来的 skill 应只承载低频、专题化、需要按需加载的 workflow。Always-on 规则只保留触发条件、约束边界和最小协作协议；执行步骤、检查清单、失败边界和验证细节放在对应 skill 中维护。
+Skills split out of the rule system should carry only low-frequency, topic-specific workflows that need on-demand loading. Always-on rules retain only trigger conditions, constraint boundaries, and the minimal collaboration protocol; execution steps, checklists, failure boundaries, and verification details are maintained in the corresponding skill.
 
-## 适合放进这个仓库的 skill
+## Skills That Fit This Repository
 
-- 团队会重复遇到的工程工作流
-- 单靠口头说明很容易走偏的任务
-- 需要明确失败边界、升级条件和验证证据的任务
-- 能把重复步骤沉淀为 `references/` 或 `scripts/` 的任务
+- Engineering workflows the team will encounter repeatedly
+- Tasks that easily go off track if explained only verbally
+- Tasks that need clear failure boundaries, escalation conditions, and verification evidence
+- Tasks whose repeated steps can be distilled into `references/` or `scripts/`
 
-## 不适合放进这个仓库的内容
+## Content That Does Not Fit This Repository
 
-- 一次性项目说明
-- 只适用于单个仓库、且无法抽象复用的内部约定
-- 只有概念建议、没有执行闭环的长文档
-- 本来更适合做成 lint / script / CI 校验的机械规则
+- One-off project notes
+- Internal conventions that apply only to a single repo and cannot be abstracted for reuse
+- Long documents with conceptual advice but no execution closed loop
+- Mechanical rules that are better implemented as lint / script / CI checks
 
-## 贡献建议
+## Contribution Guidance
 
-- 一个 skill 一个目录，命名尽量清晰直接。
-- `SKILL.md` 只保留核心 workflow，不把 README、CHANGELOG、安装说明塞进 skill 包里。
-- 重复且脆弱的步骤优先下沉到 `scripts/`，不要一遍遍用 prose 复述。
-- 触发条件要写给真实用户请求，而不是写成抽象口号。
-- 同时适配 Claude Code、Codex 和 Antigravity CLI 时，保持 `SKILL.md` open-standard，把运行时差异收敛到 `agents/` adapter。
-- 如果 skill 面向团队重复使用，至少要能回答：
-  - 谁会用
-  - 用户会怎么触发
-  - 执行前最少要收集什么上下文
-  - 怎样证明任务真的完成
-  - 什么时候必须停止或升级
+- One skill per directory, with names as clear and direct as possible.
+- `SKILL.md` keeps only the core workflow; don't stuff README, CHANGELOG, or installation instructions into the skill package.
+- Distill repeated and fragile steps into `scripts/` first, instead of restating them over and over in prose.
+- Write trigger conditions for real user requests, not as abstract slogans.
+- When adapting to Claude Code, Codex, and Antigravity CLI at the same time, keep `SKILL.md` open-standard and converge runtime differences into the `agents/` adapters.
+- If a skill is meant for repeated team use, it should at least be able to answer:
+  - who will use it
+  - how the user will trigger it
+  - the minimum context to gather before execution
+  - how to prove the task is truly complete
+  - when to stop or escalate
 
-如果你使用 Codex 的 `skill-creator` 系工具链，建议在提交前补一次结构校验和 team audit。
+If you use Codex's `skill-creator`-family toolchain, we recommend running a structure check and a team audit before submitting.
 
-## 项目描述建议
+## Suggested Project Description
 
-适合放在 GitHub 仓库设置页的简短描述：
+A short description suitable for the GitHub repository settings page:
 
 `Open-source, team-grade skills for safe merges, rule-derived workflows, and reusable agent execution.`

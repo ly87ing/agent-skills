@@ -3,33 +3,33 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "排查这个问题时我写了个临时脚本，还 dump 了几份 JSON 到处看，这些文件放哪比较好？",
-      "expected_output": "应触发 artifact-hygiene。结果应把临时脚本和 JSON dump 归为 disposable run artifacts，放 mktemp -d / $TMPDIR / /tmp，并在完成前删除项目内的临时产物，除非用户要求保留。"
+      "prompt": "While debugging this issue I wrote a throwaway script and dumped a few JSON files all over the place to inspect them. Where should these files go?",
+      "expected_output": "Should trigger artifact-hygiene. The result should classify the throwaway script and JSON dumps as disposable run artifacts, place them in mktemp -d / $TMPDIR / /tmp, and delete the temporary artifacts inside the project before finishing, unless the user asks to keep them."
     },
     {
       "id": 2,
-      "prompt": "我刚跑了一轮 Playwright 调试，留下了 trace、视频和几张截图，要不要提交到仓库？",
-      "expected_output": "应触发 artifact-hygiene。结果应把一次性 trace/视频/截图归为 disposable，绝不放仓库根、docs/、scripts/、tests/fixtures/ 等会被提交的路径，而是放临时目录。"
+      "prompt": "I just ran a round of Playwright debugging and it left behind a trace, a video, and a few screenshots. Should I commit them to the repo?",
+      "expected_output": "Should trigger artifact-hygiene. The result should classify the one-off trace/video/screenshots as disposable, never place them in committed paths such as the repo root, docs/, scripts/, or tests/fixtures/, and instead put them in a temporary directory."
     },
     {
       "id": 3,
-      "prompt": "我们 CI 已经在用 playwright-report 和 test-results 了，这些输出该怎么放？",
-      "expected_output": "应触发 artifact-hygiene。结果应把它们识别为 workflow-consumed artifacts（仓库工作流已依赖），放进项目既有的 gitignored 输出路径，而不是当成 disposable 删掉或新建目录。"
+      "prompt": "Our CI already uses playwright-report and test-results. Where should these outputs go?",
+      "expected_output": "Should trigger artifact-hygiene. The result should identify them as workflow-consumed artifacts (already depended on by the repo's workflow), place them in the project's existing gitignored output paths, and not treat them as disposable to be deleted or create a new directory for them."
     },
     {
       "id": 4,
-      "prompt": "我想给这些调试产物在仓库里建个 debug-output/ 目录，再往 .gitignore 加一条，方便以后放，行不行？",
-      "expected_output": "应触发 artifact-hygiene。结果应按 hard boundary 拒绝：不为承载 disposable 产物而新建或拓宽 .gitignore、配置约定或仓库目录；不确定的产物按 disposable 处理，放临时目录。"
+      "prompt": "I want to create a debug-output/ directory in the repo for these debug artifacts and add a line to .gitignore so I have a place to put them in the future. Is that okay?",
+      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: do not create or widen .gitignore, config conventions, or repo directories to host disposable artifacts; treat uncertain artifacts as disposable and place them in a temporary directory."
     },
     {
       "id": 5,
-      "prompt": "帮我修一下这个登录态判断的逻辑 bug，没有要生成什么文件。",
-      "expected_output": "不应触发 artifact-hygiene；这是代码逻辑修复，不涉及生成文件、调试产物或下载件的放置与清理。"
+      "prompt": "Help me fix a logic bug in this login-state check. I'm not asking to generate any files.",
+      "expected_output": "Should NOT trigger artifact-hygiene; this is a code logic fix and does not involve placing or cleaning up generated files, debug artifacts, or downloads."
     },
     {
       "id": 6,
-      "prompt": "帮我看看这段代码的命名和注释是否规范。",
-      "expected_output": "不应触发 artifact-hygiene；这是代码风格与契约审查，不是判断生成/调试产物该放哪。"
+      "prompt": "Help me check whether the naming and comments in this code are up to standard.",
+      "expected_output": "Should NOT trigger artifact-hygiene; this is a code style and contract review, not deciding where generated/debug artifacts should go."
     }
   ]
 }

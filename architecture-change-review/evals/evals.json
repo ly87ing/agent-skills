@@ -3,33 +3,33 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "我想抽一个通用的 RequestContext 抽象出来，目前只有订单服务一个地方用，先把它建起来后面别人也能复用。",
-      "expected_output": "应触发 architecture-change-review。结果应指出当前只有单一消费者、缺少具体边界问题，按 stop condition 停下或建议先做最小本地改动，不要为“将来可能复用”提前引入抽象。"
+      "prompt": "I want to extract a generic RequestContext abstraction. Right now only the order service uses it, but let me build it first so others can reuse it later.",
+      "expected_output": "Should trigger architecture-change-review. The result should point out that there is currently only a single consumer and no concrete boundary problem, stop per the stop condition or suggest making the smallest local change first, and not introduce an abstraction up front for hypothetical future reuse."
     },
     {
       "id": 2,
-      "prompt": "这个改动要把 UserService 的公共方法签名改一下，调用方有 Web 层和几个后台任务，帮我看看怎么改安全。",
-      "expected_output": "应触发 architecture-change-review。结果应先定位 entry point、callers、owners 和生成/同步产物，判定改动是 shared/cross-module，检查依赖方向，并把契约变更（默认值、失败模式、rollback path、是否需要迁移）显式写清楚。"
+      "prompt": "This change needs to alter the signature of a public method on UserService. The callers include the web layer and a few background jobs. Help me figure out how to change it safely.",
+      "expected_output": "Should trigger architecture-change-review. The result should first locate the entry point, callers, owners, and generated/synced artifacts, determine that the change is shared/cross-module, check the dependency direction, and spell out the contract change explicitly (default values, failure modes, rollback path, whether a migration is needed)."
     },
     {
       "id": 3,
-      "prompt": "我准备把配置项 cache.ttl 的默认值从 60 改成 300，还要加个 schema 迁移，帮我评估下。",
-      "expected_output": "应触发 architecture-change-review。结果应把它当成 config/schema 契约变更，显式说明新默认值、失败模式、rollback path 以及迁移是否必需，并要求用最小测试验证边界。"
+      "prompt": "I'm about to change the default value of the config option cache.ttl from 60 to 300 and add a schema migration. Help me assess it.",
+      "expected_output": "Should trigger architecture-change-review. The result should treat this as a config/schema contract change, explicitly state the new default value, failure modes, rollback path, and whether the migration is required, and require validating the boundary with the smallest test."
     },
     {
       "id": 4,
-      "prompt": "基础设施层的这个数据库客户端，能不能直接在 domain 实体里 import 来用，省得再包一层？",
-      "expected_output": "应触发 architecture-change-review。结果应识别这是把基础设施细节泄漏进内层、违反依赖方向，建议保留 adapter 边界，并在仅为让当前补丁更省事而跨越边界时按 stop condition 停下。"
+      "prompt": "Can this database client from the infrastructure layer just be imported and used directly inside the domain entities, so we don't have to add another wrapper?",
+      "expected_output": "Should trigger architecture-change-review. The result should recognize this as leaking an infrastructure detail into an inner layer and violating the dependency direction, recommend keeping the adapter boundary, and stop per the stop condition when the only reason for crossing the boundary is to make the current patch easier."
     },
     {
       "id": 5,
-      "prompt": "这个函数内部有个 off-by-one 的小 bug，帮我在原地修一下，不动任何接口。",
-      "expected_output": "不应触发 architecture-change-review；这是不涉及边界、接口、依赖方向或契约的本地实现修复。"
+      "prompt": "There's a small off-by-one bug inside this function. Help me fix it in place without touching any interfaces.",
+      "expected_output": "Should NOT trigger architecture-change-review; this is a local implementation fix that does not involve boundaries, interfaces, dependency direction, or contracts."
     },
     {
       "id": 6,
-      "prompt": "帮我写一个快速排序并解释下平均时间复杂度。",
-      "expected_output": "不应触发 architecture-change-review；这不是架构、接口、依赖边界或契约审查任务。"
+      "prompt": "Help me write a quicksort and explain its average time complexity.",
+      "expected_output": "Should NOT trigger architecture-change-review; this is not an architecture, interface, dependency-boundary, or contract review task."
     }
   ]
 }

@@ -3,43 +3,43 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "帮我把 origin/feature/tenant-migration 合到当前分支，并确认有没有漏掉初始化链路和配置回写。",
-      "expected_output": "应触发 safe-merge-review。结果应先锁定 source ref 和当前分支，建模 merge base、left/right counts、incoming commits 和热点文件，再给出完整性证明、最小相关验证和 push 决策。"
+      "prompt": "Help me merge origin/feature/tenant-migration into the current branch, and confirm whether the initialization chain and config write-back were missed.",
+      "expected_output": "Should trigger safe-merge-review. The result should first lock down the source ref and the current branch, model the merge base, left/right counts, incoming commits, and hotspot files, then provide a completeness proof, the minimal relevant verification, and a push decision."
     },
     {
       "id": 2,
-      "prompt": "这个 merge commit 我不放心，帮我复核是不是 Git 合上了但逻辑其实拼错了，尤其是 deploy 配置和 schema 变更。",
-      "expected_output": "应触发 safe-merge-review。结果应把任务识别为已完成 merge 的审计，而不是直接再次 merge；应重建预期差异，检查 deploy 配置、schema、共享边界，并输出 Green/Yellow/Red 结论。"
+      "prompt": "I'm not confident about this merge commit; help me review whether Git merged it but the logic is actually wired up wrong, especially the deploy config and schema changes.",
+      "expected_output": "Should trigger safe-merge-review. The result should recognize the task as auditing a completed merge, not directly merging again; it should reconstruct the expected diff, check the deploy config, schema, and shared boundaries, and produce a Green/Yellow/Red conclusion."
     },
     {
       "id": 3,
-      "prompt": "这几个仓的 release 分支都要合一下，帮我逐仓确认哪些仓真的有 incoming commits，哪些仓其实已经包含了。",
-      "expected_output": "应触发 safe-merge-review。结果应把请求识别为多仓联动 merge，逐仓输出证据，而不是用一句统一口径覆盖所有仓。"
+      "prompt": "The release branches in these repos all need merging; help me confirm per repo which repos genuinely have incoming commits and which repos already include them.",
+      "expected_output": "Should trigger safe-merge-review. The result should recognize the request as a multi-repo coordinated merge and output evidence per repo, rather than covering all repos with a single unified statement."
     },
     {
       "id": 4,
-      "prompt": "这个冲突文件你帮我看下该保留 ours 还是 theirs，解完以后到底能不能 push？",
-      "expected_output": "应触发 safe-merge-review。结果应要求查看 base、ours、theirs 三方证据，解释冲突保留方案，并在完整性证明和最小相关验证后才给 push 建议。"
+      "prompt": "For this conflicted file, help me decide whether to keep ours or theirs, and after resolving it can I actually push?",
+      "expected_output": "Should trigger safe-merge-review. The result should require looking at the base, ours, theirs three-way evidence, explain the conflict resolution, and give a push recommendation only after a completeness proof and the minimal relevant verification."
     },
     {
       "id": 5,
-      "prompt": "帮我写一个 Python merge sort，并顺手解释一下时间复杂度。",
-      "expected_output": "不应触发 safe-merge-review；这不是分支合并、merge 审计或冲突复核任务。"
+      "prompt": "Help me write a Python merge sort, and explain the time complexity while you're at it.",
+      "expected_output": "Should not trigger safe-merge-review; this is not a branch merge, merge audit, or conflict review task."
     },
     {
       "id": 6,
-      "prompt": "我用 squash merge 把 feature/payment 合进来了，帮我验证改动是否真的完整落地，别用 is-ancestor。",
-      "expected_output": "应触发 safe-merge-review。结果应识别为 squash merge 审计，使用 patch-equivalent 或 tree-diff 方法验证完整性，并在证据中标注 proof-method，不使用 is-ancestor。"
+      "prompt": "I used a squash merge to bring feature/payment in; help me verify whether the changes really landed completely, and don't use is-ancestor.",
+      "expected_output": "Should trigger safe-merge-review. The result should recognize this as a squash merge audit, use the patch-equivalent or tree-diff method to verify completeness, and annotate proof-method in the evidence, without using is-ancestor."
     },
     {
       "id": 7,
-      "prompt": "当前有未提交改动，帮我把 origin/hotfix/db-lock 合进来。",
-      "expected_output": "应触发 safe-merge-review。结果应检测到 dirty worktree，停止或升级确认，说明风险并要求用户先处理未提交改动，而不是直接执行 merge。"
+      "prompt": "There are uncommitted changes right now; help me merge origin/hotfix/db-lock in.",
+      "expected_output": "Should trigger safe-merge-review. The result should detect the dirty worktree, stop or escalate for confirmation, state the risk, and require the user to handle the uncommitted changes first, rather than directly running the merge."
     },
     {
       "id": 8,
-      "prompt": "帮我把那个分支合一下，就是最近那条线。",
-      "expected_output": "应触发 safe-merge-review。结果应拒绝猜测来源 ref，要求用户明确提供分支名或 remote ref，不能用模糊描述直接开始 merge。"
+      "prompt": "Help me merge that branch, you know, the most recent line.",
+      "expected_output": "Should trigger safe-merge-review. The result should refuse to guess the source ref, require the user to explicitly provide a branch name or remote ref, and not start the merge directly from a vague description."
     }
   ]
 }

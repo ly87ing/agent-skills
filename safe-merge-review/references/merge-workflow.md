@@ -1,21 +1,21 @@
 # Merge Workflow
 
-## 目录
+## Table of Contents
 
-- 1. 仓库范围与工作区洁净度
-- 2. 锁定 ref 与获取最新状态
-- 3. 差异建模与 patch-equivalent 检查
-- 4. 热点交集文件识别
-- 5. merge 策略矩阵
-- 6. 冲突处理
-- 7. 合并完整性验证
-- 8. 最小相关验证与 push 决策
+- 1. Repo scope and worktree cleanliness
+- 2. Lock down the ref and fetch the latest state
+- 3. Diff modeling and patch-equivalent check
+- 4. Hotspot-overlap file identification
+- 5. Merge strategy matrix
+- 6. Conflict handling
+- 7. Merge completeness verification
+- 8. Minimal relevant verification and push decision
 
-## 1. 仓库范围与工作区洁净度
+## 1. Repo scope and worktree cleanliness
 
-单仓时，先确认当前目录确实是 git 仓库。多仓时，先识别本次请求覆盖哪些 repo，再逐仓执行同一流程。
+For a single repo, first confirm the current directory really is a git repo. For multiple repos, first identify which repos this request covers, then run the same flow per repo.
 
-基础命令：
+Basic commands:
 
 ```bash
 git status --short --branch
@@ -23,25 +23,25 @@ git branch --show-current
 git remote -v
 ```
 
-dirty worktree 处理原则：
+Dirty-worktree handling principles:
 
-- `status` 干净：继续。
-- `status` 不干净且与本次 merge 相关：默认停止，先和用户确认隔离策略。
-- `status` 不干净但看起来无关：仍然先说明风险，再决定是否继续。
-- 不要静默 stash、reset、checkout 覆盖用户原有改动。
+- `status` clean: continue.
+- `status` not clean and related to this merge: stop by default, and confirm an isolation strategy with the user first.
+- `status` not clean but seemingly unrelated: still state the risk first, then decide whether to continue.
+- Do not silently stash, reset, or checkout over the user's existing changes.
 
-如果需要判断 dirty 内容是否与 merge 相关，先看：
+If you need to judge whether the dirty content is related to the merge, first look at:
 
 ```bash
 git diff --stat
 git diff --cached --stat
 ```
 
-## 2. 锁定 ref 与获取最新状态
+## 2. Lock down the ref and fetch the latest state
 
-不要使用模糊描述，例如“最新 master”或“远程那条线”。先把精确 ref 锁定出来。
+Do not use vague descriptions such as "the latest master" or "that remote line". Lock down the precise ref first.
 
-常见命令：
+Common commands:
 
 ```bash
 git fetch origin <source-branch>
@@ -50,62 +50,62 @@ git rev-parse <source-ref>
 git rev-parse --abbrev-ref HEAD
 ```
 
-如果请求是“把远程分支合到当前分支”，通常要先做：
+If the request is "merge the remote branch into the current branch", you usually first run:
 
 ```bash
 git fetch origin <source-branch>
 ```
 
-然后用 `origin/<source-branch>` 作为来源 ref，而不是本地过期分支名。
+Then use `origin/<source-branch>` as the source ref, rather than a stale local branch name.
 
-## 3. 差异建模与 patch-equivalent 检查
+## 3. Diff modeling and patch-equivalent check
 
 ### 3.1 merge base
 
-先求公共祖先：
+First find the common ancestor:
 
 ```bash
 git merge-base HEAD <source-ref>
 ```
 
-这个结果决定后续所有“谁领先、谁落后、哪些文件重叠”的判断基准。
+This result is the baseline for all subsequent judgments of "who is ahead, who is behind, which files overlap".
 
-### 3.2 左右独有提交数
+### 3.2 Left/right exclusive commit counts
 
 ```bash
 git rev-list --left-right --count HEAD...<source-ref>
 ```
 
-解释：
+Explanation:
 
-- 左列：当前分支相对来源分支独有的提交数
-- 右列：来源分支相对当前分支独有的提交数
+- Left column: the number of commits exclusive to the current branch relative to the source branch
+- Right column: the number of commits exclusive to the source branch relative to the current branch
 
 ### 3.3 incoming commits
 
-先看来源分支真正新增了哪些提交：
+First see which commits the source branch genuinely added:
 
 ```bash
 git log --oneline HEAD..<source-ref>
 ```
 
-再看两边补丁是否其实已等价存在：
+Then check whether the two sides' patches already exist equivalently:
 
 ```bash
 git log --oneline --left-right --cherry-pick --no-merges HEAD...<source-ref>
 ```
 
-当来源分支经历过 rebase、squash 或改写历史时，再补：
+When the source branch has been through rebase, squash, or history rewrite, additionally run:
 
 ```bash
 git range-diff "$(git merge-base HEAD <source-ref>)"..HEAD "$(git merge-base HEAD <source-ref>)"..<source-ref>
 ```
 
-只有做过 patch-equivalent 检查后，才把“提交不存在”解释成“真的没合进去”。
+Only after running the patch-equivalent check may you interpret "the commit does not exist" as "it was really not merged in".
 
-## 4. 热点交集文件识别
+## 4. Hotspot-overlap file identification
 
-先分别列出双方自 merge base 以来的改动文件：
+First list, for each side separately, the files changed since the merge base:
 
 ```bash
 BASE=$(git merge-base HEAD <source-ref>)
@@ -113,9 +113,9 @@ git diff --name-only "$BASE"..HEAD
 git diff --name-only "$BASE"..<source-ref>
 ```
 
-再求交集，重点审查双方都改过的文件。
+Then take the intersection, and focus on the files both sides changed.
 
-如果 shell 环境允许，可用：
+If the shell environment allows, you can use:
 
 ```bash
 BASE=$(git merge-base HEAD <source-ref>)
@@ -124,63 +124,63 @@ git diff --name-only "$BASE"..<source-ref> | sort -u > /tmp/source.files
 comm -12 /tmp/current.files /tmp/source.files
 ```
 
-优先审查以下交集：
+Prioritize reviewing the following overlaps:
 
-- 共享 service / util / adapter
-- controller 与 API contract
-- 配置、schema、迁移、初始化逻辑
-- build、packaging、deploy、CI 脚本
-- 测试和测试夹具
-- 生成物与其源文件
+- Shared service / util / adapter
+- controller and API contract
+- Config, schema, migration, initialization logic
+- build, packaging, deploy, CI scripts
+- Tests and test fixtures
+- Generated artifacts and their source files
 
-## 5. Merge 策略矩阵
+## 5. Merge strategy matrix
 
-### 5.1 来源已完全包含于当前分支
+### 5.1 The source is already fully included in the current branch
 
-如果：
+If:
 
 ```bash
 git merge-base --is-ancestor <source-ref> HEAD
 ```
 
-返回成功，说明来源已经被包含。不要再执行 merge；直接报告 `Already contained / up to date`。
+returns success, the source is already included. Do not run a merge; report `Already contained / up to date` directly.
 
-### 5.2 当前分支是来源分支祖先
+### 5.2 The current branch is an ancestor of the source branch
 
-如果：
+If:
 
 ```bash
 git merge-base --is-ancestor HEAD <source-ref>
 ```
 
-返回成功，说明这是 fast-forward 候选。
+returns success, this is a fast-forward candidate.
 
-推荐流程：
+Recommended flow:
 
-1. 先完成 incoming commits、文件清单和语义审查。
-2. 再根据仓库历史策略二选一：
+1. First complete incoming commits, the file list, and the semantic review.
+2. Then choose one of two based on the repo's history strategy:
 
 ```bash
 git merge --ff-only <source-ref>
 ```
 
-或
+or
 
 ```bash
 git merge --no-ff --no-commit <source-ref>
 ```
 
-如果需要保留明确 merge 证据或先看 staged 结果，优先第二种。
+If you need to preserve explicit merge evidence or inspect the staged result first, prefer the second.
 
-### 5.3 真正的非平凡 merge
+### 5.3 A genuinely non-trivial merge
 
-默认先用：
+By default first use:
 
 ```bash
 git merge --no-ff --no-commit <source-ref>
 ```
 
-先检查 staged 结果：
+First inspect the staged result:
 
 ```bash
 git diff --cached --stat
@@ -188,20 +188,20 @@ git diff --cached --name-only
 git diff --cached
 ```
 
-确认结果正确后，再创建最终 merge commit。
+After confirming the result is correct, create the final merge commit.
 
-不要把 `git merge --no-edit <source-ref>` 当成默认路径，除非你已经证明这是低风险、低歧义的 trivial merge。
+Do not treat `git merge --no-edit <source-ref>` as the default path, unless you have already proven this is a low-risk, low-ambiguity trivial merge.
 
-## 6. 冲突处理
+## 6. Conflict handling
 
-出现冲突时，先定位文件：
+When a conflict occurs, first locate the files:
 
 ```bash
 git diff --name-only --diff-filter=U
 git ls-files -u
 ```
 
-再分别看三方内容：
+Then look at the three-way content separately:
 
 ```bash
 git show :1:path/to/file
@@ -209,73 +209,73 @@ git show :2:path/to/file
 git show :3:path/to/file
 ```
 
-含义：
+Meaning:
 
 - `:1:` base
 - `:2:` ours
 - `:3:` theirs
 
-冲突处理规则：
+Conflict-handling rules:
 
-- 先说明 base 上原来是什么。
-- 再说明当前分支改了什么。
-- 再说明来源分支改了什么。
-- 最终结果必须能解释为什么保留、合并或舍弃某一侧逻辑。
+- First state what was originally in base.
+- Then state what the current branch changed.
+- Then state what the source branch changed.
+- The final result must be able to explain why one side's logic was preserved, merged, or discarded.
 
-在解决后，额外检查：
+After resolving, additionally check:
 
 ```bash
 git diff --check
 ```
 
-用于发现残留 conflict marker、空白错误等问题。
+This finds residual conflict markers, whitespace errors, and similar issues.
 
-## 7. 合并完整性验证
+## 7. Merge completeness verification
 
-在真正宣称“已合并”前，至少给出以下证据。
+Before genuinely claiming "merged", provide at least the following evidence.
 
-### 7.1 merge commit 或合并结果快照
+### 7.1 Merge commit or merge-result snapshot
 
-如果已提交 merge commit：
+If the merge commit is already committed:
 
 ```bash
 git show --no-patch --pretty=raw HEAD
 git show --stat --oneline -1
 ```
 
-如果还是 `--no-commit` 状态：
+If still in the `--no-commit` state:
 
 ```bash
 git diff --cached --stat
 git diff --cached --name-only
 ```
 
-### 7.2 来源 ref 已被包含
+### 7.2 The source ref is included
 
 ```bash
 git merge-base --is-ancestor <source-ref> HEAD
 ```
 
-必须成功。
+Must succeed.
 
-### 7.3 不存在剩余 incoming commits
+### 7.3 No remaining incoming commits
 
 ```bash
 git log --oneline HEAD..<source-ref>
 ```
 
-必须为空。
+Must be empty.
 
-### 7.4 实际落地文件与预期文件对齐
+### 7.4 Actually-landed files align with expected files
 
-至少查看：
+At least look at:
 
 ```bash
 git diff --stat HEAD^1 HEAD
 git diff --name-only HEAD^1 HEAD
 ```
 
-或对 fast-forward merge 保存前置提交：
+Or, for a fast-forward merge, save the pre-merge commit:
 
 ```bash
 PRE_MERGE_HEAD=$(git rev-parse HEAD)
@@ -284,15 +284,15 @@ git diff --stat "$PRE_MERGE_HEAD"..HEAD
 git diff --name-only "$PRE_MERGE_HEAD"..HEAD
 ```
 
-如果是多仓 merge，要逐仓做这一步。
+For a multi-repo merge, do this step per repo.
 
-### 7.5 squash merge 完整性验证
+### 7.5 Squash merge completeness verification
 
-`git merge-base --is-ancestor` 对 squash merge 不适用，因为原始提交不是 HEAD 的祖先。需要替代证明路径。
+`git merge-base --is-ancestor` does not apply to a squash merge, because the original commits are not ancestors of HEAD. An alternative proof path is needed.
 
-**方法一：patch-equivalent 检查**
+**Method 1: patch-equivalent check**
 
-验证来源分支的所有改动是否已等价存在于当前分支：
+Verify whether all of the source branch's changes already exist equivalently in the current branch:
 
 ```bash
 BASE=$(git merge-base HEAD <source-ref>)
@@ -300,17 +300,17 @@ git diff "$BASE"..<source-ref> > /tmp/source.patch
 git diff "$BASE"..HEAD > /tmp/current.patch
 ```
 
-如果 source.patch 的所有 hunk 都已包含在 current.patch 中，说明改动已被等价合入。
+If all hunks of source.patch are already contained in current.patch, the changes have been merged in equivalently.
 
-更精确的方法是逐文件比较最终状态：
+A more precise approach is to compare the final state file by file:
 
 ```bash
 git diff HEAD <source-ref> -- <hotspot-files>
 ```
 
-如果热点文件的 diff 为空或只包含当前分支独有的后续改动，说明来源改动已落地。
+If the diff of the hotspot files is empty or only contains follow-up changes exclusive to the current branch, the source changes have landed.
 
-**方法二：cherry-pick --no-commit 空操作检查**
+**Method 2: cherry-pick --no-commit no-op check**
 
 ```bash
 git stash
@@ -320,42 +320,42 @@ git cherry-pick --abort
 git stash pop
 ```
 
-如果 cherry-pick 后 staged 区为空或只有冲突（因为改动已存在），说明内容已被包含。
+If, after the cherry-pick, the staged area is empty or has only conflicts (because the changes already exist), the content is already included.
 
-**方法三：tree-level diff**
+**Method 3: tree-level diff**
 
-直接比较来源分支与当前分支在关键路径上的最终文件状态：
+Directly compare the final file state of the source branch and the current branch on the key paths:
 
 ```bash
 git diff HEAD <source-ref> --stat
 ```
 
-逐文件确认：差异仅来自当前分支的后续演进，而非来源分支遗漏。
+Confirm file by file: the differences come only from the current branch's subsequent evolution, not from omissions on the source branch.
 
-squash merge 场景的判定规则：
+Verdict rules for the squash merge scenario:
 
-- 不能用 `is-ancestor` 作为唯一完整性证据
-- 必须至少使用上述方法之一，并在证据矩阵中标注 `proof-method: patch-equivalent` 或 `proof-method: tree-diff`
-- 如果来源分支在 squash 后仍有新提交，必须重新检查而不是沿用旧结论
+- You cannot use `is-ancestor` as the sole completeness evidence
+- You must use at least one of the above methods, and annotate `proof-method: patch-equivalent` or `proof-method: tree-diff` in the evidence matrix
+- If the source branch still has new commits after the squash, you must recheck rather than reuse the old conclusion
 
-## 8. 最小相关验证与 push 决策
+## 8. Minimal relevant verification and push decision
 
-根据实际改动选择最小但真实可失败的验证：
+Based on the actual changes, choose a minimal but genuinely-failable verification:
 
-- Java 代码：`compileJava`、相关单测、模块测试
-- 前端代码：相关测试、构建、局部 smoke
-- 配置/脚本：执行对应检查或 dry-run
-- 多仓联动：逐仓验证，再给总结果
+- Java code: `compileJava`, relevant unit tests, module tests
+- Frontend code: relevant tests, build, local smoke
+- Config/scripts: run the corresponding check or dry-run
+- Multi-repo coordination: verify per repo, then give an overall result
 
-验证后，再看一次：
+After verifying, look once more:
 
 ```bash
 git status --short --branch
 ```
 
-只有在以下条件同时满足时，才可建议或执行 push：
+Only when all of the following conditions hold simultaneously may you suggest or perform a push:
 
-- 来源 ref 已完整包含
-- merge 后语义复查通过
-- 最小相关验证通过
-- 用户要求 push，或仓库流程明确要求继续 push
+- The source ref is fully included
+- The post-merge semantic re-review passes
+- The minimal relevant verification passes
+- The user requested a push, or the repo process explicitly requires continuing to push

@@ -3,33 +3,33 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "这份 30 页的技术方案太长了，帮我压成两页给评审会，但别把关键结构搞丢。",
-      "expected_output": "应触发 reader-facing-writing。结果应先锁定读者与决策、开门见山，压缩时保留来源框架（改写一层而非删层），不确定的术语/数字/名称沿用原文，未知值标 TBD 或删去，不臆造。"
+      "prompt": "This 30-page technical proposal is too long. Help me compress it to two pages for the review meeting, but don't lose the key structure.",
+      "expected_output": "Should trigger reader-facing-writing. The result should first lock in the reader and the decision, lead with the conclusion, preserve the source framework when compressing (rewrite one layer rather than dropping layers), keep uncertain terms/numbers/names verbatim from the source, mark unknown values as TBD or omit them, and not fabricate."
     },
     {
       "id": 2,
-      "prompt": "帮我给老板写一份是否上这个项目的决策简报。",
-      "expected_output": "应触发 reader-facing-writing。结果应先确定读者要做的决策、把要点放在最前，按扫描式结构组织，措辞平实、术语一致，并以目标读者视角复核。"
+      "prompt": "Help me write a decision brief for my boss on whether to take on this project.",
+      "expected_output": "Should trigger reader-facing-writing. The result should first determine the decision the reader needs to make, put the key points up front, organize it in a scannable structure, use plain wording and consistent terminology, and review it from the target reader's perspective."
     },
     {
       "id": 3,
-      "prompt": "把这次迭代的待办整理成带时间和完成标准的行动计划。",
-      "expected_output": "应触发 reader-facing-writing。结果应为每个行动项给出时间（已承诺用绝对日期，否则用具体周/阶段）和完成标准，且不得把未来/期望状态写成当前状态。"
+      "prompt": "Turn this iteration's to-do items into an action plan with timing and completion criteria.",
+      "expected_output": "Should trigger reader-facing-writing. The result should give each action item a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion, and must not state a future/desired state as the current state."
     },
     {
       "id": 4,
-      "prompt": "帮我做一页交互式 HTML 看板，把这些指标和趋势讲清楚发给团队。",
-      "expected_output": "应触发 reader-facing-writing。结果应用可缩放可读字号、足够对比度、兼容 200% 缩放，先定 online/offline 依赖，每条流程用一个规范图示，并在声明完成前验证渲染结果。"
+      "prompt": "Help me make a one-page interactive HTML dashboard that clearly conveys these metrics and trends, to send to the team.",
+      "expected_output": "Should trigger reader-facing-writing. The result should use scalable, readable font sizes, sufficient contrast, and compatibility with 200% zoom, decide the online/offline dependency first, use one canonical diagram per flow, and verify the rendered result before declaring it done."
     },
     {
       "id": 5,
-      "prompt": "帮我把这个数据处理函数重构得更清晰一点。",
-      "expected_output": "不应触发 reader-facing-writing；这是改代码，不是写给人读的文档、计划或报告。"
+      "prompt": "Help me refactor this data-processing function to be a bit cleaner.",
+      "expected_output": "Should NOT trigger reader-facing-writing; this is changing code, not writing a human-readable document, plan, or report."
     },
     {
       "id": 6,
-      "prompt": "帮我用浏览器把这个已经上线的下单流程点一遍，确认没坏。",
-      "expected_output": "不应触发 reader-facing-writing；这是对既有 UI 的浏览器验证任务，属于前端验证，而非撰写或改写面向读者的文档。"
+      "prompt": "Help me use the browser to click through this already-live checkout flow and confirm it isn't broken.",
+      "expected_output": "Should NOT trigger reader-facing-writing; this is a browser-verification task on an existing UI, which falls under frontend verification rather than writing or revising a reader-facing document."
     }
   ]
 }

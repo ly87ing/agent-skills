@@ -3,33 +3,33 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "我改了下单页的校验逻辑，想加个能进 CI、可复现的检查，确认空购物车不能提交。",
-      "expected_output": "应触发 frontend-verification。结果应先定义 UI surface 与用户可见成功标准，按意图选择 Playwright 做可复现断言和回归覆盖，而不是只做一次性人工查看。"
+      "prompt": "I changed the validation logic on the checkout page and want to add a reproducible check that can run in CI to confirm an empty cart cannot be submitted.",
+      "expected_output": "Should trigger frontend-verification. The result should first define the UI surface and the user-visible success criteria, then choose Playwright for reproducible assertions and regression coverage to match the intent, rather than only doing a one-off manual look."
     },
     {
       "id": 2,
-      "prompt": "这个页面首屏有点卡，帮我一次性看看布局抖动和 Core Web Vitals，不用写测试。",
-      "expected_output": "应触发 frontend-verification。结果应选择 Chrome DevTools 做一次性视觉/布局诊断、性能 trace 和 Core Web Vitals，明确这是 ad hoc investigation，不把它当成持久回归覆盖。"
+      "prompt": "This page's initial render feels a bit janky. Help me take a one-off look at the layout shift and Core Web Vitals; no need to write tests.",
+      "expected_output": "Should trigger frontend-verification. The result should choose Chrome DevTools for a one-off visual/layout diagnosis, performance trace, and Core Web Vitals, making clear this is an ad hoc investigation and not treating it as persistent regression coverage."
     },
     {
       "id": 3,
-      "prompt": "帮我用浏览器登录后台、进到订单详情页把状态截图存证，注意我已经有登录态了。",
-      "expected_output": "应触发 frontend-verification。结果应使用 session-aware 浏览器并刻意保留已认证上下文，不假设全新隔离浏览器自带 cookie/profile/权限；若浏览器无法启动或附着，应先报告工具失败再考虑回退。"
+      "prompt": "Help me use the browser to log into the admin panel, go to the order detail page, and screenshot the status as evidence. Note that I already have a logged-in session.",
+      "expected_output": "Should trigger frontend-verification. The result should use a session-aware browser and deliberately preserve the authenticated context, not assume a fresh isolated browser comes with cookies/profile/permissions; if the browser cannot start or attach, it should report the tool failure first before considering a fallback."
     },
     {
       "id": 4,
-      "prompt": "我做了个交互式 HTML 看板要发给团队，帮我确认能正常用。",
-      "expected_output": "应触发 frontend-verification。结果应加载渲染后的产物，检查 console 报错、关键元素与交互、可缩放文本、命中区域、modal/focus 可访问性，并留一张规范截图；同时按运行环境匹配 online/offline 依赖策略。"
+      "prompt": "I built an interactive HTML dashboard to send to the team. Help me confirm it works properly.",
+      "expected_output": "Should trigger frontend-verification. The result should load the rendered artifact, check for console errors, key elements and interactions, scalable text, hit areas, and modal/focus accessibility, and capture a canonical screenshot; it should also match the online/offline dependency strategy to the runtime environment."
     },
     {
       "id": 5,
-      "prompt": "帮我优化这条只跑在后端的 SQL 聚合查询的性能，没有任何前端改动。",
-      "expected_output": "不应触发 frontend-verification；这是纯后端/数据层改动，不涉及 UI、浏览器或可渲染产物。"
+      "prompt": "Help me optimize the performance of this backend-only SQL aggregation query; there are no frontend changes at all.",
+      "expected_output": "Should NOT trigger frontend-verification; this is a pure backend/data-layer change that does not involve UI, the browser, or any renderable artifact."
     },
     {
       "id": 6,
-      "prompt": "帮我把这次迭代的进展写成一份纯文字的项目周报。",
-      "expected_output": "不应触发 frontend-verification；这是面向读者的纯文字写作，没有需要在浏览器中验证的 UI 或 HTML 交付物。"
+      "prompt": "Help me write a plain-text weekly project report on this iteration's progress.",
+      "expected_output": "Should NOT trigger frontend-verification; this is reader-facing plain-text writing with no UI or HTML deliverable that needs verification in a browser."
     }
   ]
 }
