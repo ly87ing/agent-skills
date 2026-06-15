@@ -80,6 +80,10 @@ class SkillContractTests(unittest.TestCase):
             self.assertEqual(name, skill_dir.name)
             self.assertRegex(name, r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
             self.assertLessEqual(len(name), 64)
+            # Open-standard naming rule: names may not contain the reserved
+            # words "anthropic" or "claude".
+            for reserved_word in ("anthropic", "claude"):
+                self.assertNotIn(reserved_word, name, name)
             self.assertGreaterEqual(len(description), 40, name)
             self.assertLessEqual(len(description), 1024, name)
             self.assertNotIn("TODO", (skill_dir / "SKILL.md").read_text(encoding="utf-8"), name)
