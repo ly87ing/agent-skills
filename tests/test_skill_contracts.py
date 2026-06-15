@@ -40,6 +40,9 @@ FORBIDDEN_CORE_RUNTIME_TERMS = {
     "Read 工具",
     "update_plan",
 }
+# CJK punctuation + kana + ideographs + fullwidth forms. Skill content must
+# stay all-English; embed any CJK literal a script needs as a \u escape.
+CJK_PATTERN = re.compile(r"[\u3000-\u303f\u3040-\u30ff\u4e00-\u9fff\uff00-\uffef]")
 
 
 def skill_dirs() -> list[Path]:
@@ -203,9 +206,10 @@ class SkillContractTests(unittest.TestCase):
                 if len(lines) <= 100:
                     continue
                 head = "\n".join(lines[:12])
-                self.assertTrue(
-                    "目录" in head or "Table of Contents" in head,
-                    f"{skill_dir.name}/references/{reference_path.name} (>100 lines) needs a top-of-file TOC",
+                self.assertIn(
+                    "Table of Contents",
+                    head,
+                    f"{skill_dir.name}/references/{reference_path.name} (>100 lines) needs a top-of-file Table of Contents",
                 )
 
     def test_skill_descriptions_stay_third_person(self):
@@ -221,6 +225,29 @@ class SkillContractTests(unittest.TestCase):
                 match,
                 f"{skill_dir.name}: description must be third person, found '{match.group(0) if match else ''}'",
             )
+
+    def test_skill_content_is_english_only(self):
+        text_suffixes = {".md", ".json", ".yaml", ".yml"}
+        targets = []
+        for skill_dir in skill_dirs():
+            targets.extend(
+                path
+                for path in sorted(skill_dir.rglob("*"))
+                if path.is_file() and path.suffix in text_suffixes and "__pycache__" not in path.parts
+            )
+        readme = ROOT / "README.md"
+        if readme.exists():
+            targets.append(readme)
+
+        for path in targets:
+            text = path.read_text(encoding="utf-8")
+            match = CJK_PATTERN.search(text)
+            if match:
+                line_no = text[: match.start()].count("\n") + 1
+                raise AssertionError(
+                    f"{path.relative_to(ROOT)}:{line_no} contains non-English character "
+                    f"{match.group(0)!r}; skill content and README must be all English"
+                )
 
     def test_runtime_adapters_are_thin_and_core_referenced(self):
         for skill_dir in skill_dirs():
