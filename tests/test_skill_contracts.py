@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -169,6 +170,53 @@ class SkillContractTests(unittest.TestCase):
             self.assertLessEqual(len(short_description.group(1)), 64, skill_dir.name)
             self.assertRegex(metadata, r'(?m)^\s+default_prompt: ".+"$', skill_dir.name)
             self.assertIn(f"${skill_dir.name}", metadata)
+
+    def test_every_skill_has_well_formed_trigger_evals(self):
+        for skill_dir in skill_dirs():
+            evals_path = skill_dir / "evals" / "evals.json"
+            self.assertTrue(evals_path.exists(), f"{skill_dir.name}/evals/evals.json missing")
+            try:
+                payload = json.loads(evals_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                raise AssertionError(f"{skill_dir.name}: evals.json is not valid JSON: {exc}")
+
+            self.assertIsInstance(payload, dict, skill_dir.name)
+            self.assertEqual(payload.get("skill_name"), skill_dir.name, skill_dir.name)
+
+            cases = payload.get("evals")
+            self.assertIsInstance(cases, list, skill_dir.name)
+            self.assertGreaterEqual(len(cases), 3, skill_dir.name)
+            for index, case in enumerate(cases):
+                self.assertTrue(str(case.get("prompt", "")).strip(), f"{skill_dir.name}#{index} empty prompt")
+                self.assertTrue(
+                    str(case.get("expected_output", "")).strip(),
+                    f"{skill_dir.name}#{index} empty expected_output",
+                )
+
+    def test_long_reference_files_start_with_a_table_of_contents(self):
+        for skill_dir in skill_dirs():
+            references_dir = skill_dir / "references"
+            if not references_dir.exists():
+                continue
+            for reference_path in sorted(references_dir.glob("*.md")):
+                lines = reference_path.read_text(encoding="utf-8").splitlines()
+                if len(lines) <= 100:
+                    continue
+                head = "\n".join(lines[:12])
+                self.assertTrue(
+                    "目录" in head or "Table of Contents" in head,
+                    f"{skill_dir.name}/references/{reference_path.name} (>100 lines) needs a top-of-file TOC",
+                )
+
+    def test_skill_descriptions_stay_third_person(self):
+        first_second_person = re.compile(r"\b(I|I'm|I'll|my|we|We|us|our|Our|you|You|your|Your|yours)\b")
+        for skill_dir in skill_dirs():
+            description = read_frontmatter(skill_dir).get("description", "")
+            match = first_second_person.search(description)
+            self.assertIsNone(
+                match,
+                f"{skill_dir.name}: description must be third person, found '{match.group(0) if match else ''}'",
+            )
 
     def test_runtime_adapters_are_thin_and_core_referenced(self):
         for skill_dir in skill_dirs():
