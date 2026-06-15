@@ -88,6 +88,42 @@ class SkillContractTests(unittest.TestCase):
             self.assertLessEqual(len(description), 1024, name)
             self.assertNotIn("TODO", (skill_dir / "SKILL.md").read_text(encoding="utf-8"), name)
 
+    def test_skill_frontmatter_parses_as_yaml(self):
+        # The naive line-split reader above tolerates frontmatter that real
+        # YAML parsers (Codex, Claude Code, skills-ref) reject — e.g. an
+        # unquoted scalar containing ": " (colon-space). Validate with a real
+        # parser so a broken description can't ship and silently fail to load.
+        try:
+            import yaml
+        except ImportError:
+            yaml = None
+
+        for skill_dir in skill_dirs():
+            text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            match = re.match(r"^---\n(.*?)\n---", text, re.DOTALL)
+            self.assertIsNotNone(match, f"{skill_dir.name}: missing frontmatter")
+            block = match.group(1)
+
+            if yaml is not None:
+                try:
+                    data = yaml.safe_load(block)
+                except yaml.YAMLError as exc:
+                    raise AssertionError(f"{skill_dir.name}: SKILL.md frontmatter is not valid YAML: {exc}")
+                self.assertIsInstance(data, dict, skill_dir.name)
+                self.assertEqual(data.get("name"), skill_dir.name, skill_dir.name)
+                self.assertTrue(str(data.get("description", "")).strip(), skill_dir.name)
+            else:
+                # Dependency-free fallback: an unquoted plain scalar value must
+                # not contain ": " or " #", which break YAML parsing.
+                for line in block.splitlines():
+                    if ":" not in line:
+                        continue
+                    key, value = line.split(":", 1)
+                    value = value.strip()
+                    if value and value[0] not in "\"'":
+                        self.assertNotIn(": ", value, f"{skill_dir.name}: unquoted '{key.strip()}' breaks YAML")
+                        self.assertNotIn(" #", value, f"{skill_dir.name}: unquoted '{key.strip()}' breaks YAML")
+
     def test_skill_bodies_are_runtime_neutral(self):
         for skill_dir in skill_dirs():
             skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
