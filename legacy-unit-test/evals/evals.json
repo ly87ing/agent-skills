@@ -50,6 +50,21 @@
       "id": 10,
       "prompt": "Add unit tests for this billing logic even though it depends on current time, random IDs, a database, and an HTTP pricing service.",
       "expected_output": "Should trigger legacy-unit-test. The result should treat uncontrolled time, randomness, database, and network calls as unit-test risks; use existing seams or fakes when available; otherwise document the needed seam and stop for approval before changing production code."
+    },
+    {
+      "id": 11,
+      "prompt": "Use AI to generate the missing tests, and if they pass, count them toward the customer coverage target.",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should require generated tests to compile, run, reach real target logic, include meaningful assertions, and preferably fail under a safe negative-control or mutation check before counting them as meaningful coverage."
+    },
+    {
+      "id": 12,
+      "prompt": "The risky behavior is mostly an API contract between our service and another team. Add unit tests and mark the risk solved.",
+      "expected_output": "Should trigger legacy-unit-test but must not overclaim. The result should split unit-testable business logic from contract or integration gaps, record the cross-service gap separately, and avoid counting contract/E2E coverage as unit-test progress."
+    },
+    {
+      "id": 13,
+      "prompt": "Our only test command starts a database and browser, but the customer asked for unit coverage. Just use that coverage report.",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should classify this as integration or E2E evidence, document the missing unit-test command split, and avoid presenting infrastructure-backed coverage as meaningful unit-test coverage."
     }
   ]
 }

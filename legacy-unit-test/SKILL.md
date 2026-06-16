@@ -1,6 +1,6 @@
 ---
 name: legacy-unit-test
-description: Adds meaningful characterization unit tests to low-coverage legacy code without changing production behavior. Use when a project needs test seeding before refactoring, customer-defined coverage progress, a risk map, a coverage map, or guardrails against low-value coverage padding, over-mocking, flaky unit tests, or unsafe snapshot approval.
+description: Adds meaningful characterization unit tests to low-coverage legacy code without changing production behavior. Use when a project needs test seeding before refactoring, customer-defined coverage progress, a risk map, a coverage map, or guardrails against low-value coverage padding, weak AI-generated tests, over-mocking, flaky unit tests, unsafe snapshot approval, or conflated unit/integration coverage.
 ---
 
 # Legacy Unit Test
@@ -14,6 +14,7 @@ Build a safe unit-test seed for a legacy repository:
 - production behavior stays unchanged
 - customer coverage targets remain configurable, not hardcoded
 - gaps, suspicious behavior, and verification evidence are recorded
+- unit, integration, contract, smoke, and E2E evidence are not conflated
 
 ## Hard Boundaries
 
@@ -27,6 +28,8 @@ Build a safe unit-test seed for a legacy repository:
 - Stop before adding dependencies, changing CI, changing build scripts, or introducing production-code test seams.
 - Do not approve or mass-update snapshots without human review of the changed behavior.
 - Do not use test reruns, quarantine, skip, xfail, or broad retries as a substitute for fixing nondeterminism.
+- Do not count integration, contract, smoke, or E2E tests as unit-test coverage progress.
+- Do not trust AI-generated tests until they compile, run, assert behavior, and can fail for a meaningful behavioral mismatch.
 
 ## Required Outputs
 
@@ -73,6 +76,11 @@ Defer:
 
 Write target reasoning, public entry points, dependencies, suggested cases, and priority into `docs/testing/risk-map.md`.
 
+If a target's risk crosses a service, message, API, database, browser, or external-system boundary, split it into:
+
+- unit-testable business behavior for this batch
+- contract, integration, smoke, or E2E gaps to record but not solve in the unit-test batch
+
 ### 3. Add the smallest test support
 
 Prefer the repository's existing test framework and local conventions.
@@ -93,6 +101,8 @@ Requires approval first:
 - public API, schema, or runtime config changes
 
 If code is hard to test because it directly reads time, randomness, environment, global state, files, databases, or network services, document the needed seam and stop for approval instead of changing production code inside the test-seeding task.
+
+Keep unit, integration, contract, smoke, and E2E commands separate when the repository supports that split. If the repository does not have this split, document the current limitation in `docs/testing/current-baseline.md`.
 
 ### 4. Write characterization tests
 
@@ -131,6 +141,13 @@ Keep each test clear:
 
 Good unit tests must be fast, isolated, repeatable, and self-checking. If a test needs real infrastructure, real network, real external services, uncontrolled wall-clock time, uncontrolled randomness, or cross-test ordering, classify it as integration or smoke coverage instead of counting it as meaningful unit-test coverage.
 
+For AI-generated tests, add a quality gate before accepting them:
+
+- verify the test fails for the intended reason when the observed behavior is intentionally mismatched, when this can be done safely by changing only the test or by using an available mutation tool
+- verify the test executes the real target path, not only setup code or mocks
+- remove generated tests that are syntactically invalid, unreachable, redundant, or only assert framework mechanics
+- keep only tests whose failure would indicate a behavior change worth investigating
+
 If behavior looks wrong, record it in `docs/testing/suspicious-behavior.md` with:
 
 - observed behavior
@@ -151,6 +168,7 @@ When capturing output:
 - Keep approved output small enough for a human to review.
 - Explain what business behavior the approved output represents.
 - Treat snapshot updates as behavior-review events, not mechanical coverage maintenance.
+- Do not auto-update snapshots in CI or bulk-update every failing snapshot.
 - Do not store secrets, real customer data, tokens, internal hostnames, or environment-specific identifiers in approved outputs.
 
 If a snapshot diff is large or unclear, replace it with focused assertions or split the output into smaller reviewable approvals.
@@ -187,8 +205,11 @@ When the customer requires a repository-wide target, still report:
 
 - overall coverage
 - meaningful coverage for core modules
+- coverage by test type when available
 - uncovered high-risk branches
 - low-value coverage that should not be counted as progress
+
+Record unit-test gaps that require other test layers, such as provider/consumer contracts, database integration, browser flows, or deployed-environment smoke checks. Do not present those gaps as solved by unit tests.
 
 ### 7. Verify the batch
 
@@ -202,10 +223,13 @@ Before reporting done, run a pitfall check:
 - no test asserts only `not null`, object construction, or mock calls without behavior
 - no test reproduces production logic to calculate the expected value
 - no broad snapshot was added without a stable printer or human-reviewable output
+- no snapshot was auto-updated or bulk-approved without review
 - no real network, external service, database, uncontrolled time, uncontrolled randomness, or order dependency is required for unit tests
 - no existing failing test was skipped, deleted, weakened, or quarantined
 - no coverage target was hardcoded
 - no suspicious behavior was fixed inside the test-seeding task
+- each accepted AI-generated test compiles, runs, reaches the target logic, and has an assertion that can fail
+- integration, contract, smoke, and E2E gaps are recorded separately from unit-test coverage
 
 ## Batch Discipline
 
