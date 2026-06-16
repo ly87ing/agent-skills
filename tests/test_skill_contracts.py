@@ -13,6 +13,7 @@ MAINTAINED_SKILLS = {
     "code-style-contracts",
     "fix-ones-bug",
     "frontend-verification",
+    "legacy-unit-test",
     "qa-self-verify",
     "reader-facing-writing",
     "safe-merge-review",

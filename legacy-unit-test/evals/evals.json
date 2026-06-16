@@ -1,0 +1,40 @@
+{
+  "skill_name": "legacy-unit-test",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This legacy service has almost no tests, and the customer requires a coverage target before any refactor. Help me seed meaningful unit tests without changing production behavior.",
+      "expected_output": "Should trigger legacy-unit-test. The result should treat the customer coverage target as a parameter, freeze the current baseline, build a risk map, choose high-risk business logic first, add characterization tests, avoid production-code behavior changes, and verify with relevant test and coverage commands."
+    },
+    {
+      "id": 2,
+      "prompt": "Before refactoring the payment workflow, add tests that lock the current behavior, including boundary and error cases, but do not fix suspicious behavior yet.",
+      "expected_output": "Should trigger legacy-unit-test. The result should prioritize payment workflow risk, write characterization tests against real public logic, cover normal, boundary, branch, dependency-failure, and error behavior where relevant, and record suspicious behavior instead of fixing it."
+    },
+    {
+      "id": 3,
+      "prompt": "Our codebase has no useful unit-test baseline. First generate a risk map and coverage map, then start with the highest-risk service modules.",
+      "expected_output": "Should trigger legacy-unit-test. The result should create or update current-baseline, risk-map, and coverage-map documents, choose targets by business risk rather than easy coverage, and work in a small batch of 1 to 3 high-risk modules."
+    },
+    {
+      "id": 4,
+      "prompt": "Use goal mode to keep working until the first batch of legacy characterization tests is done, but stop if adding dependencies or changing CI is needed.",
+      "expected_output": "Should trigger legacy-unit-test. The result should formulate a measurable batch goal with transcript-visible evidence, keep scope small, require real assertions, run tests and coverage, update testing docs, and stop for approval before dependencies, CI, build scripts, or production-code seams."
+    },
+    {
+      "id": 5,
+      "prompt": "The coverage number is low. Just add tests for all the DTO constructors and getters so the report looks better.",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should reject low-value coverage padding, explain that trivial DTOs, getters, setters, and simple CRUD do not count as meaningful coverage, and redirect to core service/domain behavior."
+    },
+    {
+      "id": 6,
+      "prompt": "Help me redesign the module boundaries and introduce a new repository interface before we write tests.",
+      "expected_output": "Should NOT trigger legacy-unit-test as the primary skill; this is an architecture and dependency-boundary review. It may later be followed by legacy-unit-test after the design decision is approved."
+    },
+    {
+      "id": 7,
+      "prompt": "Write a short customer-facing test strategy document summarizing why unit tests matter for the next release.",
+      "expected_output": "Should NOT trigger legacy-unit-test as the primary skill; this is reader-facing writing rather than executing a unit-test seeding workflow."
+    }
+  ]
+}

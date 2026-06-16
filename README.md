@@ -26,6 +26,7 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | [architecture-change-review](./architecture-change-review/SKILL.md) | Runs a boundary review before changing architecture, interfaces, dependency boundaries, config schemas, or cross-module contracts; ships with triggering evals. |
 | [code-style-contracts](./code-style-contracts/SKILL.md) | Handles code style, config, data contract, naming, validation, and comment constraints, avoiding stuffing rule details into always-on context; ships with triggering evals. |
 | [frontend-verification](./frontend-verification/SKILL.md) | Handles UI, browser automation, interactive HTML, responsive states, and frontend verification tool selection; ships with triggering evals. |
+| [legacy-unit-test](./legacy-unit-test/SKILL.md) | Seeds meaningful characterization unit tests for low-coverage legacy code before refactoring, with risk maps, coverage maps, customer-defined coverage targets, and production-behavior guardrails; ships with triggering evals. |
 | [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents; ships with triggering evals. |
 
@@ -69,6 +70,9 @@ agent-skills/
 ├── frontend-verification/
 │   ├── SKILL.md
 │   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+├── legacy-unit-test/
+│   ├── SKILL.md
+│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 ├── artifact-hygiene/
 │   ├── SKILL.md
 │   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -90,7 +94,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
 
-All 8 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All 9 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 Runtime adaptation rules:
 
