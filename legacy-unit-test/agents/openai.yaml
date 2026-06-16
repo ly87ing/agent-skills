@@ -1,4 +1,4 @@
 interface:
   display_name: "Legacy Unit Test"
-  short_description: "Seed meaningful tests for legacy code"
-  default_prompt: "Use $legacy-unit-test to seed meaningful characterization tests for legacy code without changing production behavior."
+  short_description: "Seed safe legacy characterization tests"
+  default_prompt: "Use $legacy-unit-test to seed meaningful characterization tests for legacy code without changing production behavior or adding low-value coverage."

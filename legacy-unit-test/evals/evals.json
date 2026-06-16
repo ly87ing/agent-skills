@@ -35,6 +35,21 @@
       "id": 7,
       "prompt": "Write a short customer-facing test strategy document summarizing why unit tests matter for the next release.",
       "expected_output": "Should NOT trigger legacy-unit-test as the primary skill; this is reader-facing writing rather than executing a unit-test seeding workflow."
+    },
+    {
+      "id": 8,
+      "prompt": "The easiest way to cover this legacy report generator is to snapshot the whole JSON response and update the snapshot whenever it changes.",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should allow approval or snapshot tests only with stable, human-reviewable output; require normalization of volatile data; reject mechanical mass snapshot updates; and prefer focused assertions when they are clearer."
+    },
+    {
+      "id": 9,
+      "prompt": "This service is hard to instantiate, so mock every collaborator and just verify all the mocks were called in the expected order.",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should warn against over-mocking and brittle interaction tests, prefer public-entry-point state or output assertions, and verify mock interactions only when the interaction is the business contract."
+    },
+    {
+      "id": 10,
+      "prompt": "Add unit tests for this billing logic even though it depends on current time, random IDs, a database, and an HTTP pricing service.",
+      "expected_output": "Should trigger legacy-unit-test. The result should treat uncontrolled time, randomness, database, and network calls as unit-test risks; use existing seams or fakes when available; otherwise document the needed seam and stop for approval before changing production code."
     }
   ]
 }
