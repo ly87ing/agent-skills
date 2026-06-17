@@ -34,7 +34,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 - Make content legibility the bar; keep decorative styling secondary, and use color only when it encodes meaning (category, severity, diff), not as ornament.
 - Match the visual to its information density: never spend a large diagram on a few facts — pick the most compact form that stays legible.
-- Auto-layout diagrams (e.g. Mermaid) render differently per tool (label width, fonts, security mode), so long or CJK-heavy labels can clip — prefer a table for such labels, keep diagram labels short, and render once to confirm nothing is cut before embedding.
+- Auto-layout diagrams (e.g. Mermaid) render differently per tool (label width, fonts, rendering mode), so long or CJK-heavy labels can clip — prefer a table for such labels, keep diagram labels short, and render once to confirm nothing is cut before embedding.
 
 ## HTML And Interactive Documents
 
