@@ -17,7 +17,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 3. Write for scanning.
    - Lead every section, paragraph, and item with its takeaway.
    - Keep peer items parallel, with the same fields in the same order.
-   - Prefer lists for long sentences and diagrams for process flows.
+   - Prefer lists for long sentences and tables for dense or relational data; reserve diagrams for genuine process flows.
    - Put one fact in one place and cross-reference instead of repeating.
 4. Keep the prose plain.
    - Use active voice, specific verbs, one idea per sentence, and no marketing filler.
@@ -29,6 +29,12 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 6. Revise before done.
    - Re-read as the target reader.
    - Cut redundancy, verify facts, and confirm each section starts with its point.
+
+## Sizing And Verifying Visuals
+
+- Judge a visual by whether its content reads clearly; color and decoration are secondary.
+- Match the visual to its information density: never spend a large diagram on a few facts — pick the most compact form that stays legible.
+- Auto-layout diagrams (e.g. Mermaid) clip long or CJK-heavy labels in some renderers — keep labels short or use a table, and render once to confirm nothing is cut before embedding.
 
 ## HTML And Interactive Documents
 
