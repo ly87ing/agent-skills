@@ -1,6 +1,6 @@
 ---
 name: frontend-verification
-description: Validate frontend outcomes, browser automation, UI flows, accessibility-relevant states, interactive HTML, dashboards, decks, and reader-facing web artifacts. Use when deciding or proving the verification strategy for UI behavior, browser evidence, DevTools diagnosis, authenticated flows, responsive layouts, or HTML deliverables. For detailed Playwright test implementation or flake debugging, use playwright-best-practices instead.
+description: Validate frontend outcomes, browser automation, UI flows, accessibility-relevant states, interactive HTML, dashboards, decks, and reader-facing web artifacts. Use when deciding or proving the verification strategy for UI behavior, browser evidence, DevTools diagnosis, authenticated flows, responsive layouts, or HTML deliverables. For detailed Playwright test implementation or flake debugging, use playwright-best-practices when that skill is available; otherwise follow the project's native Playwright guidance.
 ---
 
 # Frontend Verification
@@ -14,7 +14,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Use Playwright for reproducible assertions, regression coverage, route/network mocking, and CI-stable automation.
    - Use Chrome DevTools for one-off visual inspection, layout/scroll diagnosis, performance traces, Core Web Vitals, request waterfalls, cache/timing analysis, memory, and low-level WebSocket inspection.
    - Use a session-aware browser when the task needs navigation, auth, forms, scraping, or profile/session reuse.
-   - Use `playwright-best-practices` for detailed Playwright test architecture, locator design, fixture setup, flaky-test debugging, or test implementation patterns.
+   - Use `playwright-best-practices` when it is available for detailed Playwright test architecture, locator design, fixture setup, flaky-test debugging, or test implementation patterns; otherwise follow the project's existing Playwright conventions.
 3. Preserve authenticated context deliberately.
    - Do not assume a fresh isolated browser has the required cookies, profile, or permissions.
    - If a browser tool cannot start, connect, or attach, report that tool failure before falling back.
