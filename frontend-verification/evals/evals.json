@@ -23,11 +23,16 @@
     },
     {
       "id": 5,
+      "prompt": "Help me design a Playwright page object model, choose locators, set up fixtures, and debug a flaky timeout in an existing spec.",
+      "expected_output": "Should NOT trigger frontend-verification as the primary skill; this is detailed Playwright test implementation and flake debugging, which should route to playwright-best-practices unless the request also needs UI evidence or a broader verification-strategy decision."
+    },
+    {
+      "id": 6,
       "prompt": "Help me optimize the performance of this backend-only SQL aggregation query; there are no frontend changes at all.",
       "expected_output": "Should NOT trigger frontend-verification; this is a pure backend/data-layer change that does not involve UI, the browser, or any renderable artifact."
     },
     {
-      "id": 6,
+      "id": 7,
       "prompt": "Help me write a plain-text weekly project report on this iteration's progress.",
       "expected_output": "Should NOT trigger frontend-verification; this is reader-facing plain-text writing with no UI or HTML deliverable that needs verification in a browser."
     }
