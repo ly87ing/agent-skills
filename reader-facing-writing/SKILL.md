@@ -10,6 +10,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 1. Fix the reader and decision.
    - State scope and the key point up front.
    - Match depth, terminology, and format to what the reader must decide or do.
+   - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
 2. Preserve source truth.
    - Keep the source framework when condensing; reword a layer, do not delete it.
    - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
@@ -19,15 +20,17 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Keep peer items parallel, with the same fields in the same order.
    - Prefer lists for long sentences and tables for dense or relational data; reserve diagrams for genuine process flows.
    - Put one fact in one place and cross-reference instead of repeating.
+   - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps addressed per reader — name the owner, and the deadline where it applies.
 4. Keep the prose plain.
    - Use active voice, specific verbs, one idea per sentence, and no marketing filler.
-   - Define terms once and use them consistently.
+   - Calibrate terms to the reader: define what they won't know, don't explain terms they already use, and use each term consistently.
+   - Keep each example or aside no heavier than the point it makes.
    - Do not narrate the document itself.
 5. For plans and action items, include time and done criteria.
    - Use an absolute date when committed; otherwise use a concrete week or phase.
    - Never present future or aspirational state as current.
 6. Revise before done.
-   - Re-read as the target reader.
+   - Re-read as the target reader, reading it aloud to catch stiff or unnatural phrasing.
    - Cut redundancy, verify facts, and confirm each section starts with its point.
 
 ## Sizing And Verifying Visuals

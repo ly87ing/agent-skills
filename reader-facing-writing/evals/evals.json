@@ -30,6 +30,11 @@
       "id": 6,
       "prompt": "Help me use the browser to click through this already-live checkout flow and confirm it isn't broken.",
       "expected_output": "Should NOT trigger reader-facing-writing; this is a browser-verification task on an existing UI, which falls under frontend verification rather than writing or revising a reader-facing document."
+    },
+    {
+      "id": 7,
+      "prompt": "I'm running a big team meeting to sync several changes at once — a new way of working plus a couple of quality and process asks. Help me write the briefing doc so people actually take it in.",
+      "expected_output": "Should trigger reader-facing-writing. The result should open with an agenda of the topics it covers, expand each topic in its own section, and close with next steps addressed per reader (who needs to do or watch what). It should pitch detail to the purpose, leading with what changes for the reader rather than implementation mechanics, keep the terms the audience already uses instead of over-explaining them, and read naturally rather than stiffly."
     }
   ]
 }
