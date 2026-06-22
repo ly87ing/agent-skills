@@ -19,7 +19,7 @@
     {
       "id": 4,
       "prompt": "Help me make a one-page interactive HTML dashboard that clearly conveys these metrics and trends, to send to the team.",
-      "expected_output": "Should trigger reader-facing-writing. The result should use scalable, readable font sizes, sufficient contrast, and compatibility with 200% zoom, decide the online/offline dependency first, use one canonical diagram per flow, and verify the rendered result before declaring it done."
+      "expected_output": "Should trigger reader-facing-writing. The result should title each visual with its takeaway, encode values by position or length and keep charts honest (zero baselines), not rely on color alone (pair it with labels or shapes), meet contrast minimums (4.5:1 body, 3:1 large text and chart elements), stay readable at 200% zoom and at a 320px width without horizontal scrolling, decide the online/offline dependency first, and verify the rendered result before declaring it done."
     },
     {
       "id": 5,

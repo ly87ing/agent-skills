@@ -36,15 +36,21 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Re-read as the target reader, reading it aloud to catch stiff or unnatural phrasing.
    - Cut redundancy, verify facts, and confirm each section starts with its point.
 
-## Sizing And Verifying Visuals
+## Designing And Verifying Visuals
 
 - Make content legibility the bar; keep decorative styling secondary, and use color only when it encodes meaning (category, severity, diff), not as ornament.
+- When color carries meaning, pair it with a label, shape, or pattern so it reads without color.
 - Match the visual to its information density: never spend a large diagram on a few facts — pick the most compact form that stays legible.
+- Encode values by position or length before angle, area, or color; avoid pie, 3D, and dual-axis charts.
+- Start bar and area baselines at zero, and keep visual magnitude proportional to the data.
+- Title each visual with its takeaway, and label series directly instead of relying on a legend.
 - Auto-layout diagrams (e.g. Mermaid) render differently per tool (label width, fonts, rendering mode), so long or CJK-heavy labels can clip — prefer a table for such labels, keep diagram labels short, and render once to confirm nothing is cut before embedding.
 
 ## HTML And Interactive Documents
 
-- Use readable scalable type, adequate contrast, and 200% zoom compatibility.
+- Use readable scalable type that stays usable at 200% zoom.
+- Meet contrast minimums: 4.5:1 for body text, 3:1 for large text and chart elements.
+- Keep content readable at a 320px width without horizontal scrolling.
 - Decide online/offline dependencies before building.
 - Surface click-triggered details where the reader is looking.
 - Use one canonical visual per flow.
