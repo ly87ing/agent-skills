@@ -9,6 +9,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 1. Fix the reader and decision.
    - State scope and the key point up front.
+   - Give just enough context and the trigger for why this matters now before the detail.
    - Match depth, terminology, and format to what the reader must decide or do.
    - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
 2. Preserve source truth.
@@ -16,17 +17,19 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
    - Mark unknown values as TBD or cut them; do not invent to look complete.
 3. Write for scanning.
-   - Lead every section, paragraph, and item with its takeaway.
-   - Keep peer items parallel, with the same fields in the same order.
+   - Lead every section, paragraph, and item with its takeaway, and make that takeaway truly summarize what sits beneath it.
+   - Keep peer items parallel, with the same fields in the same order, and sequence the items on one explicit logic — time, structure, or descending importance.
    - Prefer lists for long sentences and tables for dense or relational data; reserve diagrams for genuine process flows.
    - Put one fact in one place and cross-reference instead of repeating.
-   - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps addressed per reader — name the owner, and the deadline where it applies.
+   - When you split a topic into parts, make them non-overlapping and collectively complete — flag any gap or leftover "other".
+   - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps per reader written as action items (step 5).
 4. Keep the prose plain.
    - Use active voice, specific verbs, one idea per sentence, and no marketing filler.
    - Calibrate terms to the reader: define what they won't know, don't explain terms they already use, and use each term consistently.
    - Keep each example or aside no heavier than the point it makes.
    - Do not narrate the document itself.
 5. For plans and action items, include time and done criteria.
+   - Give every action item a single owner, a concrete verb-first action, and a due date.
    - Use an absolute date when committed; otherwise use a concrete week or phase.
    - Never present future or aspirational state as current.
 6. Revise before done.

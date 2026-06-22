@@ -14,7 +14,7 @@
     {
       "id": 3,
       "prompt": "Turn this iteration's to-do items into an action plan with timing and completion criteria.",
-      "expected_output": "Should trigger reader-facing-writing. The result should give each action item a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion, and must not state a future/desired state as the current state."
+      "expected_output": "Should trigger reader-facing-writing. The result should give each action item a single owner and a verb-first action, plus a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion, and must not state a future/desired state as the current state."
     },
     {
       "id": 4,
