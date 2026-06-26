@@ -1,0 +1,30 @@
+{
+  "skill_name": "ones-manhour-fill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fill June 18 manhours for my ONES parent task #592151 from these daily chat notes, distribute it as one workday across the child tasks, and verify the final total.",
+      "expected_output": "Should trigger ones-manhour-fill. The run should confirm the current ONES identity, fetch the parent and actual subtasks, query existing records for the date, build a small add-only allocation that totals 800000 units, write only missing records, and read back the same date to prove the final total."
+    },
+    {
+      "id": 2,
+      "prompt": "Backfill 0.5 day of ONES worklog under this parent task URL; split the summary between project support and meeting sync child tasks.",
+      "expected_output": "Should trigger ones-manhour-fill. The run should use the user-provided target total rather than assuming a full day, validate the selected subtasks are children of the parent, and verify post-write total units for the target date."
+    },
+    {
+      "id": 3,
+      "prompt": "I already have some ONES manhours on that date; complete the day under the same parent without changing existing records.",
+      "expected_output": "Should trigger ones-manhour-fill. The run should query existing owner/date records first, add only the missing gap when safe, and refuse to update or delete old records without explicit correction intent."
+    },
+    {
+      "id": 4,
+      "prompt": "Fix all my New defects in sprint 0626, add tests, upload evidence, and transition them to QA.",
+      "expected_output": "Should NOT trigger ones-manhour-fill; batch defect fixing should use fix-ones-bug or qa-self-verify depending on whether code changes are still needed."
+    },
+    {
+      "id": 5,
+      "prompt": "Just show me how many ONES worklog hours I recorded this week; do not write anything.",
+      "expected_output": "Should NOT trigger ones-manhour-fill; pure manhour querying should use the ONES connector directly."
+    }
+  ]
+}

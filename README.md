@@ -23,6 +23,7 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | [safe-merge-review](./safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
 | [fix-ones-bug](./fix-ones-bug/SKILL.md) | Batch-processes ONES defects for "one owner x one iteration/version," covering investigation, fixing, regression, evidence, and status transition. Project-neutral (connects to any ONES project via a discoverable project profile); a root cause must be cross-confirmed by >=2 independent pieces of evidence before fixing, and stops to consult the user when changes are large or risky; ships with triggering evals. |
 | [qa-self-verify](./qa-self-verify/SKILL.md) | Batch self-verifies fixed defects in a real QA/remote environment, captures UI evidence and writes it back to ONES, without writing code. Project-neutral: login method / environment entry / frontend route source are all discovered per project, not bound to a single codebase; ships with triggering evals. |
+| [ones-manhour-fill](./ones-manhour-fill/SKILL.md) | Fills ONES daily manhour records from a work summary into a parent task's actual subtasks, with existing-record checks, add-only writes, allocation normalization, and post-write verification; ships with triggering evals. |
 | [architecture-change-review](./architecture-change-review/SKILL.md) | Runs a boundary review before changing architecture, interfaces, dependency boundaries, config schemas, or cross-module contracts; ships with triggering evals. |
 | [code-style-contracts](./code-style-contracts/SKILL.md) | Handles code style, config, data contract, naming, validation, and comment constraints, avoiding stuffing rule details into always-on context; ships with triggering evals. |
 | [frontend-verification](./frontend-verification/SKILL.md) | Handles UI, browser automation, interactive HTML, responsive states, and frontend verification tool selection; ships with triggering evals. |
@@ -61,6 +62,11 @@ agent-skills/
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   ├── references/
 │   └── scripts/
+├── ones-manhour-fill/
+│   ├── SKILL.md
+│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   ├── evals/
+│   └── scripts/
 ├── architecture-change-review/
 │   ├── SKILL.md
 │   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -94,7 +100,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
 
-All 9 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All 10 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 Runtime adaptation rules:
 

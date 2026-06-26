@@ -14,6 +14,7 @@ MAINTAINED_SKILLS = {
     "fix-ones-bug",
     "frontend-verification",
     "legacy-unit-test",
+    "ones-manhour-fill",
     "qa-self-verify",
     "reader-facing-writing",
     "safe-merge-review",
