@@ -12,6 +12,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Give just enough context and the trigger for why this matters now before the detail.
    - Match depth, terminology, and format to what the reader must decide or do.
    - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
+   - For a large restructure or subjective rewrite where the user has not specified the target tone, structure, or ordering, show a compact target outline or 2-3 concrete options before executing. For small edits or explicit user directions, proceed directly and preserve choices already made.
 2. Preserve source truth.
    - Keep the source framework when condensing; reword a layer, do not delete it.
    - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
@@ -35,6 +36,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 6. Revise before done.
    - Re-read as the target reader, reading it aloud to catch stiff or unnatural phrasing.
    - Cut redundancy, verify facts, and confirm each section starts with its point.
+   - When you change a value that recurs — a name, number, date, owner, or cross-reference — search the whole document for every occurrence and stale pointer (counts, "task N", "see above/below", section labels) before declaring done.
 
 ## Designing And Verifying Visuals
 
@@ -55,3 +57,4 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - Surface click-triggered details where the reader is looking.
 - Use one canonical visual per flow.
 - Verify the rendered result before declaring completion.
+- When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
