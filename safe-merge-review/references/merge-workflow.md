@@ -103,6 +103,24 @@ git range-diff "$(git merge-base HEAD <source-ref>)"..HEAD "$(git merge-base HEA
 
 Only after running the patch-equivalent check may you interpret "the commit does not exist" as "it was really not merged in".
 
+### 3.4 Parallel baseline lines: same fix, different commit
+
+On products that cut independent per-version / per-customer baseline branches, the same logical change is frequently merged into each line by a **different commit with a different issue id** (each line raises its own ticket). Consequences:
+
+- `git merge-base --is-ancestor <specific-sha> <branch>` returns false even though the content is present.
+- Searching by the original commit id or issue number finds nothing on the other line.
+- The lines may share no merge base at all (`git merge-base` empty), so ancestry checks are meaningless.
+
+Therefore, to decide "does branch X contain fix Y", compare the **actual file content / patch**, not the commit graph:
+
+```bash
+git show <branch>:<path-to-file> | grep -n "<the fix's distinguishing content>"
+# or diff the final state on the changed paths against a known-fixed ref:
+git diff <branch> <known-fixed-ref> -- <path>
+```
+
+Only conclude "not fixed on this line" when the content is genuinely absent. To port the fix, do not blindly `cherry-pick <sha>` — the target line may not even carry the same file/baseline; confirm the target's structure first.
+
 ## 4. Hotspot-overlap file identification
 
 First list, for each side separately, the files changed since the merge base:

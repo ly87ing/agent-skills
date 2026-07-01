@@ -15,6 +15,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Use Chrome DevTools for one-off visual inspection, layout/scroll diagnosis, performance traces, Core Web Vitals, request waterfalls, cache/timing analysis, memory, and low-level WebSocket inspection.
    - Use a session-aware browser when the task needs navigation, auth, forms, scraping, or profile/session reuse.
    - Use `playwright-best-practices` when it is available for detailed Playwright test architecture, locator design, fixture setup, flaky-test debugging, or test implementation patterns; otherwise follow the project's existing Playwright conventions.
+   - Before hand-rolling authentication, captcha-solving, or a login flow in the browser tool, search the project for an existing login/verification harness or helper and reuse it. Projects that need browser verification often already ship a tested one (zero-touch auth entry, slider/image-captcha solver, MFA/TOTP), and reinventing it in DevTools or by vision is brittle and wastes turns. Hand-drive the browser only when the project genuinely has no such helper.
 3. Preserve authenticated context deliberately.
    - Do not assume a fresh isolated browser has the required cookies, profile, or permissions.
    - If a browser tool cannot start, connect, or attach, report that tool failure before falling back.
@@ -30,4 +31,5 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
 - The page cannot be reached in the right auth or permission state.
 - The screenshot or browser state does not match the claimed user flow.
 - A one-off visual check is being used as proof of durable regression coverage.
+- A login or captcha flow is being hand-implemented in the browser tool while the project already ships a login/verification helper for it.
 - The task is only about writing or debugging Playwright test code, with no UI evidence or verification-strategy decision to make.

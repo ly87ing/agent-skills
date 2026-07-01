@@ -77,6 +77,7 @@ Load references on demand instead of cramming every detail into the main flow:
 
 1. Stabilize the worktree.
    - First check `git status --short --branch`
+   - Confirm the actual branch and worktree with `git rev-parse --abbrev-ref HEAD` + `git worktree list`; do not rely on a shell prompt or statusline (it can be stale or wrong). When the user named a target branch or worktree, assert HEAD matches it before editing or pushing — if it does not, stop and correct, rather than acting on the wrong line.
    - A dirty worktree is not merged directly by default; first state the risk, then decide whether to continue
 2. Lock down the source and target refs.
    - Clarify the current branch, source ref, target ref, and remote
@@ -121,6 +122,7 @@ Load references on demand instead of cramming every detail into the main flow:
 2. Reconstruct the expected diff.
    - Recompute the merge base, incoming commits, file sets, and hotspot overlap
    - Do not equate "there is no diff now" with "it was merged correctly back then"
+   - On parallel/independent baseline lines, the same logical change often lands via a **different commit and issue id** on each line; `is-ancestor <sha>`, a commit-id search, and an issue-number search can all report "missing" while the content is actually present. Judge "does this branch contain the fix" by the **file content / patch**, not the commit graph or issue id (see [references/merge-workflow.md](references/merge-workflow.md) section 3.4).
 3. Check completeness and semantics.
    - Cross-check the source ref, the landed files, and the final code
    - Focus on the post-merge error patterns in [references/merge-review-checklist.md](references/merge-review-checklist.md)
