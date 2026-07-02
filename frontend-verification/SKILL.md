@@ -24,7 +24,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
 5. Verify interactive HTML before done.
    - Use scalable text, adequate hit areas, accessible modal/focus behavior, and one canonical visual per flow.
    - Match online/offline dependency strategy to where the artifact will run.
-   - Load the rendered output, check console errors, key elements, interactions, and a screenshot.
+   - Load the rendered output; check console errors, key elements, and interactions; and capture a screenshot.
 
 ## Stop Conditions
 
