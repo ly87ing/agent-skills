@@ -30,11 +30,22 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents; ships with triggering evals. |
 
+## Companion Skills and Prerequisites
+
+Most skills here are self-contained. The ONES-facing trio is not fully standalone: it drives an external issue tracker through a companion connector this repository does not ship.
+
+- `fix-ones-bug`, `qa-self-verify`, and `ones-manhour-fill` expect a project-local `ones` skill / connector in the runtime for reading and writing ONES work items. They fall back to raw HTTP templates (`fix-ones-bug/references/ones-api.md`, `qa-self-verify/scripts/`) only when no connector is present, so adopt them either with that connector or with the fallback path accepted.
+- `fix-ones-bug` and `qa-self-verify` route single-bug root-cause investigation to a companion `bug-handler` skill. Install it alongside them, or handle root cause manually.
+- `frontend-verification` uses `playwright-best-practices` when it is available for detailed Playwright test work, and otherwise degrades to the project's native Playwright guidance, so it is optional, not required.
+
+The other six skills have no cross-skill prerequisites.
+
 ## Design Principles
 
 - Evidence first: do not reach conclusions by guessing; the verification method and result must be stated.
 - Closed loop first: form a complete path from trigger, context, execution, and verification through to reporting.
 - Sharing first: reusable rules should be pushed down into a shared layer, not scattered across page patches or ad hoc notes.
+- Connector-first with a self-contained fallback: when a project ships a dedicated connector for an external system (issue tracker, CI, cloud), prefer it as the single source of truth; embedded raw HTTP or script templates are a documented fallback for runtimes without that connector, not a parallel source of truth. Because progressive loading does not cross skill boundaries, sibling skills cannot share one reference file, so the connector — not a shared file — is the point where that plumbing is deduplicated.
 - Tool-neutral: enforce real observation of effects, but do not hard-bind to any one specific tool.
 - Project-neutral: skills do not hardcode a single project's absolute paths, repo names, branches, internal UUIDs, or credential locations; project-specific information is injected via a discoverable project profile (resolved on demand or by asking the user), so the same skill can be reused across projects.
 - Clear safety boundaries: spell out when it is okay to act automatically and when you must stop and escalate.
@@ -96,7 +107,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
 
-All 10 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All 9 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 Runtime adaptation rules:
 
