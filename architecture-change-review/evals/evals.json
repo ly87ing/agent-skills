@@ -35,6 +35,16 @@
       "id": 7,
       "prompt": "This module has grown to over 4,000 lines and now mixes a dozen unrelated responsibilities. Should I split it up, and how?",
       "expected_output": "Should trigger architecture-change-review. The result should treat this as a module-ownership and boundary concern, recommend splitting along existing responsibility seams (extract modules or functions) rather than by an arbitrary line count, leave generated artifacts, data, vendored code, and large test files alone, and stop if a split would only chase a size threshold with no responsibility boundary behind it."
+    },
+    {
+      "id": 8,
+      "prompt": "The nightly build emits a manifest.json that three downstream jobs parse. I want to rename its top-level keys and drop one field. Help me assess the change.",
+      "expected_output": "Should trigger architecture-change-review. The result should treat manifest.json as a workflow/output contract with cross-job consumers, enumerate the downstream consumers and generated/synced outputs, state the new shape, failure mode, rollback path, and whether a migration is required, keep the surface narrow, verify with the smallest test that a real consumer still parses, and stop per the stop condition if the migration or rollback path is unknown."
+    },
+    {
+      "id": 9,
+      "prompt": "Should I rename the internal variable d to orderDelta and reword its inline comment for clarity? It is used only inside this one private function.",
+      "expected_output": "Should NOT trigger architecture-change-review; renaming a purely internal, single-function local touches no boundary, interface, dependency direction, or contract. This is a naming and comment concern that routes to code-style-contracts."
     }
   ]
 }
