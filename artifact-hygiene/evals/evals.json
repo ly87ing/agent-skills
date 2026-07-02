@@ -30,6 +30,11 @@
       "id": 6,
       "prompt": "Help me check whether the naming and comments in this code are up to standard.",
       "expected_output": "Should NOT trigger artifact-hygiene; this is a code style and contract review, not deciding where generated/debug artifacts should go."
+    },
+    {
+      "id": 7,
+      "prompt": "We generate a weekly coverage report the team now wants to keep in a standard, gitignored reports path going forward. Set up that convention.",
+      "expected_output": "Should trigger artifact-hygiene. Because the user explicitly asks for a reusable convention, this is the sanctioned exception to the hard boundary: treat the recurring report as a workflow-consumed artifact, place it in a gitignored maintained output path rather than a temporary directory, do not delete it on completion, and keep the convention minimal instead of widening unrelated .gitignore entries or directories."
     }
   ]
 }
