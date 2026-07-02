@@ -40,6 +40,16 @@
       "id": 8,
       "prompt": "Help me merge that branch, you know, the most recent line.",
       "expected_output": "Should trigger safe-merge-review. The result should refuse to guess the source ref, require the user to explicitly provide a branch name or remote ref, and not start the merge directly from a vague description."
+    },
+    {
+      "id": 9,
+      "prompt": "We keep 5.1 and 5.2 as parallel release lines. A fix landed on 5.2, but is-ancestor and searching the commit id and the issue number on 5.1 all report it as missing. Confirm whether 5.1 really contains that fix.",
+      "expected_output": "Should trigger safe-merge-review. The result should recognize parallel, independent baseline lines where the same logical change lands via a different commit and issue id per line, so is-ancestor, commit-id search, and issue-number search can all falsely report missing. It should judge containment by file content / patch equivalence rather than the commit graph or issue id, and annotate the proof-method used."
+    },
+    {
+      "id": 10,
+      "prompt": "Review my branch's code changes for bugs and style before I open a PR. Nothing is being merged yet.",
+      "expected_output": "Should not trigger safe-merge-review; there is no merge, merge audit, or conflict to reason about. This is general pre-PR code review (code style and correctness), so safe-merge-review should not drive it; it applies once a merge, merge audit, or conflict resolution is actually in play."
     }
   ]
 }
