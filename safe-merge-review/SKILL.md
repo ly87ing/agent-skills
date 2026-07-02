@@ -43,7 +43,7 @@ Collect the minimal context before starting:
 - Repo scope:
   - Whether the current directory is a git repo
   - Single-repo or multi-repo
-  - Current branch, target branch, source ref, remote
+  - Current branch (the intended target), source ref, remote
 - Worktree state:
   - `git status --short --branch`
   - Whether there are uncommitted changes, staged changes, or a user's manual conflict-resolution work in progress
@@ -63,13 +63,13 @@ Environment prerequisites:
 - A working git CLI and read/write access to the repo are required
 - Judging a remote source ref usually requires a networked `fetch`
 
-## Reference Loading Guide
+## Bundled Resources
 
-Load references on demand instead of cramming every detail into the main flow:
+Load these on demand instead of cramming every detail into the main flow:
 
 - When you need command templates, the strategy matrix, patch-equivalent, or completeness-verification methods, read [references/merge-workflow.md](references/merge-workflow.md)
 - When you need to judge hotspot risk, conflict semantics, or post-merge logical-mismatch patterns, read [references/merge-review-checklist.md](references/merge-review-checklist.md)
-- When you need to generate a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py)
+- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling fields each time
 
 ## Workflow Paths
 
@@ -80,7 +80,7 @@ Load references on demand instead of cramming every detail into the main flow:
    - Confirm the actual branch and worktree with `git rev-parse --abbrev-ref HEAD` + `git worktree list`; do not rely on a shell prompt or statusline (it can be stale or wrong). When the user named a target branch or worktree, assert HEAD matches it before editing or pushing — if it does not, stop and correct, rather than acting on the wrong line.
    - A dirty worktree is not merged directly by default; first state the risk, then decide whether to continue
 2. Lock down the source and target refs.
-   - Clarify the current branch, source ref, target ref, and remote
+   - Clarify the source ref, the remote, and the target branch (normally the current branch you merge into)
    - When the source ref is unclear, do not guess "the latest line"
 3. Fetch the latest state and model the diff.
    - Prefer following [references/merge-workflow.md](references/merge-workflow.md) to run `fetch`, merge base, left/right counts, incoming commits, and file-set comparison
@@ -130,25 +130,11 @@ Load references on demand instead of cramming every detail into the main flow:
    - The conclusion can only be `Green / Yellow / Red`
    - It must come with an evidence matrix and residual risks
 
-## Reusable Resources
-
-### scripts/
-
-- [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py)
-  Generates a stable merge-evidence Markdown skeleton for unified reporting of multi-repo or high-risk merges. Best run after the ref is locked down and the risk items are identified, to avoid evidence drift caused by hand-assembling fields each time.
-
-### references/
-
-- [references/merge-workflow.md](references/merge-workflow.md)
-  Read for command templates, the strategy matrix, conflict-handling methods, and completeness-verification methods.
-- [references/merge-review-checklist.md](references/merge-review-checklist.md)
-  Read for hotspot risk, semantic issues, post-merge logical-error patterns, and the evidence-matrix template.
-
 ## Verification Matrix
 
 | Path | Check | Evidence |
 | --- | --- | --- |
-| Path 1 | Source and target refs are locked down, and the diff set and hotspot files are modeled | merge base, left/right counts, incoming commits, hotspot file list |
+| Path 1 | The source ref and target branch are locked down, and the diff set and hotspot files are modeled | merge base, left/right counts, incoming commits, hotspot file list |
 | Path 2 | The merge result is fully included and the minimal relevant verification is complete | completeness proof, final landed files, verification commands and results, push decision |
 | Path 3 | The correctness of a completed merge is re-audited | source ref / merge commit, semantic re-review conclusion, verification results, Green/Yellow/Red verdict |
 
@@ -175,6 +161,7 @@ After completing, report at least the following:
 - left/right counts:
 - incoming key commits:
 - hotspot overlap files:
+- dirty worktree status:
 - merge strategy:
 - conflicted files and reasoning:
 - completeness proof:

@@ -353,6 +353,7 @@ Confirm file by file: the differences come only from the current branch's subseq
 Verdict rules for the squash merge scenario:
 
 - You cannot use `is-ancestor` as the sole completeness evidence
+- Prefer Method 1 (patch-equivalent / final-state file diff) by default, use Method 3 (tree-diff) for a quick sanity pass, and reach for Method 2 (cherry-pick no-op) only when the other two are inconclusive, since it mutates the worktree
 - You must use at least one of the above methods, and annotate `proof-method: patch-equivalent` or `proof-method: tree-diff` in the evidence matrix
 - If the source branch still has new commits after the squash, you must recheck rather than reuse the old conclusion
 

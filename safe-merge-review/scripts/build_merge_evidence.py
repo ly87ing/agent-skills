@@ -27,6 +27,7 @@ def build_markdown(args: argparse.Namespace) -> str:
         f"- source ref: {render_value(args.source_ref)}",
         f"- merge base: {render_value(args.merge_base)}",
         f"- left/right counts: {render_value(args.left_right_counts)}",
+        f"- dirty worktree status: {render_value(args.dirty_worktree)}",
         f"- merge strategy: {render_value(args.merge_strategy)}",
         f"- completeness proof: {render_value(args.completeness_proof)}",
         f"- proof method: {render_value(args.proof_method, 'is-ancestor')}",
@@ -69,6 +70,7 @@ def main() -> int:
     parser.add_argument("--source-ref")
     parser.add_argument("--merge-base")
     parser.add_argument("--left-right-counts")
+    parser.add_argument("--dirty-worktree")
     parser.add_argument("--merge-strategy")
     parser.add_argument("--completeness-proof")
     parser.add_argument("--proof-method", choices=sorted(VALID_PROOF_METHODS))

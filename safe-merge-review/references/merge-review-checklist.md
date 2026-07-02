@@ -179,6 +179,7 @@ Use the template below to produce the final conclusion:
 | Semantic review conclusion | |
 | Verification command(s) | |
 | Push status | |
+| Residual risks | |
 
 Suggested verdict rules:
 
