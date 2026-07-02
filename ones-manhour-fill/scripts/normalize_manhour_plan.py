@@ -9,8 +9,15 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_TARGET_UNITS = 800000
+# ONES stores manhours as integer "units"; 800000 units == one 8-hour workday.
+# This is a fixed definition used to express day fractions, independent of the
+# per-run fill target below.
+UNITS_PER_WORKDAY = 800000
+# Default fill target is one full workday unless the caller overrides target_units.
+DEFAULT_TARGET_UNITS = UNITS_PER_WORKDAY
+# Smallest allocatable step: 80000 units == 0.1 workday.
 DEFAULT_UNIT_STEP = 80000
+# ONES manhour timestamps are local; default to UTC+8 unless the plan sets timezone_offset_hours.
 DEFAULT_TIMEZONE_OFFSET_HOURS = 8
 
 
@@ -174,7 +181,7 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
                 "task_number": item["task_number"],
                 "task_name": item["task_name"],
                 "hours": unit_count,
-                "day_fraction": round(unit_count / DEFAULT_TARGET_UNITS, 4),
+                "day_fraction": round(unit_count / UNITS_PER_WORKDAY, 4),
                 "description": item["description"],
             }
         )
@@ -186,7 +193,7 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
         "unit_step": unit_step,
         "timezone_offset_hours": timezone_offset_hours,
         "total_units": sum(item["hours"] for item in normalized_allocations),
-        "total_days": round(sum(item["hours"] for item in normalized_allocations) / DEFAULT_TARGET_UNITS, 4),
+        "total_days": round(sum(item["hours"] for item in normalized_allocations) / UNITS_PER_WORKDAY, 4),
         "allocations": normalized_allocations,
     }
 

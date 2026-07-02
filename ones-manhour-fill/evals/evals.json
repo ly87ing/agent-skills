@@ -25,6 +25,11 @@
       "id": 5,
       "prompt": "Just show me how many ONES worklog hours I recorded this week; do not write anything.",
       "expected_output": "Should NOT trigger ones-manhour-fill; pure manhour querying should use the ONES connector directly."
+    },
+    {
+      "id": 6,
+      "prompt": "Fill a full workday of manhours under parent task #592151 for June 18. Note that I already have 900000 units of unrelated manhours recorded on that date.",
+      "expected_output": "Should trigger ones-manhour-fill. The run should query the current owner's existing records for the date first, detect that unrelated records already meet or exceed the day's target total, and stop and report the conflict rather than exceeding the target or updating/deleting existing records; it must stay add-only and not write records that would push the date over the target."
     }
   ]
 }
