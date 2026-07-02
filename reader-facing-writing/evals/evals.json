@@ -35,6 +35,11 @@
       "id": 7,
       "prompt": "I'm running a big team meeting to sync several changes at once — a new way of working plus a couple of quality and process asks. Help me write the briefing doc so people actually take it in.",
       "expected_output": "Should trigger reader-facing-writing. The result should open with an agenda of the topics it covers, expand each topic in its own section, and close with next steps addressed per reader (who needs to do or watch what). It should pitch detail to the purpose, leading with what changes for the reader rather than implementation mechanics, keep the terms the audience already uses instead of over-explaining them, and read naturally rather than stiffly."
+    },
+    {
+      "id": 8,
+      "prompt": "Rewrite our whole team handbook to be more engaging. I don't have a specific structure or tone in mind, just make it better.",
+      "expected_output": "Should trigger reader-facing-writing. Because this is a large, subjective rewrite with no specified target tone, structure, or ordering, the result should first show a compact target outline or 2-3 concrete options and confirm direction before executing, rather than silently plowing through a full rewrite. It should fix the reader and purpose, preserve the source framework and any choices already made, and not fabricate content to look complete."
     }
   ]
 }
