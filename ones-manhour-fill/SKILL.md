@@ -1,6 +1,6 @@
 ---
 name: ones-manhour-fill
-description: Fill ONES manhour records from a daily work summary into a specific parent task's subtasks, with reasonable one-day allocation, existing-record checks, safe add-only writes, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary into a parent task, especially when the request includes a date plus an ONES parent task URL, number, or uuid. For ONES bug fixing use fix-ones-bug; for QA evidence routing use qa-self-verify; for pure ONES queries use the ONES connector directly.
+description: Fills ONES manhour records from a daily work summary into a specific parent task's subtasks, with reasonable one-day allocation, existing-record checks, safe add-only writes, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary into a parent task, especially when the request includes a date plus an ONES parent task URL, number, or uuid. For ONES bug fixing use fix-ones-bug; for QA evidence routing use qa-self-verify; for pure ONES queries use the ONES connector directly.
 ---
 
 # ONES Manhour Fill
@@ -76,7 +76,7 @@ Classify existing records:
 Decision:
 
 - total already equals target: report no-op after showing the matching records
-- total is below target: add only `target - existing_total` if the user's wording asks to complete the date
+- total is below target: this is the normal fill-the-day case, so add `target - existing_total`; only skip the top-up if the user explicitly asked to log a partial amount
 - total exceeds target or unrelated records make the plan unsafe: stop and ask
 
 ### 4. Build a Reasonable Allocation
@@ -116,7 +116,7 @@ For each allocation, call the ONES manhour add endpoint or connector action with
 - owner = current ONES user uuid
 - task = subtask uuid
 - start_time = target date local midnight in seconds
-- hours = allocation units
+- hours = allocation units (ONES units, e.g. 800000 for a full day — not literal clock hours)
 - type = `recorded`
 - mode = `detailed` when required
 - description = reviewed description
@@ -146,7 +146,7 @@ Report only the useful summary: date, parent, subtask numbers, units/day fractio
   "allocations": [
     {
       "task_uuid": "TASK_UUID",
-      "task_number": 592160,
+      "task_number": 100200,
       "task_name": "Project support",
       "weight": 3,
       "description": "Deployment environment and resource coordination"
@@ -156,3 +156,5 @@ Report only the useful summary: date, parent, subtask numbers, units/day fractio
 ```
 
 Use `weight` for proportional planning or `units` for fixed values. Mixed `weight` and `units` records are allowed; fixed units are reserved first, and remaining units are distributed by weight.
+
+Run it as `python3 scripts/normalize_manhour_plan.py plan.json --pretty` (or pass `-` to read the plan from stdin). It echoes the plan and adds `start_time`, `total_units`, `total_days`, and per-allocation `hours` (units) and `day_fraction` — the fields the step 5 Dry-Run Review inspects.

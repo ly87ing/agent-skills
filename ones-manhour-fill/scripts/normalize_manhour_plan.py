@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Requires Python 3.10+ (uses zip(strict=True)). Standard library only, no third-party deps.
 from __future__ import annotations
 
 import argparse
