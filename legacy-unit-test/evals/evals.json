@@ -65,6 +65,11 @@
       "id": 13,
       "prompt": "Our only test command starts a database and browser, but the customer asked for unit coverage. Just use that coverage report.",
       "expected_output": "Should trigger legacy-unit-test as a guardrail. The result should classify this as integration or E2E evidence, document the missing unit-test command split, and avoid presenting infrastructure-backed coverage as meaningful unit-test coverage."
+    },
+    {
+      "id": 14,
+      "prompt": "While seeding tests I found an existing unit test that is already failing. Can I just tweak the production method so the failing test goes green, then keep adding coverage?",
+      "expected_output": "Should trigger legacy-unit-test as a guardrail. Per the hard boundary, the result must not assume the failing test is correct nor change production merely to green it: it should determine the fix direction per failure via git log -S / git blame on BOTH the test and the production code under test. If production's current behavior is a deliberate later fix, treat the test as stale and update it to the post-fix behavior, recording which commit or bug voided the old expectation; if the failure sits on an unresolved design or security decision, leave it failing and escalate with evidence. It should keep production read-only for the seeding task and grep callers before any production change."
     }
   ]
 }
