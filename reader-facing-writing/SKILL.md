@@ -8,7 +8,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 ## Workflow
 
 1. Fix the reader and decision.
-   - State scope and the key point up front.
+   - State scope and the key takeaway up front.
    - Give just enough context and the trigger for why this matters now before the detail.
    - Match depth, terminology, and format to what the reader must decide or do.
    - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
@@ -23,7 +23,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Prefer lists for long sentences and tables for dense or relational data; reserve diagrams for genuine process flows.
    - Put one fact in one place and cross-reference instead of repeating.
    - When you split a topic into parts, make them non-overlapping and collectively complete — flag any gap or leftover "other".
-   - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps per reader written as action items (step 5).
+   - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps per reader written as action items (with owner, date, and done criteria).
 4. Keep the prose plain.
    - Use active voice, specific verbs, one idea per sentence, and no marketing filler.
    - Calibrate terms to the reader: define what they won't know, don't explain terms they already use, and use each term consistently.
@@ -35,7 +35,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Never present future or aspirational state as current.
 6. Revise before done.
    - Re-read as the target reader, reading it aloud to catch stiff or unnatural phrasing.
-   - Cut redundancy, verify facts, and confirm each section starts with its point.
+   - Cut redundancy, verify facts, and confirm each section starts with its takeaway.
    - When you change a value that recurs — a name, number, date, owner, or cross-reference — search the whole document for every occurrence and stale pointer (counts, "task N", "see above/below", section labels) before declaring done.
 
 ## Designing And Verifying Visuals
