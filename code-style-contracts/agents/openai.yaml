@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Style Contracts"
-  short_description: "Keep code and contract edits disciplined"
-  default_prompt: "Use $code-style-contracts to make this code, config, or data contract change cleanly."

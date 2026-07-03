@@ -22,8 +22,7 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | --- | --- |
 | [safe-merge-review](./safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
 | [ones-manhour-fill](./ones-manhour-fill/SKILL.md) | Fills ONES daily manhour records from a work summary into a parent task's actual subtasks, with existing-record checks, add-only writes, allocation normalization, and post-write verification; ships with triggering evals. |
-| [architecture-change-review](./architecture-change-review/SKILL.md) | Runs a boundary review before changing architecture, interfaces, dependency boundaries, config schemas, or cross-module contracts; ships with triggering evals. |
-| [code-style-contracts](./code-style-contracts/SKILL.md) | Handles code style, config, data contract, naming, validation, and comment constraints, avoiding stuffing rule details into always-on context; ships with triggering evals. |
+| [change-discipline](./change-discipline/SKILL.md) | Disciplined changes to existing code: one pre-change hard gate (establish why current behavior exists, symptom-is-not-spec, blast radius, smallest verification) plus two facets — boundary/architecture review and code style/contract/naming/validation/comment constraints; ships with triggering evals. |
 | [frontend-verification](./frontend-verification/SKILL.md) | Handles UI, browser automation, interactive HTML, responsive states, and frontend verification tool selection; ships with triggering evals. |
 | [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents; ships with triggering evals. |
@@ -35,7 +34,7 @@ Most skills here are self-contained. `ones-manhour-fill` is not fully standalone
 - `ones-manhour-fill` expects a project-local `ones` skill / connector in the runtime for reading and writing ONES work items. Adopt it with that connector, or accept the raw-HTTP fallback path.
 - `frontend-verification` uses `playwright-best-practices` when it is available for detailed Playwright test work, and otherwise degrades to the project's native Playwright guidance, so it is optional, not required.
 
-The other six skills have no cross-skill prerequisites.
+The other five skills have no cross-skill prerequisites.
 
 ## Design Principles
 
@@ -65,12 +64,10 @@ agent-skills/
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   ├── evals/
 │   └── scripts/
-├── architecture-change-review/
+├── change-discipline/
 │   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
-├── code-style-contracts/
-│   ├── SKILL.md
-│   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   └── evals/
 ├── frontend-verification/
 │   ├── SKILL.md
 │   └── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -95,7 +92,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
 
-All 7 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All 6 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 Runtime adaptation rules:
 

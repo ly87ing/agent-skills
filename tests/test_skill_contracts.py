@@ -8,18 +8,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MAINTAINED_SKILLS = {
-    "architecture-change-review",
     "artifact-hygiene",
-    "code-style-contracts",
+    "change-discipline",
     "frontend-verification",
     "ones-manhour-fill",
     "reader-facing-writing",
     "safe-merge-review",
 }
 RULE_DERIVED_SKILLS = {
-    "architecture-change-review",
     "artifact-hygiene",
-    "code-style-contracts",
+    "change-discipline",
     "frontend-verification",
     "reader-facing-writing",
 }
@@ -167,20 +165,18 @@ class SkillContractTests(unittest.TestCase):
 
     def test_rule_derived_skills_preserve_agent_manager_rule_intent(self):
         expected_phrases = {
-            "architecture-change-review": [
+            "change-discipline": [
                 "dependency direction",
                 "config",
                 "rollback path",
+                "Validate inputs fail-close",
+                "formatter",
+                "comments",
             ],
             "artifact-hygiene": [
                 "Disposable run artifacts",
                 "Playwright",
                 "gitignore",
-            ],
-            "code-style-contracts": [
-                "Validate inputs fail-close",
-                "formatter",
-                "comments",
             ],
             "frontend-verification": [
                 "Choose the browser tool by intent",

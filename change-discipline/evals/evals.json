@@ -1,0 +1,90 @@
+{
+  "skill_name": "change-discipline",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to extract a generic RequestContext abstraction. Right now only the order service uses it, but let me build it first so others can reuse it later.",
+      "expected_output": "Should trigger change-discipline. The result should point out that there is currently only a single consumer and no concrete boundary problem, stop per the stop condition or suggest making the smallest local change first, and not introduce an abstraction up front for hypothetical future reuse."
+    },
+    {
+      "id": 2,
+      "prompt": "This change needs to alter the signature of a public method on UserService. The callers include the web layer and a few background jobs. Help me figure out how to change it safely.",
+      "expected_output": "Should trigger change-discipline. The result should first locate the entry point, callers, owners, and generated/synced artifacts, determine that the change is shared/cross-module, check the dependency direction, and spell out the contract change explicitly (default values, failure modes, rollback path, whether a migration is needed)."
+    },
+    {
+      "id": 3,
+      "prompt": "I'm about to change the default value of the config option cache.ttl from 60 to 300 and add a schema migration. Help me assess it.",
+      "expected_output": "Should trigger change-discipline. The result should first establish why the current default is 60 (git history) before changing it, treat this as a config/schema contract change, explicitly state the new default value, failure modes, rollback path, and whether the migration is required, and validate the boundary with the smallest test."
+    },
+    {
+      "id": 4,
+      "prompt": "Can this database client from the infrastructure layer just be imported and used directly inside the domain entities, so we don't have to add another wrapper?",
+      "expected_output": "Should trigger change-discipline. The result should recognize this as leaking an infrastructure detail into an inner layer and violating the dependency direction, recommend keeping the adapter boundary, and stop per the stop condition when the only reason for crossing the boundary is to make the current patch easier."
+    },
+    {
+      "id": 5,
+      "prompt": "There's a small off-by-one bug inside this private function. Help me fix it in place; it touches no interfaces, contracts, naming, or config.",
+      "expected_output": "Should NOT strongly trigger change-discipline as a review track; this is a purely local implementation fix with no boundary, contract, naming, validation, or comment dimension. At most it inherits the lightweight hard-gate habit (confirm why the current logic is what it is, verify the smallest test), but it needs no boundary or style/contract workflow."
+    },
+    {
+      "id": 6,
+      "prompt": "Help me write a quicksort and explain its average time complexity.",
+      "expected_output": "Should NOT trigger change-discipline; writing new code from scratch with an explanation involves no edit to existing code, boundary, contract, naming, validation, or comment concern."
+    },
+    {
+      "id": 7,
+      "prompt": "This module has grown to over 4,000 lines and now mixes a dozen unrelated responsibilities. Should I split it up, and how?",
+      "expected_output": "Should trigger change-discipline. The result should treat this as a module-ownership and boundary concern, recommend splitting along existing responsibility seams (extract modules or functions) rather than by an arbitrary line count, leave generated artifacts, data, vendored code, and large test files alone, and stop if a split would only chase a size threshold with no responsibility boundary behind it."
+    },
+    {
+      "id": 8,
+      "prompt": "The nightly build emits a manifest.json that three downstream jobs parse. I want to rename its top-level keys and drop one field. Help me assess the change.",
+      "expected_output": "Should trigger change-discipline. The result should treat manifest.json as a workflow/output contract with cross-job consumers, enumerate the downstream consumers and generated/synced outputs, state the new shape, failure mode, rollback path, and whether a migration is required, keep the surface narrow, verify with the smallest test that a real consumer still parses, and stop per the stop condition if the migration or rollback path is unknown."
+    },
+    {
+      "id": 9,
+      "prompt": "Should I rename the internal variable d to orderDelta and reword its inline comment for clarity? It is used only inside this one private function.",
+      "expected_output": "Should trigger change-discipline. The result should treat this as a naming and comment concern: give the variable a business-meaningful name, keep the comment only if it explains an invariant, edge case, or tradeoff rather than narrating obvious behavior, and confine the change to the private function without touching any public contract."
+    },
+    {
+      "id": 10,
+      "prompt": "The code I added triggered a few new lint warnings, and running prettier produces something different from the repo's existing style. Help me deal with it.",
+      "expected_output": "Should trigger change-discipline. The result should prefer the repo's existing formatter, lint, type checks, and file layout, treat the newly introduced warnings as a regression rather than relaxing the rules or reordering unrelated files."
+    },
+    {
+      "id": 11,
+      "prompt": "I casually named these variables a, tmp, and data2, and while I was at it I also renamed the outward-facing userId field to uid. Take a look.",
+      "expected_output": "Should trigger change-discipline. The result should require meaningful, business-relevant names, avoid unclear abbreviations, and keep public fields/config keys consistent with the existing contract instead of arbitrarily renaming outward-facing fields."
+    },
+    {
+      "id": 12,
+      "prompt": "When this endpoint receives invalid arguments or missing fields, I currently silently fall back to a default value. Does that look okay to you?",
+      "expected_output": "Should trigger change-discipline. The result should require fail-close rejection of malformed, unsupported, or ambiguous external input and config, and not silently coerce unless an existing compatibility contract requires it."
+    },
+    {
+      "id": 13,
+      "prompt": "I want to drop an old field and add a new field in this JSON response schema. I can just change it directly, right?",
+      "expected_output": "Should trigger change-discipline. The result should treat this as a data contract change and require a compatibility or migration story; if a compatibility/migration story is missing, it should stop per the stop condition."
+    },
+    {
+      "id": 14,
+      "prompt": "Help me turn these weekly meeting notes into a Markdown announcement for external publication.",
+      "expected_output": "Should NOT trigger change-discipline; this is a reader-facing writing task and does not involve editing existing code, config, data contracts, or architecture boundaries."
+    },
+    {
+      "id": 15,
+      "prompt": "I'm debating whether to create a standalone service module for this feature and also adjust the dependency direction. Help me assess the boundaries.",
+      "expected_output": "Should trigger change-discipline. The result should treat this as a boundary and dependency-direction assessment: identify the entry point and callers, check that the dependency direction is not inverted, prefer the smallest placement that does not impact other business, and not introduce a new module unless there are at least two real consumers or a clear boundary problem."
+    },
+    {
+      "id": 16,
+      "prompt": "A unit test expects sanitizeFilename to keep the ';' character, but the current code strips it and the test now fails. Can I just change the code to stop stripping ';' so the test passes?",
+      "expected_output": "Should trigger change-discipline. Per the hard gate, the result should first establish WHY ';' is stripped (git log -S / git blame on that line) before changing it, recognize the stripping is likely a deliberate earlier fix so the failing test may be stale, decide direction from history plus the real contract rather than from the symptom, refuse to flip the behavior merely to make the test pass, grep the sanitizer's other callers for blast radius, and stop and escalate if the change sits on an unresolved security or contract decision."
+    },
+    {
+      "id": 17,
+      "prompt": "I annotated this function with a comment on nearly every line describing what each statement does. Review the comments for me.",
+      "expected_output": "Should trigger change-discipline. The result should keep comments rare and useful: remove the line-by-line narration of obvious behavior, keep only comments that explain invariants, edge cases, or tradeoffs, and where a comment merely restates intent that clearer code should express, prefer renaming or restructuring over the comment per the stop condition."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Change Discipline"
+  short_description: "Keep edits to code, contracts, and boundaries disciplined"
+  default_prompt: "Use $change-discipline to make this code, config, contract, or architecture-boundary change cleanly."
