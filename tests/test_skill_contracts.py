@@ -11,10 +11,8 @@ MAINTAINED_SKILLS = {
     "architecture-change-review",
     "artifact-hygiene",
     "code-style-contracts",
-    "fix-ones-bug",
     "frontend-verification",
     "ones-manhour-fill",
-    "qa-self-verify",
     "reader-facing-writing",
     "safe-merge-review",
 }
