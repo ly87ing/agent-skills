@@ -5,7 +5,7 @@ description: Disciplined-change practices for editing existing code, config, sch
 
 # Change Discipline
 
-Applies whenever you edit something that already exists. Start with the hard gate, then use the facet that matches the change — boundary/architecture, or style/naming/validation/comments. Many changes touch both.
+Applies whenever you edit something that already exists. Start with the hard gate, then use the facet that matches the change — boundary/architecture, or style/naming/validation/comments. Many changes touch both. The gate is a lightweight always-on habit; the two facets below apply only when the change actually has a boundary or a style/contract dimension.
 
 ## Before you change anything that already exists (hard gate)
 
@@ -62,7 +62,7 @@ Applies to EVERY edit of existing code, a config/contract value, a default, a te
 ## Stop Conditions
 
 - The current behavior you are about to change is a deliberate earlier fix (per git history) whose intent you have not confirmed, or the change sits on an unresolved design/security/contract decision — escalate with the evidence instead of picking a side.
-- The proposed abstraction has no concrete caller.
+- The proposed abstraction has fewer than two real consumers and no clear boundary problem.
 - The migration or rollback path is unknown, or a data contract change lacks a compatibility/migration story.
 - A dependency boundary would be crossed, or a change routed through shared/public code, only to make the current patch easier when a leaf/endpoint placement would achieve the same result.
 - A split would only chase a size threshold, with no responsibility boundary behind it.
