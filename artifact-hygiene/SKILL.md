@@ -1,23 +1,25 @@
 ---
 name: artifact-hygiene
-description: Decide safe locations and cleanup rules for generated files, debug output, Playwright traces/screenshots/videos, downloaded artifacts, temporary scripts, reports, storage state, JSON/HTML dumps, and workflow-consumed outputs. Use before creating or keeping artifacts that might pollute a repository or be accidentally committed.
+description: Decide safe locations and cleanup rules for generated files, debug output, Playwright traces/screenshots/videos, downloaded artifacts, temporary scripts, reports, storage state, JSON/HTML dumps, workflow-consumed outputs, and requested deliverables you were asked to produce. Use before creating or keeping such artifacts, or when deciding where a file you were asked to produce should live — to avoid polluting a repository, committing something by accident, or stranding a deliverable in a throwaway location.
 ---
 
 # Artifact Hygiene
 
 ## Classify Outputs
 
+- **Requested deliverables:** files the user explicitly asked you to produce as the end product — a deck, document, export, or report they intend to keep and use. Classified by *why they exist*, not their file format: an HTML deck you were told to "make" is a deliverable, not a "dump."
 - **Project assets:** maintained source code, shared helpers, stable fixtures, maintained config, approved snapshots, and durable docs.
 - **Workflow-consumed artifacts:** generated files that repository workflows already depend on, or outputs the user explicitly asks to standardize.
 - **Disposable run artifacts:** ad hoc debug scripts, copied reports, temporary screenshots, traces, videos, downloads, storage state, JSON/HTML dumps, and investigation notes serving only the current run.
 
 ## Placement Rules
 
-1. Put project assets in the maintained project path.
-2. Put workflow-consumed artifacts in the project's existing gitignored output path.
-3. Put disposable artifacts in `mktemp -d`, `$TMPDIR`, or `/tmp` unless a working-tree path is required.
-4. Treat uncertain artifacts as disposable.
-5. Delete temporary project-local artifacts before completion unless the user asks to keep them.
+1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion.
+2. Put project assets in the maintained project path.
+3. Put workflow-consumed artifacts in the project's existing gitignored output path.
+4. Put disposable artifacts in `mktemp -d`, `$TMPDIR`, or `/tmp` unless a working-tree path is required.
+5. When you cannot tell whether an artifact is disposable or worth keeping, ask the user; if you cannot ask (a non-interactive or CI run), fall back to treating it as disposable rather than writing it into the working tree.
+6. Delete temporary project-local artifacts before completion unless the user asks to keep them.
 
 ## Playwright Defaults
 

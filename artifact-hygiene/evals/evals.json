@@ -19,7 +19,7 @@
     {
       "id": 4,
       "prompt": "I want to create a debug-output/ directory in the repo for these debug artifacts and add a line to .gitignore so I have a place to put them in the future. Is that okay?",
-      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: do not create or widen .gitignore, config conventions, or repo directories to host disposable artifacts; treat uncertain artifacts as disposable and place them in a temporary directory."
+      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: do not create or widen .gitignore, config conventions, or repo directories to host disposable artifacts; these are clearly disposable debug artifacts, so place them in a temporary directory."
     },
     {
       "id": 5,
@@ -35,6 +35,26 @@
       "id": 7,
       "prompt": "We generate a weekly coverage report the team now wants to keep in a standard, gitignored reports path going forward. Set up that convention.",
       "expected_output": "Should trigger artifact-hygiene. Because the user explicitly asks for a reusable convention, this is the sanctioned exception to the hard boundary: treat the recurring report as a workflow-consumed artifact, place it in a gitignored maintained output path rather than a temporary directory, do not delete it on completion, and keep the convention minimal instead of widening unrelated .gitignore entries or directories."
+    },
+    {
+      "id": 8,
+      "prompt": "Make me a slide deck (an HTML PPT) about our team's AI-First rollout that I can share with the team.",
+      "expected_output": "Should trigger artifact-hygiene. Because the user explicitly asked for the deck as the end product, classify it as a requested deliverable — not a disposable HTML dump, despite the .html format. Place it in the durable maintained location where similar shared/deliverable docs already live (or ask the user where it belongs if there is no clear peer), do not put it in a temporary/scratchpad directory, and do not delete it on completion."
+    },
+    {
+      "id": 9,
+      "prompt": "Write up the database migration plan as a Markdown doc — I want to keep it in the repo and hand it to the team.",
+      "expected_output": "Should trigger artifact-hygiene. The user asked for the write-up as the end product to keep. Either SKILL-supported label is acceptable — a requested deliverable or a durable-doc project asset — because both resolve to the same placement; what matters is that it is NOT treated as a disposable investigation note. Place it in the maintained docs path where the team's other kept docs live (or ask if there is no clear peer), and do not delete it on completion. Demonstrates the keep-and-place outcome generalizes beyond decks to prose documents."
+    },
+    {
+      "id": 10,
+      "prompt": "Export the quarterly usage query results to a JSON file I need to send to finance.",
+      "expected_output": "Should trigger artifact-hygiene. Even though the file is JSON, it is a requested deliverable because the user asked for it as the output they need — it must NOT be classified as a disposable JSON dump by format. Place it in a durable location the user can retrieve it from (or ask where it belongs), do not put it in a temporary/scratchpad directory, and do not delete it on completion. This is the mirror image of a JSON file dumped incidentally during debugging (which is disposable): same format, opposite classification, decided solely by whether the user asked for it as the deliverable."
+    },
+    {
+      "id": 11,
+      "prompt": "During this task I produced a config-looking JSON file, and I honestly can't tell whether it's throwaway scratch or something we'll want to keep. Where should it go?",
+      "expected_output": "Should trigger artifact-hygiene. This is the genuinely-ambiguous case rule 5 governs: the agent cannot tell whether the artifact is disposable or worth keeping. It should ask the user rather than silently guessing; and if it cannot ask (a non-interactive or CI run), fall back to treating it as disposable in a temporary directory — never silently commit an ambiguous artifact into the repo."
     }
   ]
 }
