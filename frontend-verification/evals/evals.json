@@ -24,7 +24,7 @@
     {
       "id": 5,
       "prompt": "Help me design a Playwright page object model, choose locators, set up fixtures, and debug a flaky timeout in an existing spec.",
-      "expected_output": "Should NOT trigger frontend-verification as the primary skill; this is detailed Playwright test implementation and flake debugging, which should route to playwright-best-practices when that skill is available, or otherwise use the project's native Playwright guidance, unless the request also needs UI evidence or a broader verification-strategy decision."
+      "expected_output": "Should NOT trigger frontend-verification as the primary skill; designing a full Page Object Model and fixtures and debugging a spec is test-suite implementation that belongs to the project's native Playwright guidance. frontend-verification owns only the verification-strategy decision plus the durable Playwright core in references/playwright-essentials.md (locators, web-first assertions, flaky triage), unless the request also needs UI evidence or a broader verification-strategy decision."
     },
     {
       "id": 6,

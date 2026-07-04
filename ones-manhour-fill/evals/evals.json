@@ -19,7 +19,7 @@
     {
       "id": 4,
       "prompt": "Fix all my New defects in sprint 0626, add tests, upload evidence, and transition them to QA.",
-      "expected_output": "Should NOT trigger ones-manhour-fill; batch defect fixing should use fix-ones-bug or qa-self-verify depending on whether code changes are still needed."
+      "expected_output": "Should NOT trigger ones-manhour-fill; batch defect fixing, evidence capture, and QA routing should use internal-bug-loop."
     },
     {
       "id": 5,

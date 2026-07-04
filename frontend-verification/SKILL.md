@@ -1,6 +1,6 @@
 ---
 name: frontend-verification
-description: Validate frontend outcomes, browser automation, UI flows, accessibility-relevant states, interactive HTML, dashboards, decks, and reader-facing web artifacts. Use when deciding or proving the verification strategy for UI behavior, browser evidence, DevTools diagnosis, authenticated flows, responsive layouts, or HTML deliverables. For detailed Playwright test implementation or flake debugging, use playwright-best-practices when that skill is available; otherwise follow the project's native Playwright guidance.
+description: Validate frontend outcomes, browser automation, UI flows, accessibility-relevant states, interactive HTML, dashboards, decks, and reader-facing web artifacts. Use when deciding or proving the verification strategy for UI behavior, browser evidence, DevTools diagnosis, authenticated flows, responsive layouts, or HTML deliverables. For the durable Playwright practices that keep a check stable (locators, web-first assertions, storageState auth, mocking boundaries, flaky triage), see references/playwright-essentials.md; for a large, long-lived spec suite, follow the project's native Playwright guidance.
 ---
 
 # Frontend Verification
@@ -14,7 +14,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Use Playwright for reproducible assertions, regression coverage, route/network mocking, and CI-stable automation.
    - Use Chrome DevTools for one-off visual inspection, layout/scroll diagnosis, performance traces, Core Web Vitals, request waterfalls, cache/timing analysis, memory, and low-level WebSocket inspection.
    - Use a session-aware browser when the task needs navigation, auth, forms, scraping, or profile/session reuse.
-   - Use `playwright-best-practices` when it is available for detailed Playwright test architecture, locator design, fixture setup, flaky-test debugging, or test implementation patterns; otherwise follow the project's existing Playwright conventions.
+   - For locator design, web-first assertions, storageState auth, mocking boundaries, and flaky-test triage, apply `references/playwright-essentials.md`; for a large, long-lived spec suite (deep Page Object Model, sharding, component/Electron testing), follow the project's existing Playwright conventions.
    - Before hand-rolling authentication, captcha-solving, or a login flow in the browser tool, search the project for an existing login/verification harness or helper and reuse it. Projects that need browser verification often already ship a tested one (zero-touch auth entry, slider/image-captcha solver, MFA/TOTP), and reinventing it in DevTools or by vision is brittle and wastes turns. Hand-drive the browser only when the project genuinely has no such helper.
 3. Preserve authenticated context deliberately.
    - Do not assume a fresh isolated browser has the required cookies, profile, or permissions.

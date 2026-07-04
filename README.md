@@ -32,7 +32,6 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 Most skills here are self-contained. `ones-manhour-fill` is not fully standalone: it drives an external issue tracker through a companion connector this repository does not ship.
 
 - `ones-manhour-fill` expects a project-local `ones` skill / connector in the runtime for reading and writing ONES work items. Adopt it with that connector, or accept the raw-HTTP fallback path.
-- `frontend-verification` uses `playwright-best-practices` when it is available for detailed Playwright test work, and otherwise degrades to the project's native Playwright guidance, so it is optional, not required.
 
 The other five skills have no cross-skill prerequisites.
 

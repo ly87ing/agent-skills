@@ -1,6 +1,6 @@
 ---
 name: ones-manhour-fill
-description: Fills ONES manhour records from a daily work summary into a specific parent task's subtasks, with reasonable one-day allocation, existing-record checks, safe add-only writes, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary into a parent task, especially when the request includes a date plus an ONES parent task URL, number, or uuid. For ONES bug fixing use fix-ones-bug; for QA evidence routing use qa-self-verify; for pure ONES queries use the ONES connector directly.
+description: Fills ONES manhour records from a daily work summary into a specific parent task's subtasks, with reasonable one-day allocation, existing-record checks, safe add-only writes, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary into a parent task, especially when the request includes a date plus an ONES parent task URL, number, or uuid. For ONES bug fixing or QA evidence routing use internal-bug-loop; for pure ONES queries use the ONES connector directly.
 ---
 
 # ONES Manhour Fill
@@ -18,7 +18,7 @@ Use this skill only for ONES manhour/worklog entries. The normal target is exact
 | Complete a partial day already recorded in ONES | this skill, add only the missing gap |
 | Change or delete existing manhour records | stop unless explicitly requested |
 | Query existing worklogs only | ONES connector |
-| Fix, verify, or route defects | fix-ones-bug / qa-self-verify |
+| Fix, verify, or route defects | internal-bug-loop |
 
 ## Required Inputs
 
