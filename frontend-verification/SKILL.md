@@ -8,7 +8,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
 ## Workflow
 
 1. Define the UI surface.
-   - Identify the route, state, interaction, data boundary, and user-visible success criteria.
+   - Identify the route, state, interaction, data boundary, target viewports/breakpoints, and user-visible success criteria.
    - Validate dynamic or external data at boundaries.
 2. Choose the browser tool by intent.
    - Use Playwright for reproducible assertions, regression coverage, route/network mocking, and CI-stable automation.

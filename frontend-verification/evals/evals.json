@@ -40,6 +40,11 @@
       "id": 8,
       "prompt": "This page is behind a login with an image captcha. Help me drive the browser to solve the captcha and log in so I can screenshot the result as evidence.",
       "expected_output": "Should trigger frontend-verification. Before hand-rolling captcha-solving or the login flow in the browser tool, the result should first search the project for an existing tested login/verification harness or helper (zero-touch auth entry, slider/image-captcha solver, MFA/TOTP) and reuse it, hand-driving the browser only when no such helper exists; it should preserve the authenticated context deliberately and stop per the stop condition if it begins hand-implementing a login or captcha flow while the project already ships one."
+    },
+    {
+      "id": 9,
+      "prompt": "I need to confirm this marketing landing page renders correctly across mobile, tablet, and desktop breakpoints. Help me verify the responsive layout.",
+      "expected_output": "Should trigger frontend-verification. The result should define the target viewports/breakpoints and per-viewport user-visible success criteria as the UI surface, then choose the browser tool by intent — Chrome DevTools device emulation for a one-off visual and layout-shift look at each breakpoint, or Playwright with explicit viewport sizes for reproducible, CI-stable responsive assertions — and capture a canonical screenshot per breakpoint rather than a single desktop-only view. If the responsive layout is a durable user-visible surface it should back the check with the smallest relevant Playwright test per references/playwright-essentials.md, not treat the ad hoc look as regression coverage."
     }
   ]
 }
