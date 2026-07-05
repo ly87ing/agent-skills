@@ -45,6 +45,11 @@
       "id": 9,
       "prompt": "Make a slide deck introducing what Anthropic and Claude do, for our division directors and R&D team who mostly haven't used it. They keep saying they can't follow the current draft.",
       "expected_output": "Should trigger reader-facing-writing. Because the audience is new to the subject, the deck must open by establishing what Anthropic/Claude actually is in the plainest terms before any implications or takeaways — a fresh audience cannot absorb what it means for them until they know what it is. It should be built for a room (large type, content filling the screen, jump navigation), carry only necessary content with redundancy cut so it flows front-to-back, use motion only where it aids comprehension (progressive reveal / process build) rather than as decoration, and be verified as understandable to someone who has not seen it before."
+    },
+    {
+      "id": 10,
+      "prompt": "Turn our messy release-readiness notes into a pre-launch checklist the on-call team can actually run through.",
+      "expected_output": "Should trigger reader-facing-writing. The result should lead each item with its check/takeaway, keep peer items parallel (the same fields in the same order, e.g. check / owner / done criterion), sequence the items on one explicit logic (time, structure, or descending importance), and make the set non-overlapping and collectively complete — flagging any gap or leftover 'other'. It should preserve source wording for owners, dates, and uncertain values, mark unknowns as TBD rather than inventing to look complete, and must not present an aspirational or desired state as already done."
     }
   ]
 }
