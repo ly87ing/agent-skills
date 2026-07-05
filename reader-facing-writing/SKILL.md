@@ -12,6 +12,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Give just enough context and the trigger for why this matters now before the detail.
    - Match depth, terminology, and format to what the reader must decide or do.
    - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
+   - Calibrate the opening to the audience's starting familiarity: for an outward or introductory piece to readers new to the subject, first establish what the subject is in the plainest terms before its implications — a fresh audience cannot absorb what a thing means for them until they know what the thing is. Lead straight with implications only when the reader already knows the subject.
    - For a large restructure or subjective rewrite where the user has not specified the target tone, structure, or ordering, show a compact target outline or 2-3 concrete options before executing. For small edits or explicit user directions, proceed directly and preserve choices already made.
 2. Preserve source truth.
    - Keep the source framework when condensing; reword a layer, do not delete it.
@@ -59,3 +60,4 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - Verify the rendered result before declaring completion.
 - When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
 - For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom.
+- Use motion only to aid comprehension — a progressive reveal that paces a dense slide, or an animated build that walks through a process step by step — never as decoration; a static form that reads instantly beats motion that delays the point.

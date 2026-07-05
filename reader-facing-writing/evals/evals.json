@@ -40,6 +40,11 @@
       "id": 8,
       "prompt": "Rewrite our whole team handbook to be more engaging. I don't have a specific structure or tone in mind, just make it better.",
       "expected_output": "Should trigger reader-facing-writing. Because this is a large, subjective rewrite with no specified target tone, structure, or ordering, the result should first show a compact target outline or 2-3 concrete options and confirm direction before executing, rather than silently plowing through a full rewrite. It should fix the reader and purpose, preserve the source framework and any choices already made, and not fabricate content to look complete."
+    },
+    {
+      "id": 9,
+      "prompt": "Make a slide deck introducing what Anthropic and Claude do, for our division directors and R&D team who mostly haven't used it. They keep saying they can't follow the current draft.",
+      "expected_output": "Should trigger reader-facing-writing. Because the audience is new to the subject, the deck must open by establishing what Anthropic/Claude actually is in the plainest terms before any implications or takeaways — a fresh audience cannot absorb what it means for them until they know what it is. It should be built for a room (large type, content filling the screen, jump navigation), carry only necessary content with redundancy cut so it flows front-to-back, use motion only where it aids comprehension (progressive reveal / process build) rather than as decoration, and be verified as understandable to someone who has not seen it before."
     }
   ]
 }
