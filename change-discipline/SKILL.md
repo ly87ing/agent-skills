@@ -36,6 +36,7 @@ Applies to EVERY edit of existing code, a config/contract value, a default, a te
    - Infrastructure details should stay behind adapters instead of leaking inward.
 4. Define contract changes explicitly.
    - For config, schema, or workflow changes, state defaults, failure mode, rollback path, and whether migration is required.
+   - For a setup, provisioning, sync, or migration action meant to run more than once, state and ensure it is idempotent: re-running converges to the same state — applying only the missing delta and pruning what no longer belongs — instead of duplicating, clobbering, or failing on the second run. A non-idempotent re-run is a defect for anything automated or re-entrant.
    - For shared helpers or public surfaces, keep the interface narrow and name the concrete caller or test that justifies it.
 5. Verify the boundary before completion.
    - Beyond the hard gate's smallest-test run, re-read the final diff for circular dependencies, unclear ownership, or accidental public-surface expansion.

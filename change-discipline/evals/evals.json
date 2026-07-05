@@ -95,6 +95,11 @@
       "id": 19,
       "prompt": "I'm adding a batch job that rebuilds and pushes all container images. To make it fast I'll fan it out at maximum concurrency across the cluster nodes. Help me design it.",
       "expected_output": "Should trigger change-discipline. The result should treat resource impact as a first-class design constraint alongside business blast radius: the job runs on shared/production infrastructure, so it must bound CPU/memory/disk/IO, sense real pressure and self-throttle (start conservative, ramp up, back off or pause when load/IO climbs), leave headroom rather than run at the ceiling, and never starve the platform it runs on — maximizing the job's own throughput at the cluster's expense is a regression even if the job succeeds."
+    },
+    {
+      "id": 20,
+      "prompt": "I'm writing a bootstrap script that clones a skills repo to ~/.tool and symlinks each skill into place. People will re-run it, and the repo gains and drops skills over time. Help me get it right.",
+      "expected_output": "Should trigger change-discipline. As a setup/provisioning action meant to run more than once, it must be idempotent: re-running converges to the same state — creating symlinks for newly added skills, pruning links for dropped ones, and neither duplicating nor failing when already set up — instead of clobbering or erroring on the second run. It should state this idempotency contract explicitly and treat a non-idempotent re-run as a defect for a re-entrant bootstrap."
     }
   ]
 }
