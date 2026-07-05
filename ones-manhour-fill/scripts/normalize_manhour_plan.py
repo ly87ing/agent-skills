@@ -20,6 +20,10 @@ DEFAULT_TARGET_UNITS = UNITS_PER_WORKDAY
 DEFAULT_UNIT_STEP = 80000
 # ONES manhour timestamps are local; default to UTC+8 unless the plan sets timezone_offset_hours.
 DEFAULT_TIMEZONE_OFFSET_HOURS = 8
+# Per-allocation manhour descriptions are capped at this length and rejected
+# pre-write if longer, keeping entries concise and within a safe bound for the
+# ONES manhour description field.
+MAX_DESCRIPTION_CHARS = 240
 
 
 class PlanError(ValueError):
@@ -158,7 +162,7 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
         task_number = require_int(raw_item.get("task_number"), f"allocations[{index}].task_number", minimum=1)
         task_name = require_string(raw_item.get("task_name"), f"allocations[{index}].task_name")
         description = require_string(raw_item.get("description"), f"allocations[{index}].description")
-        if len(description) > 240:
+        if len(description) > MAX_DESCRIPTION_CHARS:
             raise PlanError(f"allocations[{index}].description is too long")
         item = {
             "task_uuid": task_uuid,

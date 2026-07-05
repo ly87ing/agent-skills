@@ -30,6 +30,11 @@
       "id": 6,
       "prompt": "Fill a full workday of manhours under parent task #592151 for June 18. Note that I already have 900000 units of unrelated manhours recorded on that date.",
       "expected_output": "Should trigger ones-manhour-fill. The run should query the current owner's existing records for the date first, detect that unrelated records already meet or exceed the day's target total, and stop and report the conflict rather than exceeding the target or updating/deleting existing records; it must stay add-only and not write records that would push the date over the target."
+    },
+    {
+      "id": 7,
+      "prompt": "Register a full workday of ONES manhours for 2026-06-18 under the parent task with uuid RASADFJ3k2l9QwErTy across its child tasks, then verify the total.",
+      "expected_output": "Should trigger ones-manhour-fill. Given a uuid rather than a number or URL, the run should resolve the current ONES identity, fetch the parent directly by uuid and enumerate its actual subtasks, query existing owner/date records first, build an add-only allocation totalling 800000 units, write only the missing records, and read back the same date to prove the final total."
     }
   ]
 }

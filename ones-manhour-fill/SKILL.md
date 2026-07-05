@@ -157,4 +157,4 @@ Report only the useful summary: date, parent, subtask numbers, units/day fractio
 
 Use `weight` for proportional planning or `units` for fixed values. Mixed `weight` and `units` records are allowed; fixed units are reserved first, and remaining units are distributed by weight.
 
-Run it as `python3 scripts/normalize_manhour_plan.py plan.json --pretty` (or pass `-` to read the plan from stdin). It echoes the plan and adds `start_time`, `total_units`, `total_days`, and per-allocation `hours` (units) and `day_fraction` — the fields the step 5 Dry-Run Review inspects.
+Run it as `python3 scripts/normalize_manhour_plan.py plan.json --pretty` (or pass `-` to read the plan from stdin); it requires Python 3.10+ and uses only the standard library. It echoes the plan and adds `start_time`, `total_units`, `total_days`, and per-allocation `hours` (units) and `day_fraction` — the fields the step 5 Dry-Run Review inspects.
