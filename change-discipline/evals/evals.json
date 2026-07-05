@@ -100,6 +100,11 @@
       "id": 20,
       "prompt": "I'm writing a bootstrap script that clones a skills repo to ~/.tool and symlinks each skill into place. People will re-run it, and the repo gains and drops skills over time. Help me get it right.",
       "expected_output": "Should trigger change-discipline. As a setup/provisioning action meant to run more than once, it must be idempotent: re-running converges to the same state — creating symlinks for newly added skills, pruning links for dropped ones, and neither duplicating nor failing when already set up — instead of clobbering or erroring on the second run. It should state this idempotency contract explicitly and treat a non-idempotent re-run as a defect for a re-entrant bootstrap."
+    },
+    {
+      "id": 21,
+      "prompt": "I'm setting the description field in a skill's YAML frontmatter and it contains a colon-space, like 'Use for X: do Y'. I'll paste it in unquoted — a quick split(':') sanity check passes, so it's safe, right?",
+      "expected_output": "Should trigger change-discipline. As a serialized-config change, the result should recognize that an unquoted YAML scalar containing ': ' (or a leading '#', or a '|'/'>') can silently reparse as a nested map, a comment, or a block scalar and load as the wrong thing, that a naive split(':') string check will not catch it (the real near-miss: an unquoted 'description:' with ': ' in it made two skills silently fail to load), and require quoting the scalar or using ' — ' as an inline separator and validating with a real YAML parser rather than string slicing."
     }
   ]
 }
