@@ -50,6 +50,11 @@
       "id": 10,
       "prompt": "Review my branch's code changes for bugs and style before I open a PR. Nothing is being merged yet.",
       "expected_output": "Should not trigger safe-merge-review; there is no merge, merge audit, or conflict to reason about. This is general pre-PR code review (code style and correctness), so safe-merge-review should not drive it; it applies once a merge, merge audit, or conflict resolution is actually in play."
+    },
+    {
+      "id": 11,
+      "prompt": "Here's the merge request: https://gitlab.example.com/team/backend/-/merge_requests/482 . Before I click merge, confirm the source branch is safe to bring into my current branch and that nothing on the shared config boundary was missed.",
+      "expected_output": "Should trigger safe-merge-review. From the merge request link the result should resolve the source ref and the target/current branch, fetch and model the diff (merge base, left/right counts, incoming commits, hotspot overlap on the shared config), do a semantic pre-review, and give a completeness proof plus an explicit push decision rather than blindly clicking merge. It should not defer this to a general MR-creation (gitlab) or a pre-PR code-review skill, because a merge-correctness proof is in play."
     }
   ]
 }

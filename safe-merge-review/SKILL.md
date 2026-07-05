@@ -69,7 +69,7 @@ Load these on demand instead of cramming every detail into the main flow:
 
 - When you need command templates, the strategy matrix, patch-equivalent, or completeness-verification methods, read [references/merge-workflow.md](references/merge-workflow.md)
 - When you need to judge hotspot risk, conflict semantics, or post-merge logical-mismatch patterns, read [references/merge-review-checklist.md](references/merge-review-checklist.md)
-- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling fields each time
+- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling fields each time. Pass each Reporting field as a flag — `--repo`, `--current-branch`, `--source-ref`, `--merge-base`, `--left-right-counts`, `--dirty-worktree`, `--merge-strategy`, `--completeness-proof`, `--proof-method`, `--semantic-review`, `--push-status` — and repeat `--incoming-commit`, `--hotspot`, `--conflict`, `--verification`, `--risk` once per item. It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent dirs). Any field left unset renders as a placeholder marker (residual risks as `none recorded`, proof method defaults to `is-ancestor`), so fill every field before treating the summary as final.
 
 ## Workflow Paths
 

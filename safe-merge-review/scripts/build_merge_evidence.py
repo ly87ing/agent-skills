@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""Render a deterministic Safe Merge Review evidence summary from CLI-supplied fields.
+
+Each Reporting field maps to a flag; unset scalar fields render as TODO (residual
+risks as "none recorded", proof method defaults to is-ancestor). Prints the markdown
+to stdout, or writes it to --output PATH. Standard library only.
+"""
 
 from __future__ import annotations
 
