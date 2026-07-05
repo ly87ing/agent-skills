@@ -85,6 +85,16 @@
       "id": 17,
       "prompt": "I annotated this function with a comment on nearly every line describing what each statement does. Review the comments for me.",
       "expected_output": "Should trigger change-discipline. The result should keep comments rare and useful: remove the line-by-line narration of obvious behavior, keep only comments that explain invariants, edge cases, or tradeoffs, and where a comment merely restates intent that clearer code should express, prefer renaming or restructuring over the comment per the stop condition."
+    },
+    {
+      "id": 18,
+      "prompt": "A teammate says this timeout bug is caused by the Redis client, and I'm inclined to just swap the client. But my own trace points at a connection-pool leak. Help me proceed.",
+      "expected_output": "Should trigger change-discipline. The result should treat the teammate's 'it's the Redis client' claim as a lead, not a verdict, reason from the observed behavior, and reconcile the two competing hypotheses with evidence instead of adopting the convenient one — continuing until at least two independent checks converge on the same root cause before changing code. Because swapping the client is a large, cross-cutting change, it should surface the diagnosis and options and let the user choose the direction rather than silently picking a fix on an unconfirmed cause."
+    },
+    {
+      "id": 19,
+      "prompt": "I'm adding a batch job that rebuilds and pushes all container images. To make it fast I'll fan it out at maximum concurrency across the cluster nodes. Help me design it.",
+      "expected_output": "Should trigger change-discipline. The result should treat resource impact as a first-class design constraint alongside business blast radius: the job runs on shared/production infrastructure, so it must bound CPU/memory/disk/IO, sense real pressure and self-throttle (start conservative, ramp up, back off or pause when load/IO climbs), leave headroom rather than run at the ceiling, and never starve the platform it runs on — maximizing the job's own throughput at the cluster's expense is a regression even if the job succeeds."
     }
   ]
 }

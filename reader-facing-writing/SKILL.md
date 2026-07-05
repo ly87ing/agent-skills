@@ -58,3 +58,4 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - Use one canonical visual per flow.
 - Verify the rendered result before declaring completion.
 - When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
+- For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom.

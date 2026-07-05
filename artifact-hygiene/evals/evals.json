@@ -55,6 +55,16 @@
       "id": 11,
       "prompt": "During this task I produced a config-looking JSON file, and I honestly can't tell whether it's throwaway scratch or something we'll want to keep. Where should it go?",
       "expected_output": "Should trigger artifact-hygiene. This is the genuinely-ambiguous case rule 5 governs: the agent cannot tell whether the artifact is disposable or worth keeping. It should ask the user rather than silently guessing; and if it cannot ask (a non-interactive or CI run), fall back to treating it as disposable in a temporary directory — never silently commit an ambiguous artifact into the repo."
+    },
+    {
+      "id": 12,
+      "prompt": "Before I edit these three config files, should I save a .bak copy of each one, plus a timestamped backup folder, just in case?",
+      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: do not create .bak / backup / timestamped duplicate copies before editing, because version control already preserves the prior state and such copies are disposable clutter. It should note the only sanctioned exception is a real product feature that must snapshot data (e.g. a pre-upgrade config backup), which should be opt-in and default-off rather than always producing copies."
+    },
+    {
+      "id": 13,
+      "prompt": "I wrote a small setup script that provisions the fail-close routing on this box; it worked. It's the kind of thing I'll need again when I set up the next machine. Where should it live?",
+      "expected_output": "Should trigger artifact-hygiene. By the reuse test, an automation/bootstrap script a future run or a fresh machine will need again is a project asset, not a disposable run artifact — persist it into the maintained project path rather than leaving it in a temporary directory. Contrast with a one-off script that only serves the current run, which stays disposable in /tmp."
     }
   ]
 }
