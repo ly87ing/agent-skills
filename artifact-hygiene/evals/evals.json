@@ -65,6 +65,11 @@
       "id": 13,
       "prompt": "I wrote a small setup script that provisions the fail-close routing on this box; it worked. It's the kind of thing I'll need again when I set up the next machine. Where should it live?",
       "expected_output": "Should trigger artifact-hygiene. By the reuse test, an automation/bootstrap script a future run or a fresh machine will need again is a project asset, not a disposable run artifact — persist it into the maintained project path rather than leaving it in a temporary directory. Contrast with a one-off script that only serves the current run, which stays disposable in /tmp."
+    },
+    {
+      "id": 14,
+      "prompt": "调试用的截图和临时脚本应该放在哪?别把仓库弄脏了,顺便把没用的中间产物清理掉。",
+      "expected_output": "Should trigger artifact-hygiene from Chinese-language phrasing. The result should classify each output (debug screenshots and one-off scripts as disposable run artifacts, anything a future run needs as a project asset), place disposables outside tracked paths, and clean up stale intermediates rather than leaving them in the repository."
     }
   ]
 }

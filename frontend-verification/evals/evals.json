@@ -45,6 +45,11 @@
       "id": 9,
       "prompt": "I need to confirm this marketing landing page renders correctly across mobile, tablet, and desktop breakpoints. Help me verify the responsive layout.",
       "expected_output": "Should trigger frontend-verification. The result should define the target viewports/breakpoints and per-viewport user-visible success criteria as the UI surface, then choose the browser tool by intent — Chrome DevTools device emulation for a one-off visual and layout-shift look at each breakpoint, or Playwright with explicit viewport sizes for reproducible, CI-stable responsive assertions — and capture a canonical screenshot per breakpoint rather than a single desktop-only view. If the responsive layout is a durable user-visible surface it should back the check with the smallest relevant Playwright test per references/playwright-essentials.md, not treat the ad hoc look as regression coverage."
+    },
+    {
+      "id": 10,
+      "prompt": "样式改完了,帮我在浏览器里把下单流程从头到尾点一遍,确认页面没有坏。",
+      "expected_output": "Should trigger frontend-verification from Chinese-language phrasing. The result should define user-visible success criteria for the checkout flow, drive it in a real browser, and capture evidence of the final state rather than declaring success from code changes alone."
     }
   ]
 }

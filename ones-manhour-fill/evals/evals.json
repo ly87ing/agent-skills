@@ -35,6 +35,16 @@
       "id": 7,
       "prompt": "Register a full workday of ONES manhours for 2026-06-18 under the parent task with uuid RASADFJ3k2l9QwErTy across its child tasks, then verify the total.",
       "expected_output": "Should trigger ones-manhour-fill. Given a uuid rather than a number or URL, the run should resolve the current ONES identity, fetch the parent directly by uuid and enumerate its actual subtasks, query existing owner/date records first, build an add-only allocation totalling 800000 units, write only the missing records, and read back the same date to prove the final total."
+    },
+    {
+      "id": 8,
+      "prompt": "帮我把 6 月 18 号的工时登记到 ONES 父任务 #592151 下面,按我今天的工作总结分配到子任务,补满一个工作日。",
+      "expected_output": "Should trigger ones-manhour-fill from Chinese-language phrasing. The run should confirm the ONES identity, fetch the parent task and its actual subtasks, check existing records for the date, build an add-only allocation totalling 800000 units, and verify the written total afterwards."
+    },
+    {
+      "id": 9,
+      "prompt": "查一下我这个迭代还剩几个没关闭的缺陷,列个清单就行。",
+      "expected_output": "Should NOT trigger ones-manhour-fill; this is a pure ONES defect query with no manhour writing involved (Chinese-language phrasing), so it routes to the ONES connector directly."
     }
   ]
 }

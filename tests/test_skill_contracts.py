@@ -37,8 +37,11 @@ FORBIDDEN_CORE_RUNTIME_TERMS = {
     "Read 工具",
     "update_plan",
 }
-# CJK punctuation + kana + ideographs + fullwidth forms. Skill content must
-# stay all-English; embed any CJK literal a script needs as a \u escape.
+# CJK punctuation + kana + ideographs + fullwidth forms. Distribution-layer
+# content (SKILL.md, references/, agents/, openai.*) must stay all-English;
+# embed any CJK literal a script needs as a \u escape. Sole carve-out: an
+# eval's "prompt" simulates real user phrasing, and the primary user phrases
+# requests in Chinese \u2014 see test_skill_content_is_english_only.
 CJK_PATTERN = re.compile(r"[\u3000-\u303f\u3040-\u30ff\u4e00-\u9fff\uff00-\uffef]")
 
 
@@ -276,6 +279,22 @@ class SkillContractTests(unittest.TestCase):
 
         for path in targets:
             text = path.read_text(encoding="utf-8")
+            if path.name == "evals.json" and path.parent.name == "evals":
+                # Eval prompts simulate real user phrasing and may be written
+                # in the primary user's language (Chinese); a blanket CJK ban
+                # here left Chinese triggering permanently untested. Every
+                # other evals.json field stays English.
+                payload = json.loads(text)
+                fields = [str(payload.get("skill_name", ""))]
+                for case in payload.get("evals", []):
+                    fields.extend(str(value) for key, value in case.items() if key != "prompt")
+                for field in fields:
+                    self.assertIsNone(
+                        CJK_PATTERN.search(field),
+                        f"{path.relative_to(ROOT)}: non-prompt eval field contains "
+                        f"non-English content: {field!r}",
+                    )
+                continue
             match = CJK_PATTERN.search(text)
             if match:
                 line_no = text[: match.start()].count("\n") + 1

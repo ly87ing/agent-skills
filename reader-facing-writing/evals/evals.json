@@ -55,6 +55,11 @@
       "id": 11,
       "prompt": "I'm presenting to my own engineering team on the value of the new coding standards we're rolling out. They already know all the tools and jargon, but they keep saying the slides are hard to follow, and I pasted in some platform metrics plus a few points I borrowed from a vendor's blog to make the case. Tighten it so it actually lands.",
       "expected_output": "Should trigger reader-facing-writing. For an expert audience that still can't follow, the fix is to decompress telegraphic claims — state each claim with its evidence and its point as a self-contained sentence rather than assuming the reader reconstructs the logic — not to define terms they already know. It should check that each borrowed number actually measures the claim over a matching period and population and drop any baseline gathered before the change it credits (or reframe the claim), and never keep figures added only to look rigorous. Borrowed vendor framing should be re-fit to this team's own situation rather than transplanted wholesale, and any slide, element, or number that does not advance the document's purpose or connect to it should be cut."
+    },
+    {
+      "id": 12,
+      "prompt": "把这份排查记录整理成一页纸的复盘报告,领导要看,重点讲清楚根因和后续动作。",
+      "expected_output": "Should trigger reader-facing-writing from Chinese-language phrasing. The result should fix the reader (leadership) and the decision, lead with the takeaway (root cause and follow-up actions), keep source facts intact while compressing, and give follow-up items owners and dates."
     }
   ]
 }

@@ -62,7 +62,8 @@ agent-skills/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   ├── evals/
-│   └── scripts/
+│   ├── scripts/
+│   └── tests/
 ├── change-discipline/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -89,9 +90,15 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `agents/antigravity.md`: a thin adapter note for Antigravity CLI invocation, progress tracking, and tool boundaries
 - `references/`: reference material loaded on demand (when a single file exceeds 100 lines, put a table of contents at the top so a partial read still conveys the full picture)
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
-- `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill
+- `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing; every other field stays English.
+- `tests/`: per-skill unit tests guarding fragile script logic, run automatically by the top-level suite
 
 All 6 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+
+Verification commands:
+
+- `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite
+- `python3 tests/run_trigger_evals.py --model haiku` — judge each eval's triggering decision against a live model via `claude -p` (repeat with `--model sonnet` / `--model opus` to cover the multi-model checklist)
 
 Runtime adaptation rules:
 
