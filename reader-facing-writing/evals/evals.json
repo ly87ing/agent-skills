@@ -50,6 +50,11 @@
       "id": 10,
       "prompt": "Turn our messy release-readiness notes into a pre-launch checklist the on-call team can actually run through.",
       "expected_output": "Should trigger reader-facing-writing. The result should lead each item with its check/takeaway, keep peer items parallel (the same fields in the same order, e.g. check / owner / done criterion), sequence the items on one explicit logic (time, structure, or descending importance), and make the set non-overlapping and collectively complete — flagging any gap or leftover 'other'. It should preserve source wording for owners, dates, and uncertain values, mark unknowns as TBD rather than inventing to look complete, and must not present an aspirational or desired state as already done."
+    },
+    {
+      "id": 11,
+      "prompt": "I'm presenting to my own engineering team on the value of the new coding standards we're rolling out. They already know all the tools and jargon, but they keep saying the slides are hard to follow, and I pasted in some platform metrics plus a few points I borrowed from a vendor's blog to make the case. Tighten it so it actually lands.",
+      "expected_output": "Should trigger reader-facing-writing. For an expert audience that still can't follow, the fix is to decompress telegraphic claims — state each claim with its evidence and its point as a self-contained sentence rather than assuming the reader reconstructs the logic — not to define terms they already know. It should check that each borrowed number actually measures the claim over a matching period and population and drop any baseline gathered before the change it credits (or reframe the claim), and never keep figures added only to look rigorous. Borrowed vendor framing should be re-fit to this team's own situation rather than transplanted wholesale, and any slide, element, or number that does not advance the document's purpose or connect to it should be cut."
     }
   ]
 }

@@ -18,6 +18,8 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Keep the source framework when condensing; reword a layer, do not delete it.
    - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
    - Mark unknown values as TBD or cut them; do not invent to look complete.
+   - Preserving source truth is not adopting the source's framing: when the source was written for a different audience or kind of organization, keep its verified facts but re-fit its stance, scope, and examples to what is true for your reader.
+   - A number only supports a claim if it measures that claim over a matching period and population — a baseline gathered before the change you are crediting cannot show that change's effect. Cut such data or reframe the claim, and never add figures just to look rigorous.
 3. Write for scanning.
    - Lead every section, paragraph, and item with its takeaway, and make that takeaway truly summarize what sits beneath it.
    - Keep peer items parallel, with the same fields in the same order, and sequence the items on one explicit logic — time, structure, or descending importance.
@@ -28,6 +30,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 4. Keep the prose plain.
    - Use active voice, specific verbs, one idea per sentence, and no marketing filler.
    - Calibrate terms to the reader: define what they won't know, don't explain terms they already use, and use each term consistently.
+   - Decompress claims instead of telegraphing them: shorthand that packs a claim, its evidence, and its point into one fragment forces the reader to rebuild the logic and loses even an expert audience — state each as a self-contained sentence that lands without prior context.
    - Keep each example or aside no heavier than the point it makes.
    - Do not narrate the document itself.
 5. For plans and action items, include time and done criteria.
@@ -37,6 +40,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 6. Revise before done.
    - Re-read as the target reader, reading it aloud to catch stiff or unnatural phrasing.
    - Cut redundancy, verify facts, and confirm each section starts with its takeaway.
+   - Check that every section, element, and number visibly connects to the document's purpose and to the part before it — one that ties to neither is misplaced or filler and should go.
    - When you change a value that recurs — a name, number, date, owner, or cross-reference — search the whole document for every occurrence and stale pointer (counts, "task N", "see above/below", section labels) before declaring done.
 
 ## Designing And Verifying Visuals
