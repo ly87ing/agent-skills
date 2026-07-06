@@ -1,6 +1,6 @@
 ---
 name: safe-merge-review
-description: Use when the user wants to merge a branch, a remote ref, or the corresponding branches across a set of related repos into the current working branch, or wants to review whether "this merge is correct", "anything was missed", "the conflict resolution is reliable", or "it is safe to push after the merge". Applies when the user provides a branch name, remote ref, repo path, conflicted files, a merge commit, a merge request link, or a multi-repo set of branches. Proves that "the merge is correct" rather than merely running git merge, through diff modeling, hotspot-overlap review, semantic re-review, completeness proof, minimal relevant verification, and a push decision.
+description: Use when the user wants to merge a branch, a remote ref, or the corresponding branches across a set of related repos into the current working branch, or wants to review whether "this merge is correct", "anything was missed", "the conflict resolution is reliable", or "it is safe to push after the merge". Applies when the user provides a branch name, remote ref, repo path, conflicted files, a merge commit, a merge request link, or a multi-repo set of branches. Proves that "the merge is correct" rather than merely running git merge, through diff modeling, hotspot-overlap review, semantic re-review, completeness proof, minimal relevant verification, and a push decision. Not for general branch code-quality review while no merge, merge audit, or conflict resolution is in play.
 ---
 
 # Safe Merge Review
