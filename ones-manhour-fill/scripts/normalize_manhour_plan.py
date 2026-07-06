@@ -106,7 +106,7 @@ def distribute_units(allocations: list[dict[str, Any]], target_units: int, unit_
         raise PlanError("remaining units are too small for weighted allocation")
 
     total_weight = sum(float(allocations[index].get("weight", 1)) for index in weighted_indexes)
-    assigned = 0
+    assigned = total_fixed
     remainders: list[tuple[float, int]] = []
     for index in weighted_indexes:
         exact = remaining * float(allocations[index].get("weight", 1)) / total_weight
