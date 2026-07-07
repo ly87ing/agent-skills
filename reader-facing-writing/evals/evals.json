@@ -60,6 +60,11 @@
       "id": 12,
       "prompt": "把这份排查记录整理成一页纸的复盘报告,领导要看,重点讲清楚根因和后续动作。",
       "expected_output": "Should trigger reader-facing-writing from Chinese-language phrasing. The result should fix the reader (leadership) and the decision, lead with the takeaway (root cause and follow-up actions), keep source facts intact while compressing, and give follow-up items owners and dates."
+    },
+    {
+      "id": 13,
+      "prompt": "我在写一份给评审看的系统说明:一段是多个服务按时间先后来回调用、最后触发雪崩的过程,现在全是文字、大家说顺序看不清;另一段是模块的父子层级结构。帮我把这两段讲清楚。",
+      "expected_output": "Should trigger reader-facing-writing. Because each piece has a shape a diagram conveys faster than prose, the result should reach for a diagram instead of describing it in words, and match the type to the content: a sequence diagram for the services interacting over time, and a tree for the parent-child module hierarchy — not a mind map, which suits exploratory overviews rather than formal structure. Each diagram should carry a single message and stay legible, paired with a short caption instead of repeating the flow in prose."
     }
   ]
 }
