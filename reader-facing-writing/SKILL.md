@@ -23,7 +23,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 3. Write for scanning.
    - Lead every section, paragraph, and item with its takeaway, and make that takeaway truly summarize what sits beneath it.
    - Keep peer items parallel, with the same fields in the same order, and sequence the items on one explicit logic — time, structure, or descending importance.
-   - Prefer lists for long sentences and tables for dense or relational data; reserve diagrams for genuine process flows.
+   - Prefer lists for long sentences and tables for dense or relational data; where order, hierarchy, or flow carries the meaning better than prose, reach for a diagram instead of describing it in words.
    - Put one fact in one place and cross-reference instead of repeating.
    - When you split a topic into parts, make them non-overlapping and collectively complete — flag any gap or leftover "other".
    - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps per reader written as action items (with owner, date, and done criteria).
@@ -48,6 +48,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - Make content legibility the bar; keep decorative styling secondary, and use color only when it encodes meaning (category, severity, diff), not as ornament.
 - When color carries meaning, pair it with a label, shape, or pattern so it reads without color.
 - Match the visual to its information density: never spend a large diagram on a few facts — pick the most compact form that stays legible.
+- Match the diagram type to the content: sequence diagram for interaction over time, flowchart or node graph for process and causal chains, a tree for hierarchy — and reserve mind maps for exploratory overviews, not formal structure.
 - Encode values by position or length before angle, area, or color; avoid pie, 3D, and dual-axis charts.
 - Start bar and area baselines at zero, and keep visual magnitude proportional to the data.
 - Title each visual with its takeaway, and label series directly instead of relying on a legend.
