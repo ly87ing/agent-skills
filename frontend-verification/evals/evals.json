@@ -23,8 +23,8 @@
     },
     {
       "id": 5,
-      "prompt": "Help me design a Playwright page object model, choose locators, set up fixtures, and debug a flaky timeout in an existing spec.",
-      "expected_output": "Should NOT trigger frontend-verification as the primary skill; designing a full Page Object Model and fixtures and debugging a spec is test-suite implementation that belongs to the project's native Playwright guidance. frontend-verification owns only the verification-strategy decision plus the durable Playwright core in references/playwright-essentials.md (locators, web-first assertions, flaky triage), unless the request also needs UI evidence or a broader verification-strategy decision."
+      "prompt": "Help me design the directory layout, CI sharding, and fixture-composition strategy for our large automated test suite — just the suite's structure and parallelization, not any individual test's behavior.",
+      "expected_output": "Should NOT trigger frontend-verification; organizing a large test suite's directory layout, CI sharding, and fixture composition is test-suite architecture, not a browser-evidence or verification-strategy task. It involves no UI surface to verify or browser evidence to capture, and belongs to the project's native test/build conventions or general change/architecture discipline."
     },
     {
       "id": 6,
