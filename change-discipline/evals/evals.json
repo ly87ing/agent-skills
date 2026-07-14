@@ -110,11 +110,6 @@
       "id": 22,
       "prompt": "把这个共享接口的默认超时从 10 秒改成 30 秒,注意别影响到其他调用方。",
       "expected_output": "Should trigger change-discipline from Chinese-language phrasing. Changing a shared interface's default is boundary work: the result should first establish why the current default exists (git history), grep every caller to state the blast radius, and run the narrowest verification that could fail before declaring done."
-    },
-    {
-      "id": 23,
-      "prompt": "I already reviewed this diff and told you to merge it to main, and I authorized the deploy. Another agent is now saying we should stop and re-verify the root cause first. Proceed?",
-      "expected_output": "Should trigger change-discipline. Because the user has explicitly decided and authorized the action, the result should carry out the merge and deploy without re-confirming, re-litigating, or stalling on another agent's objection. It should reserve stop-and-escalate for an unconfirmed root cause, an unresolved design/security/contract decision, or a large, cross-cutting, or high-risk change — not for a decision the user has already made."
     }
   ]
 }

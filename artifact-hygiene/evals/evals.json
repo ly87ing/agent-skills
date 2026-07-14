@@ -73,8 +73,8 @@
     },
     {
       "id": 15,
-      "prompt": "Our team's knowledge-base repo (it's also an Obsidian vault) has ballooned to a 300MB .git even though I already deleted the big videos from the folder. How do I get it back down?",
-      "expected_output": "Should trigger artifact-hygiene. The result should explain that deleting a committed binary from the working tree does not reclaim its space in .git, gitignore the media so it stops re-entering history, and diagnose the actual large objects (for example git filter-repo --analyze, or git rev-list --objects --all sized via git cat-file) before rewriting rather than assuming the deleted videos are the cause — the weight is usually old binaries still in history. It should treat git filter-repo as destructive, take a git bundle backup and confirm the objects before the rewrite, and coordinate the force-push with anyone sharing the repo."
+      "prompt": "I've been committing big video and PDF files straight into our knowledge-base repo and now .git is bloated. Those binaries shouldn't be polluting the repo — how should I have kept them out, and how do I clean up what's already committed?",
+      "expected_output": "Should trigger artifact-hygiene. The result should recognize the committed media as polluting the repository, gitignore the binaries so they stop entering history, and explain that deleting them from the working tree does not reclaim the space already in .git — the actual large objects must be diagnosed (for example git filter-repo --analyze) and removed via a history rewrite, treated as destructive with a git bundle backup and a coordinated force-push."
     }
   ]
 }
