@@ -70,6 +70,11 @@
       "id": 14,
       "prompt": "调试用的截图和临时脚本应该放在哪?别把仓库弄脏了,顺便把没用的中间产物清理掉。",
       "expected_output": "Should trigger artifact-hygiene from Chinese-language phrasing. The result should classify each output (debug screenshots and one-off scripts as disposable run artifacts, anything a future run needs as a project asset), place disposables outside tracked paths, and clean up stale intermediates rather than leaving them in the repository."
+    },
+    {
+      "id": 15,
+      "prompt": "Our team's knowledge-base repo (it's also an Obsidian vault) has ballooned to a 300MB .git even though I already deleted the big videos from the folder. How do I get it back down?",
+      "expected_output": "Should trigger artifact-hygiene. The result should explain that deleting a committed binary from the working tree does not reclaim its space in .git, gitignore the media so it stops re-entering history, and diagnose the actual large objects (for example git filter-repo --analyze, or git rev-list --objects --all sized via git cat-file) before rewriting rather than assuming the deleted videos are the cause — the weight is usually old binaries still in history. It should treat git filter-repo as destructive, take a git bundle backup and confirm the objects before the rewrite, and coordinate the force-push with anyone sharing the repo."
     }
   ]
 }

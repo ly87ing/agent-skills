@@ -33,3 +33,9 @@ description: Decide safe locations and cleanup rules for generated files, debug 
 - Do not invent a project-local output convention unless the user explicitly asks for a reusable convention.
 - Never place disposable artifacts in tracked or likely-to-be-committed paths such as repo root, `docs/`, `scripts/`, `tests/fixtures/`, or ad hoc folders.
 - When a file is already under version control (git etc.), do not create `.bak`, backup, or timestamped duplicate copies of it before editing — history already preserves the prior state, so such copies are disposable clutter. Without version control, a pre-edit backup can be legitimate. If a *feature* needs to snapshot data (e.g. a pre-upgrade config backup), make it opt-in and default-off rather than always producing copies.
+
+## Repository Weight From Binaries
+
+- In a repo that also stores binaries or media (a knowledge base, an Obsidian-style vault, an assets tree), gitignore the media so it never enters history — deleting a committed binary from the working tree does not reclaim the space it already took in `.git`.
+- When `.git` is already heavy, diagnose the actual large objects before rewriting (`git filter-repo --analyze`, or `git rev-list --objects --all` with `git cat-file --batch-check` sorted by size) rather than assuming the biggest current file is the cause — the real weight is usually old binaries already deleted from the tree, while the file you suspected may have been ignored all along.
+- History rewriting (`git filter-repo`) is destructive and changes every later commit hash: take a `git bundle` backup first, confirm the diagnosed objects, then coordinate the force-push with anyone sharing the repo. This pre-rewrite bundle is a deliberate safety net, not the per-file `.bak` clutter the hard boundary forbids.
