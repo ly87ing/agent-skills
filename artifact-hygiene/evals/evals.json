@@ -48,7 +48,7 @@
     },
     {
       "id": 10,
-      "prompt": "Export the quarterly usage query results to a JSON file I need to send to finance.",
+      "prompt": "I need to export the quarterly usage results as a JSON file to hand to finance. Where should this file live — is it okay in a scratch dir, or does it belong somewhere durable I can keep?",
       "expected_output": "Should trigger artifact-hygiene. Even though the file is JSON, it is a requested deliverable because the user asked for it as the output they need — it must NOT be classified as a disposable JSON dump by format. Place it in a durable location the user can retrieve it from (or ask where it belongs), do not put it in a temporary/scratchpad directory, and do not delete it on completion. This is the mirror image of a JSON file dumped incidentally during debugging (which is disposable): same format, opposite classification, decided solely by whether the user asked for it as the deliverable."
     },
     {
