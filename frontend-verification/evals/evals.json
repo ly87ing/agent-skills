@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I changed the validation logic on the checkout page and want to add a reproducible check that can run in CI to confirm an empty cart cannot be submitted.",
+      "prompt": "Help me write a reproducible browser test for CI that verifies the checkout page's empty-cart behavior — driving the page and asserting an empty cart cannot be submitted.",
       "expected_output": "Should trigger frontend-verification. The result should first define the UI surface and the user-visible success criteria, then choose Playwright for reproducible assertions and regression coverage to match the intent, rather than only doing a one-off manual look."
     },
     {
