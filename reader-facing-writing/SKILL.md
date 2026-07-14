@@ -1,6 +1,6 @@
 ---
 name: reader-facing-writing
-description: Write or revise reader-facing documents, plans, reports, proposals, specs, checklists, Markdown, HTML decks, dashboards, and decision briefs. Use when content is meant for humans to read, decide from, review, or reuse, including compacting source material without losing its framework.
+description: Write or revise reader-facing documents, plans, reports, proposals, specs, checklists, Markdown, HTML decks, dashboards, decision briefs, and agent-facing instruction files (AGENTS.md, CLAUDE.md). Use when content is meant for humans or agents to read, decide from, act on, review, or reuse, including compacting source material without losing its framework.
 ---
 
 # Reader-facing Writing
@@ -11,6 +11,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - State scope and the key takeaway up front.
    - Give just enough context and the trigger for why this matters now before the detail.
    - Match depth, terminology, and format to what the reader must decide or do.
+   - Scope content to the reader's role: cover what they own and must act on, and abstract mechanics owned by another layer (for example platform-managed versus developer-owned configuration) behind a named boundary rather than exposing internals they cannot change.
    - Pitch detail to the document's purpose; when the goal is to change how people think or act, lead with what it means for the reader and cut detail below that purpose.
    - Calibrate the opening to the audience's starting familiarity: for an outward or introductory piece to readers new to the subject, first establish what the subject is in the plainest terms before its implications — a fresh audience cannot absorb what a thing means for them until they know what the thing is. Lead straight with implications only when the reader already knows the subject.
    - For a large restructure or subjective rewrite where the user has not specified the target tone, structure, or ordering, show a compact target outline or 2-3 concrete options before executing. For small edits or explicit user directions, proceed directly and preserve choices already made.
@@ -24,6 +25,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Lead every section, paragraph, and item with its takeaway, and make that takeaway truly summarize what sits beneath it.
    - Keep peer items parallel, with the same fields in the same order, and sequence the items on one explicit logic — time, structure, or descending importance.
    - Prefer lists for long sentences and tables for dense or relational data; where order, hierarchy, or flow carries the meaning better than prose, reach for a diagram instead of describing it in words.
+   - State what every figure counts and its basis (period, population, definition); a bare number or percentage the reader cannot interpret is noise — aggregate raw counts into the categories that carry the insight (which items are in scope and their status), or cut them.
    - Put one fact in one place and cross-reference instead of repeating.
    - When you split a topic into parts, make them non-overlapping and collectively complete — flag any gap or leftover "other".
    - For a multi-topic brief, open with an agenda of what it covers, give each item its own section, and close with next steps per reader written as action items (with owner, date, and done criteria).
@@ -32,6 +34,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Calibrate terms to the reader: define what they won't know, don't explain terms they already use, and use each term consistently.
    - Decompress claims instead of telegraphing them: shorthand that packs a claim, its evidence, and its point into one fragment forces the reader to rebuild the logic and loses even an expert audience — state each as a self-contained sentence that lands without prior context.
    - Keep each example or aside no heavier than the point it makes.
+   - Choose examples that are current, meaningful to this audience, and consistent with the claim they support — drop stale tools, insider-only cases, and any example that undercuts its own point.
    - Do not narrate the document itself.
 5. For plans and action items, include time and done criteria.
    - Give every action item a single owner, a concrete verb-first action, and a due date.
@@ -66,3 +69,12 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
 - For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom.
 - Use motion only to aid comprehension — a progressive reveal that paces a dense slide, or an animated build that walks through a process step by step — never as decoration; a static form that reads instantly beats motion that delays the point.
+
+## Agent-facing instruction files
+
+When the reader is an agent that will act on the file (AGENTS.md, CLAUDE.md, or a rules/domain doc), optimize for density and executable content, not narrative.
+
+- Keep only what the agent acts on: commands, paths, boundaries (what may and may not change), and hard rules stated as their executable part.
+- Cut identity, ownership, vision, org-process asides, and slogans — an agent does not act on "owner: X team" or "define once, applies to everyone".
+- Apply a delete test to every line: if removing it would not change what the agent does, remove it.
+- Title the file with the repository name, not a marketing phrase.

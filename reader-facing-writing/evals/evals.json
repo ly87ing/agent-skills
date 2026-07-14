@@ -65,6 +65,16 @@
       "id": 13,
       "prompt": "我在写一份给评审看的系统说明:一段是多个服务按时间先后来回调用、最后触发雪崩的过程,现在全是文字、大家说顺序看不清;另一段是模块的父子层级结构。帮我把这两段讲清楚。",
       "expected_output": "Should trigger reader-facing-writing. Because each piece has a shape a diagram conveys faster than prose, the result should reach for a diagram instead of describing it in words, and match the type to the content: a sequence diagram for the services interacting over time, and a tree for the parent-child module hierarchy — not a mind map, which suits exploratory overviews rather than formal structure. Each diagram should carry a single message and stay legible, paired with a short caption instead of repeating the flow in prose."
+    },
+    {
+      "id": 14,
+      "prompt": "Trim our repo's AGENTS.md — it opens with three paragraphs on the team's mission and who owns the service before any of the actual build and test commands. Make it something an agent can actually follow.",
+      "expected_output": "Should trigger reader-facing-writing. Because the reader is an agent that acts on the file, the result should optimize for density and executable content: keep the commands, paths, boundaries (what may and may not change), and hard rules, and cut the mission, ownership, vision, and org-process narrative an agent does not act on. It should apply a delete test to each line (remove anything whose removal would not change what the agent does) and title the file with the repository name rather than a marketing phrase."
+    },
+    {
+      "id": 15,
+      "prompt": "这页状态汇报里全是干巴巴的数字——'47 个工单'、'62%'、'13 个仓库'——评审说这些数字不知所谓。帮我改得能落地。",
+      "expected_output": "Should trigger reader-facing-writing. The result should make each figure state what it counts and its basis (period, population, definition) instead of leaving bare counts and percentages the reader cannot interpret, and aggregate raw counts into the categories that carry the insight (for example which items are in scope and their status) or cut numbers that do not advance the point. It should not add figures merely to look rigorous."
     }
   ]
 }
