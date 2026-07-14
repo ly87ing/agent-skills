@@ -38,13 +38,13 @@
     },
     {
       "id": 8,
-      "prompt": "Make me a slide deck (an HTML PPT) about our team's AI-First rollout that I can share with the team.",
-      "expected_output": "Should trigger artifact-hygiene. Because the user explicitly asked for the deck as the end product, classify it as a requested deliverable — not a disposable HTML dump, despite the .html format. Place it in the durable maintained location where similar shared/deliverable docs already live (or ask the user where it belongs if there is no clear peer), do not put it in a temporary/scratchpad directory, and do not delete it on completion."
+      "prompt": "I finished the rollout deck the team asked for — it's an .html file. My session instructions say to put temporary files in the scratchpad. Does this deck belong in the scratchpad, or somewhere durable?",
+      "expected_output": "Should trigger artifact-hygiene. Because the deck is a requested deliverable, it must not be classified as a disposable HTML dump despite the .html format, and the scratchpad instruction does not apply to it (that governs disposable run artifacts, not a deliverable the user asked for). Place it in the durable maintained location where similar shared/deliverable docs already live (or ask where it belongs if there is no clear peer), and do not delete it on completion."
     },
     {
       "id": 9,
-      "prompt": "Write up the database migration plan as a Markdown doc — I want to keep it in the repo and hand it to the team.",
-      "expected_output": "Should trigger artifact-hygiene. The user asked for the write-up as the end product to keep. Either SKILL-supported label is acceptable — a requested deliverable or a durable-doc project asset — because both resolve to the same placement; what matters is that it is NOT treated as a disposable investigation note. Place it in the maintained docs path where the team's other kept docs live (or ask if there is no clear peer), and do not delete it on completion. Demonstrates the keep-and-place outcome generalizes beyond decks to prose documents."
+      "prompt": "I finished the database migration plan file and want to keep it and hand it to the team. Should this file live in a temp folder, or somewhere in the repo?",
+      "expected_output": "Should trigger artifact-hygiene. The user wants to keep the write-up as the end product, so it must not be treated as a disposable investigation note left in a temporary folder. Either SKILL-supported label is acceptable — a requested deliverable or a durable-doc project asset — because both resolve to the same placement. Place it in the maintained docs path where the team's other kept docs live (or ask if there is no clear peer), and do not delete it on completion. Demonstrates the keep-and-place outcome generalizes beyond decks to prose documents."
     },
     {
       "id": 10,
@@ -58,8 +58,8 @@
     },
     {
       "id": 12,
-      "prompt": "Before I edit these three config files, should I save a .bak copy of each one, plus a timestamped backup folder, just in case?",
-      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: do not create .bak / backup / timestamped duplicate copies before editing, because version control already preserves the prior state and such copies are disposable clutter. It should note the only sanctioned exception is a real product feature that must snapshot data (e.g. a pre-upgrade config backup), which should be opt-in and default-off rather than always producing copies."
+      "prompt": "I'm tempted to save a .bak copy of each file plus a timestamped backup folder before I make my edits, just in case. These files are already tracked in git — is that clutter I should skip?",
+      "expected_output": "Should trigger artifact-hygiene. The result should refuse per the hard boundary: because the files are already under version control, do not create .bak / backup / timestamped duplicate copies before editing — history already preserves the prior state and such copies are disposable clutter. It should note the only sanctioned exception is a real product feature that must snapshot data (e.g. a pre-upgrade config backup), which should be opt-in and default-off rather than always producing copies."
     },
     {
       "id": 13,
