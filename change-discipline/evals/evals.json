@@ -58,8 +58,8 @@
     },
     {
       "id": 12,
-      "prompt": "When this endpoint receives invalid arguments or missing fields, I currently silently fall back to a default value. Does that look okay to you?",
-      "expected_output": "Should trigger change-discipline. The result should require fail-close rejection of malformed, unsupported, or ambiguous external input and config, and not silently coerce unless an existing compatibility contract requires it."
+      "prompt": "Review the input validation on this endpoint: when it gets invalid arguments or missing fields it silently coerces them to a default instead of rejecting. Should I change it to fail closed?",
+      "expected_output": "Should trigger change-discipline. As an input-validation change, the result should require fail-close rejection of malformed, unsupported, or ambiguous external input and config, and not silently coerce unless an existing compatibility contract requires it."
     },
     {
       "id": 13,
@@ -103,7 +103,7 @@
     },
     {
       "id": 21,
-      "prompt": "I'm setting the description field in a skill's YAML frontmatter and it contains a colon-space, like 'Use for X: do Y'. I'll paste it in unquoted — a quick split(':') sanity check passes, so it's safe, right?",
+      "prompt": "I'm changing a value in our YAML config file — it contains a colon-space and I'm pasting it in unquoted. A quick split(':') check passes. Is that a safe serialized-config change, or will the YAML reparse it wrong?",
       "expected_output": "Should trigger change-discipline. As a serialized-config change, the result should recognize that an unquoted YAML scalar containing ': ' (or a leading '#', or a '|'/'>') can silently reparse as a nested map, a comment, or a block scalar and load as the wrong thing, that a naive split(':') string check will not catch it (the real near-miss: an unquoted 'description:' with ': ' in it made two skills silently fail to load), and require quoting the scalar or using ' — ' as an inline separator and validating with a real YAML parser rather than string slicing."
     },
     {
