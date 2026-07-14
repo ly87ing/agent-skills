@@ -19,6 +19,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
 3. Preserve authenticated context deliberately.
    - Do not assume a fresh isolated browser has the required cookies, profile, or permissions.
    - If a browser tool cannot start, connect, or attach, report that tool failure before falling back.
+   - When the user has removed the blocker — logged you in, granted access, or opened the tool for you — carry the real interaction through to completion and capture the evidence (the live run, its screenshots, or the recording); do not stall or substitute a written description for the actual interaction the task called for.
 4. Do not replace regression coverage with inspection.
    - DevTools and session browsers diagnose and execute tasks; durable user-visible bugs need the smallest relevant Playwright or project-native check unless the user asked only for ad hoc investigation.
 5. Verify interactive HTML before done.

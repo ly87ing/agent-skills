@@ -50,6 +50,11 @@
       "id": 10,
       "prompt": "样式改完了,帮我在浏览器里把下单流程从头到尾点一遍,确认页面没有坏。",
       "expected_output": "Should trigger frontend-verification from Chinese-language phrasing. The result should define user-visible success criteria for the checkout flow, drive it in a real browser, and capture evidence of the final state rather than declaring success from code changes alone."
+    },
+    {
+      "id": 11,
+      "prompt": "You opened the browser to the vendor's chat tool but then stopped — I already logged you in for you. Please actually run the conversation and record it into the demo, don't just describe what it would look like.",
+      "expected_output": "Should trigger frontend-verification. Because the user has removed the blocker by completing the login, the result should carry the real interaction through to completion in the live tool and capture the evidence — the actual run, screenshots, or a recording — rather than stalling or substituting a written description for the demo. It should reuse the authenticated session the user provided instead of assuming a fresh browser has it, and report a tool failure first only if the browser genuinely cannot proceed."
     }
   ]
 }
