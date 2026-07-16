@@ -75,6 +75,16 @@
       "id": 15,
       "prompt": "这页状态汇报里全是干巴巴的数字——'47 个工单'、'62%'、'13 个仓库'——评审说这些数字不知所谓。帮我改得能落地。",
       "expected_output": "Should trigger reader-facing-writing. The result should make each figure state what it counts and its basis (period, population, definition) instead of leaving bare counts and percentages the reader cannot interpret, and aggregate raw counts into the categories that carry the insight (for example which items are in scope and their status) or cut numbers that do not advance the point. It should not add figures merely to look rigorous."
+    },
+    {
+      "prompt": "这段 20 分钟的排查录屏，你能帮我直接裁剪一下放进分享材料吗？",
+      "expected_output": "Should trigger reader-facing-writing. The result should treat trimming as making the recording usable rather than merely shorter (cutting dead waiting time, speed-ramping the exploratory stretch while keeping the payoff at real time, cropping tool chrome and status bars), should check legibility at viewing size and propose a static or before/after capture as the primary visual with the recording demoted to optional supporting evidence if it is not legible, and should let sensitive content rather than duration decide the cut points, trusting extracted frames over timestamps.",
+      "id": 16
+    },
+    {
+      "prompt": "我有改造前和改造后两张截图，想放进 deck 里说明这次重做的效果。",
+      "expected_output": "Should trigger reader-facing-writing. The result should hold every incidental variable constant between the two panels (theme, crop, dimensions, and state) and re-capture rather than pairing whatever images were supplied, because a difference in an incidental variable lets a skeptic dismiss the real gain as cosmetic.",
+      "id": 17
     }
   ]
 }
