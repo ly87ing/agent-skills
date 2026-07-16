@@ -111,8 +111,10 @@ Load these on demand instead of cramming every detail into the main flow:
 5. Run the minimal relevant verification.
    - Run only the verification commands that could actually fail because of this merge
    - In multi-repo scenarios, record per repo; do not collapse into a single "all passed"
+   - When the diff's own updated tests only assert configuration shape (counts, JSON structure) and never exercise the runtime, disk, or external state where this merge could actually fail, a green run is not evidence — trace the downstream consumer's code path and simulate the post-merge pipeline (for example a re-pin / `bump` / `apply` against the tracked ref) by reading it
 6. Decide whether to allow a push.
    - Push only when the user explicitly requests it or the process explicitly requires it
+   - When the change registers or references an externally-sourced artifact (a skill, package, submodule pin, generated asset), gate the merge on that artifact already being published on the exact ref the config tracks (`git ls-remote` the tracked branch), not merely present in a local unpushed commit — otherwise the post-merge pipeline resolves the tracked ref and hard-fails on the missing artifact
    - If any gate is skipped, you must explicitly state the reason and the residual risk
 
 ### Path 3: Audit a completed merge

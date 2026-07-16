@@ -125,6 +125,7 @@ Typical signs:
 - The backend contract changed, but the frontend did not follow
 - The admin side changed the flow, but the infrastructure repo did not follow
 - One repo is `Already up to date`, but another repo genuinely has changes, yet in the end it is still wrongly reported under a unified statement
+- A single-repo change registers or references an artifact whose source lives in another repo, but that source is not yet published on the ref this repo's config tracks — so the change looks fine locally, yet the post-merge pipeline that re-pins to the tracked ref fails on the missing artifact
 
 ### 4.6 Tests and the safety net are weakened
 
