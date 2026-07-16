@@ -18,6 +18,9 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Before hand-rolling authentication, captcha-solving, or a login flow in the browser tool, search the project for an existing login/verification harness or helper and reuse it. Projects that need browser verification often already ship a tested one (zero-touch auth entry, slider/image-captcha solver, MFA/TOTP), and reinventing it in DevTools or by vision is brittle and wastes turns. Hand-drive the browser only when the project genuinely has no such helper.
 3. Preserve authenticated context deliberately.
    - Do not assume a fresh isolated browser has the required cookies, profile, or permissions.
+   - To recover control of an authenticated session you lost (a dropped connection, an extension seizing the tab), open a new tab in the same profile so the cookies and login carry over — do not relaunch a fresh or isolated context, which discards the auth; confirm with the user before any relaunch that could touch account state.
+   - A blank or error render is a load failure, not a result: never read a prior mutating action's success or failure off it, and re-verify the outcome from an independent record before retrying or reporting.
+   - When a mutating flow is interrupted, assume the server-side record (a case, order, or ticket) may already exist: re-query it and resume by its id rather than restarting the flow, which risks a duplicate submission.
    - If a browser tool cannot start, connect, or attach, report that tool failure before falling back.
    - When the user has removed the blocker — logged you in, granted access, or opened the tool for you — carry the real interaction through to completion and capture the evidence (the live run, its screenshots, or the recording); do not stall or substitute a written description for the actual interaction the task called for.
 4. Do not replace regression coverage with inspection.
@@ -32,7 +35,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
 
 ## Captured Media As Evidence
 
-- Settle animations before capturing: force or wait out entrance, staggered, and scroll-triggered motion, or the capture shows partial content and stands as false evidence of the rendered layout.
+- Settle animations before capturing: force or wait out entrance, staggered, and scroll-triggered motion, or the capture shows partial content and stands as false evidence of the rendered layout. Wait for images to finish decoding too — a capture taken mid-decode shows blank or black regions. Treat a defect that appears only in such an early capture as a phantom: re-capture and confirm it is real before editing the page, or you will "fix" a correct page against a false screenshot.
 - Read what is actually on screen from the pixels, not from the log, transcript, or DOM text that produced them — a UI renders streamed content progressively, so a timestamp marks when a message *completed*, not when it first became visible. When it matters what a viewer could see and when, extract frames and check them.
 - State what a capture does not cover. A screenshot proves one state at one size; it is not evidence for the flow around it, and a recording of a passing run is not a regression test.
 
