@@ -26,6 +26,15 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Use scalable text, adequate hit areas, accessible modal/focus behavior, and one canonical visual per flow.
    - Match online/offline dependency strategy to where the artifact will run.
    - Load the rendered output; check console errors, key elements, and interactions; and capture a screenshot.
+   - For anything rendered into a fixed frame (slides, cards, fixed-aspect canvases), check every instance for overflow and clipping at the target size — content that fits while drafting silently overflows the frame, and the clipped part is invisible to its author.
+   - When playable media sits inside a click-to-dismiss overlay, stop the media's own clicks from reaching the dismiss handler and pause playback on close; otherwise the first click on the controls dismisses the overlay, and a dismissed overlay keeps playing.
+   - Where a container binds global keys or screen zones to navigation, decide explicitly which keys belong to focused media, then drive it: confirm that clicking content does not navigate, and that a focused player or embedded frame has not swallowed the keys the reader needs.
+
+## Captured Media As Evidence
+
+- Settle animations before capturing: force or wait out entrance, staggered, and scroll-triggered motion, or the capture shows partial content and stands as false evidence of the rendered layout.
+- Read what is actually on screen from the pixels, not from the log, transcript, or DOM text that produced them — a UI renders streamed content progressively, so a timestamp marks when a message *completed*, not when it first became visible. When it matters what a viewer could see and when, extract frames and check them.
+- State what a capture does not cover. A screenshot proves one state at one size; it is not evidence for the flow around it, and a recording of a passing run is not a regression test.
 
 ## Stop Conditions
 
