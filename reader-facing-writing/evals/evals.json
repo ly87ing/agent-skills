@@ -85,6 +85,11 @@
       "prompt": "我有改造前和改造后两张截图，想放进 deck 里说明这次重做的效果。",
       "expected_output": "Should trigger reader-facing-writing. The result should hold every incidental variable constant between the two panels (theme, crop, dimensions, and state) and re-capture rather than pairing whatever images were supplied, because a difference in an incidental variable lets a skeptic dismiss the real gain as cosmetic.",
       "id": 17
+    },
+    {
+      "prompt": "这页把'6 个缺陷已修复'和另一份'17/17 全部解决'用一个箭头连了起来，还画了个 01→02→03 的流程。帮我看看这样表达对不对。",
+      "expected_output": "Should trigger reader-facing-writing. The result should recognize that an arrow, a 01-to-02 step sequence, or an operator between elements is a factual claim of sequence, causation, or arithmetic, so connecting two independent metrics or two pieces of evidence of different provenance makes the audience read an unproven relationship as proven. It should keep the independent items visually separate and labelled as not comparable rather than wiring them into one chain the data does not support.",
+      "id": 18
     }
   ]
 }
