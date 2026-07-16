@@ -70,6 +70,11 @@
       "id": 14,
       "prompt": "这个分支改动很干净、测试也全绿,但它注册了一个 skill,而这个 skill 的源码在另一个仓库、还没推到我们 config 追踪的那个 ref 上。现在能合进主分支吗?",
       "expected_output": "Should trigger safe-merge-review. The result should recognize that a clean diff with a green test run is not sufficient when the change registers or references an externally-sourced artifact whose source is not yet published on the ref the config tracks, and that the diff's own tests may only assert configuration shape and never exercise the real failure mode. It should gate the merge on the referenced artifact being published on the tracked ref (for example via git ls-remote), trace the downstream consumer and simulate the post-merge pipeline by reading it, and withhold the push decision until that is proven."
+    },
+    {
+      "id": 15,
+      "prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?",
+      "expected_output": "Should trigger safe-merge-review. This is a pre-merge go/no-go suitability review — deciding whether a branch is ready to be merged into the main branch — which is in scope. The result should model the diff (source ref, merge base, incoming commits, hotspot overlap), do a semantic pre-review, and give a completeness- and verification-backed recommendation on whether it is safe to merge, rather than treating it as a general branch code-quality review with no merge in play."
     }
   ]
 }
