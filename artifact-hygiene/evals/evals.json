@@ -75,6 +75,16 @@
       "id": 15,
       "prompt": "I've been committing big video and PDF files straight into our knowledge-base repo and now .git is bloated. Those binaries shouldn't be polluting the repo — how should I have kept them out, and how do I clean up what's already committed?",
       "expected_output": "Should trigger artifact-hygiene. The result should recognize the committed media as polluting the repository, gitignore the binaries so they stop entering history, and explain that deleting them from the working tree does not reclaim the space already in .git — the actual large objects must be diagnosed (for example git filter-repo --analyze) and removed via a history rewrite, treated as destructive with a git bundle backup and a coordinated force-push."
+    },
+    {
+      "prompt": "这份周报里有客户名和预计金额，我想截图放进要发出去的分享材料，顺便把整个素材文件夹打包发给同事。",
+      "expected_output": "Should trigger artifact-hygiene. The result should mask customer names, amounts, and personal names before the material enters the reader-facing artifact or version control, keep the unredacted original out of version control and out of the handover, name the specific redacted files to take instead of telling the recipient to copy a whole asset directory that also holds unredacted originals, and state that a text-only redaction or secret scan is blind to what is baked into the screenshot itself rather than reporting a clean pass over it.",
+      "id": 16
+    },
+    {
+      "prompt": "这个 deck 要发给别的部门，他们在自己电脑上双击就能看。帮我看看文件该怎么组织。",
+      "expected_output": "Should trigger artifact-hygiene. The result should keep the deliverable and every asset it loads at runtime inside one self-contained folder, keep drafts and notes in a separately named subfolder that the export step excludes, register machine-local or gitignored assets in the deliverable's own dependency checklist, and prove shareability by copying the export to a clean location and opening it there rather than assuming local references resolve elsewhere.",
+      "id": 17
     }
   ]
 }

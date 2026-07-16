@@ -1,6 +1,6 @@
 ---
 name: artifact-hygiene
-description: Decide safe locations and cleanup rules for generated files, debug output, Playwright traces/screenshots/videos, downloaded artifacts, temporary scripts, reports, storage state, JSON/HTML dumps, workflow-consumed outputs, and requested deliverables the user asked to produce. Use before creating or keeping such artifacts, or when deciding where a file the user asked for should live — to avoid polluting a repository, committing something by accident, or stranding a deliverable in a throwaway location.
+description: Decide safe locations, redaction, and cleanup rules for generated files, debug output, Playwright traces/screenshots/videos, downloaded artifacts, temporary scripts, reports, storage state, JSON/HTML dumps, workflow-consumed outputs, and requested deliverables the user asked to produce. Use before creating or keeping such artifacts, when packaging a deliverable for handover to another person or machine, or when deciding where a file the user asked for should live — to avoid polluting a repository, committing something by accident, shipping customer or personal data baked into a screenshot or recording, or stranding a deliverable in a throwaway location.
 ---
 
 # Artifact Hygiene
@@ -14,7 +14,7 @@ description: Decide safe locations and cleanup rules for generated files, debug 
 
 ## Placement Rules
 
-1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion. A session-level "put temporary files in the scratchpad" instruction does not override this — it governs disposable run artifacts, not a deliverable the user asked you to produce; when the two seem to conflict, the deliverable's placement wins.
+1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion. A session-level "put temporary files in the scratchpad" instruction does not override this — it governs disposable run artifacts, not a deliverable the user asked you to produce; when the two seem to conflict, the deliverable's placement wins. Once a deliverable lands in its maintained path, that file is the only copy: edit it in place rather than keeping a scratchpad duplicate to sync over, which drifts and invites edits to the wrong file.
 2. Put project assets in the maintained project path.
 3. Put workflow-consumed artifacts in the project's existing gitignored output path.
 4. Put disposable artifacts in `mktemp -d`, `$TMPDIR`, or `/tmp` unless a working-tree path is required.
@@ -26,6 +26,19 @@ description: Decide safe locations and cleanup rules for generated files, debug 
 - Treat test specs, page objects, shared fixtures, helper utilities, stable config changes, and intentional snapshots as project assets.
 - Treat `playwright-report/`, `test-results/`, `blob-report/`, and JUnit/JSON outputs as workflow-consumed only when project workflows use them.
 - Treat one-off traces, videos, screenshots, downloads, copied reports, temporary auth state, and ad hoc HAR/JSON/storage dumps as disposable.
+
+## Sensitive Content In Shipped Artifacts
+
+- Before source material — a screenshot, an exported report, a recording, a real internal document — enters a reader-facing artifact or version control, mask third-party and personal identifiers: customer or account names, monetary amounts, contact details, individual names, and internal hosts or addresses. Real material is the strongest evidence, but only the redacted version may travel.
+- Keep the unredacted original out of version control, and never tell the reader to copy a whole asset directory that also holds unredacted originals — name the redacted files to take.
+- A redaction or secret-scanning gate that reads only text formats is blind to what is baked into images, video, and other binaries. Either scan rendered frames and pixels too, or state plainly that the gate does not cover them — reporting a clean pass over content it never inspected is worse than running no gate at all.
+
+## Shareable Deliverables
+
+- Keep a deliverable and every asset it loads at runtime inside one self-contained folder, and keep drafts, notes, and source material in a separately named subfolder the export step excludes — a handover that needs manual pruning gets pruned wrong.
+- Register each machine-local or gitignored asset in the deliverable's own dependency checklist as you add it, so the deliverable still works when it is opened on another machine.
+- Prove shareability by copying the export to a clean location and opening it there; a reference that only resolves on the authoring machine is a broken deliverable.
+- When the user supplies an image or file from an application's temporary directory (a chat client's cache, a download staging path), copy it into the deliverable's own asset directory before referencing it — those directories get cleaned and the reference breaks silently.
 
 ## Hard Boundaries
 
