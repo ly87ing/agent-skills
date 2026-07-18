@@ -39,7 +39,7 @@ If the parent task is ambiguous, if the current ONES identity does not match the
 5. Do not exceed the target total for the date. If existing unrelated records would make the target impossible, stop and report the conflict.
 6. Use the date's local midnight as `start_time`, `type=recorded`, and detailed mode when the ONES API supports it.
 7. Treat dry-run and successful writes as different states. Completion requires post-write readback showing the expected total.
-8. Manhour descriptions must be neutral, factual, and professional. Never copy chat tone, jokes, sarcasm, venting, personal-life items, or names of people/conflicts into a description — these records are visible to managers and PMs.
+8. Manhour descriptions must be neutral, factual, professional, and written at the level of the work category and its object (module, feature, topic) — not a record of who did or said what. Redact before writing: never put into a description any chat tone, jokes, sarcasm, venting, personal-life items, specific people's names, the who-said-what content of a discussion, customer/tenant names, credentials or secrets (passwords, tokens, keys), monetary or contract figures, vulnerability/exploit specifics, internal codenames, or IPs/hostnames. Abstract each item to its work type and object (e.g. "login module requirement alignment", not "discussed the rework with Wang"; "online security issue fix", not "fixed the SQL-injection dump for customer X"). These records are visible to managers and PMs.
 9. Never fabricate work to reach the target. Only real work produces allocations; if the screened real work cannot plausibly fill the target, stop and ask instead of padding with invented or non-work entries.
 
 ## Workflow
@@ -98,9 +98,9 @@ Use the actual subtask names as the taxonomy. Common mapping signals:
 - security incident, vulnerability, attack, hotfix, production issue, traffic switch, migration problem -> online issue / incident analysis subtask
 - meeting, sync, demo, cancellation, scheduling -> meeting sync subtask
 - learning, summary, tool usage guidance -> learning summary subtask
-- unclear residue -> other subtask, only if it exists
+- unclear residue -> other subtask, only if it exists; never route screened-out non-work or noise items here to pad the day — dropped means dropped
 
-Descriptions should be short, factual, and tied to the work summary. Avoid vague text such as "daily work" or "miscellaneous support" when a more specific grouped description is available.
+Descriptions should be short, factual, and tied to the work summary. Avoid vague text such as "daily work" or "miscellaneous support" when a more specific grouped description is available. Keep them at the work-category level tied to an object (module/feature/topic); do not name specific people or transcribe what was said in a discussion — a 1:1 or meeting becomes e.g. "payment module approach review", not "aligned the refund flow with Li".
 
 Run `scripts/normalize_manhour_plan.py` when weights or units need deterministic normalization. The script validates total units, rounds to the configured unit step, checks duplicate tasks, and emits JSON suitable for review before writing.
 
@@ -115,7 +115,7 @@ Before writing, present or inspect a concise plan:
 - description
 - existing records and final expected total
 
-If the plan is surprising, too concentrated in one subtask, or depends on a weak mapping, adjust the plan before writing.
+If the plan is surprising, too concentrated in one subtask, or depends on a weak mapping, adjust the plan before writing. Scrub each final description one last time: if any still carries a name, secret/credential, customer/tenant, amount, or other sensitive token (Constraint 8), rewrite it to the work-type-and-object level before writing.
 
 ### 6. Write Additive Records
 

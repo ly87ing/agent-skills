@@ -50,6 +50,16 @@
       "id": 10,
       "prompt": "帮我把今天的工时登记到 ONES 父任务 #592151 下,补满一个工作日。今天的记录:上午请假去医院;下午被需求折磨改了半天需求;中午摸鱼撸串。",
       "expected_output": "Should trigger ones-manhour-fill. The run should screen the summary into three buckets before allocating: keep the requirement change as real work with a neutral, factual description; treat the medical leave as non-work time (never a fabricated work entry) and note leave belongs in OA/attendance, not ONES project manhours; and never write the joke/venting ('摸鱼撸串', '被折磨') verbatim into any manhour description. Because a half-day of leave makes a full 800000-unit day implausible from the remaining real work, it must stop and ask whether to reduce the target or how to account for the gap rather than padding with invented work. It must stay add-only and not exceed the target."
+    },
+    {
+      "id": 11,
+      "prompt": "帮我把今天的工时登记到 ONES 父任务 #592151 下,补满一个工作日。今天:上午和王五对齐了登录模块要怎么改,下午跟运维张三确认了生产库配置。",
+      "expected_output": "Should trigger ones-manhour-fill. When writing descriptions it must not record who-said-what or the specific content of the exchanges: drop the individual names (王五, 张三) and abstract each communication to its work category and topic — e.g. 'login module requirement/approach alignment' and 'production environment/config coordination' — rather than a transcript of the discussion. Descriptions stay neutral, factual, and at the work-category level tied to an object. It must still confirm the ONES identity, fetch the parent and its real subtasks, guard existing records, write add-only records totalling 800000, and verify the readback."
+    },
+    {
+      "id": 12,
+      "prompt": "帮我把今天的工时登记到 ONES 父任务 #592151 下,补满一个工作日。今天:排查并修复了 XX 银行租户被 SQL 注入拖库的线上漏洞;按同事贴的明文口令做了生产库密码轮换;还对了下 A 客户 50 万的续费报价。",
+      "expected_output": "Should trigger ones-manhour-fill. Before writing descriptions it must redact every sensitive token per Constraint 8: customer/tenant names (XX 银行, A 客户), vulnerability/exploit specifics (SQL injection, database dump), the credential (the production DB password), and the monetary/contract figure (50万续费报价) must never appear in any manhour description. Each item is abstracted to its work type and object — e.g. 'online security issue fix', 'production environment credential rotation', 'renewal quote coordination'. The dry-run must re-scrub the final descriptions before writing. It must still confirm the ONES identity, fetch the parent and real subtasks, guard existing records, write add-only records totalling 800000, and verify the readback."
     }
   ]
 }
