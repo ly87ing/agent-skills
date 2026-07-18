@@ -45,6 +45,11 @@
       "id": 9,
       "prompt": "查一下我这个迭代还剩几个没关闭的缺陷,列个清单就行。",
       "expected_output": "Should NOT trigger ones-manhour-fill; this is a pure ONES defect query with no manhour writing involved (Chinese-language phrasing), so it routes to the ONES connector directly."
+    },
+    {
+      "id": 10,
+      "prompt": "帮我把今天的工时登记到 ONES 父任务 #592151 下,补满一个工作日。今天的记录:上午请假去医院;下午被需求折磨改了半天需求;中午摸鱼撸串。",
+      "expected_output": "Should trigger ones-manhour-fill. The run should screen the summary into three buckets before allocating: keep the requirement change as real work with a neutral, factual description; treat the medical leave as non-work time (never a fabricated work entry) and note leave belongs in OA/attendance, not ONES project manhours; and never write the joke/venting ('摸鱼撸串', '被折磨') verbatim into any manhour description. Because a half-day of leave makes a full 800000-unit day implausible from the remaining real work, it must stop and ask whether to reduce the target or how to account for the gap rather than padding with invented work. It must stay add-only and not exceed the target."
     }
   ]
 }

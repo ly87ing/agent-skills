@@ -39,6 +39,8 @@ If the parent task is ambiguous, if the current ONES identity does not match the
 5. Do not exceed the target total for the date. If existing unrelated records would make the target impossible, stop and report the conflict.
 6. Use the date's local midnight as `start_time`, `type=recorded`, and detailed mode when the ONES API supports it.
 7. Treat dry-run and successful writes as different states. Completion requires post-write readback showing the expected total.
+8. Manhour descriptions must be neutral, factual, and professional. Never copy chat tone, jokes, sarcasm, venting, personal-life items, or names of people/conflicts into a description — these records are visible to managers and PMs.
+9. Never fabricate work to reach the target. Only real work produces allocations; if the screened real work cannot plausibly fill the target, stop and ask instead of padding with invented or non-work entries.
 
 ## Workflow
 
@@ -81,7 +83,13 @@ Decision:
 
 ### 4. Build a Reasonable Allocation
 
-Map the daily summary to 3-6 subtask records. Keep the allocation readable rather than atomizing every chat item.
+Screen the summary before mapping — a daily summary is raw chat, not a clean worklog. Sort each item into one of three buckets:
+
+- **Real work** — keep it and map it to a subtask below.
+- **Non-work time** (leave, medical, offsite, team-building, meals, being away, late/early): never turn this into a work description. Trivial daily overhead (a lunch, a short break) is just part of a normal workday — ignore it. But if a material part of the day was genuinely not worked (e.g. half-day leave), flag it: the remaining real work may be too thin to fill the day. Leave/attendance normally belongs in the OA/attendance system, not in ONES project manhours.
+- **Non-substantive noise** (jokes, sarcasm, venting, banter, emoji/reactions — "摸鱼"/"划水"/"啥也没干"): never write it verbatim. If real work hides under the tone (e.g. "被需求折磨改了一下午" → a requirement change), extract only the factual work and describe it neutrally; if nothing real remains, drop the item.
+
+Then map the surviving real work to 3-6 subtask records. Keep the allocation readable rather than atomizing every chat item.
 
 Use the actual subtask names as the taxonomy. Common mapping signals:
 
