@@ -110,6 +110,21 @@
       "id": 22,
       "prompt": "把这个共享接口的默认超时从 10 秒改成 30 秒,注意别影响到其他调用方。",
       "expected_output": "Should trigger change-discipline from Chinese-language phrasing. Changing a shared interface's default is boundary work: the result should first establish why the current default exists (git history), grep every caller to state the blast radius, and run the narrowest verification that could fail before declaring done."
+    },
+    {
+      "id": 23,
+      "prompt": "帮我改 hub 仓库里 5.6 版本的下单逻辑。我从 hub 根搜了一圈没搜到相关代码,是不是压根没有这块实现?另外我上一轮新加的测试文件在 git status 里是干净的,应该已经随提交出去了,直接收工?",
+      "expected_output": "Should trigger change-discipline. Both signals are ignore-rule illusions: the result should suspect .gitignore before concluding code does not exist (hub-root ignore rules silently exclude nested sub-repo sources; re-run the search with ignore rules off or explicit paths), and recognize that a clean git status for a new file on an ignored path (e.g. a test* pattern) means it is NOT tracked — require git add -f (or fixing the rule) and confirming the file actually entered the commit."
+    },
+    {
+      "id": 24,
+      "prompt": "deploy 包里那份 sync 过来的脚本有个 bug,我直接在包内副本上修掉了,修复已验证可用,可以收工了吗?",
+      "expected_output": "Should trigger change-discipline. Patching only the downstream vendored/synced copy is a revert landmine: the result should establish the single upstream first, land the fix upstream and let the sync fan it out, and diff the copies to learn which way drift flows — otherwise the next sync silently reverts the verified fix."
+    },
+    {
+      "id": 25,
+      "prompt": "我打算派几个并行子代理去审计这几个仓库的代码质量,让它们发现问题顺手就改掉、直接提交,效率高一些,这样安排合理吗?",
+      "expected_output": "Should trigger change-discipline. The result should push back: delegate audits to subagents as read-only finders and apply findings yourself, and after they finish run git status and git ls-remote to confirm no subagent committed or pushed under the user's identity — parallel subagents have ignored read-only instructions and pushed as the user before."
     }
   ]
 }
