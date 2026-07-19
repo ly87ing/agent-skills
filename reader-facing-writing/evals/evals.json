@@ -90,6 +90,11 @@
       "prompt": "这页把'6 个缺陷已修复'和另一份'17/17 全部解决'用一个箭头连了起来，还画了个 01→02→03 的流程。帮我看看这样表达对不对。",
       "expected_output": "Should trigger reader-facing-writing. The result should recognize that an arrow, a 01-to-02 step sequence, or an operator between elements is a factual claim of sequence, causation, or arithmetic, so connecting two independent metrics or two pieces of evidence of different provenance makes the audience read an unproven relationship as proven. It should keep the independent items visually separate and labelled as not comparable rather than wiring them into one chain the data does not support.",
       "id": 18
+    },
+    {
+      "id": 19,
+      "prompt": "给年中总结会做一个大屏欢迎页 HTML,现场是深色大屏,要求全屏无留白,后排也能看清。",
+      "expected_output": "Should trigger reader-facing-writing. The page must be designed for the venue's real full screen — OS-level 16:9 with no leftover margins (a browser window's inline full screen is not the venue's) — with every element adapted to the dark theme, glare-bright text toned down, and type sized for the back of the room."
     }
   ]
 }

@@ -95,7 +95,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 - Use one canonical visual per flow.
 - Verify the rendered result before declaring completion.
 - When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
-- For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom.
+- For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom. Design for the room's real full screen — the OS-level full screen the venue will use, at its aspect ratio (16:9), with no leftover margins; a browser window's inline "full screen" is not the venue's. When the venue or design is dark-themed, adapt every element to it and tone down glare-bright text; a page that dazzles in a dark room reads as unfinished.
 - Use motion only to aid comprehension — a progressive reveal that paces a dense slide, or an animated build that walks through a process step by step — never as decoration; a static form that reads instantly beats motion that delays the point.
 
 ## Agent-facing instruction files
