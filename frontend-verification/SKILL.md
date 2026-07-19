@@ -30,6 +30,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Match online/offline dependency strategy to where the artifact will run.
    - Load the rendered output; check console errors, key elements, and interactions; and capture a screenshot.
    - For anything rendered into a fixed frame (slides, cards, fixed-aspect canvases), check every instance for overflow and clipping at the target size — content that fits while drafting silently overflows the frame, and the clipped part is invisible to its author.
+   - For a deck or page that will be projected, verify at OS-level full screen at the venue's aspect ratio (16:9) — a browser window's inline "full screen" is not the venue's — stepping through every page for leftover margins, overflow, and broken layout; when the venue is dark, also check for glare-bright text that dazzles in a dark room.
    - When playable media sits inside a click-to-dismiss overlay, stop the media's own clicks from reaching the dismiss handler and pause playback on close; otherwise the first click on the controls dismisses the overlay, and a dismissed overlay keeps playing.
    - Where a container binds global keys or screen zones to navigation, decide explicitly which keys belong to focused media, then drive it: confirm that clicking content does not navigate, and that a focused player or embedded frame has not swallowed the keys the reader needs.
 
