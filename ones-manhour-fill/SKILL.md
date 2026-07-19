@@ -22,7 +22,7 @@ Use this skill only for ONES manhour/worklog entries. The normal target is exact
 
 ## Required Inputs
 
-- Date, normalized to an absolute `YYYY-MM-DD`.
+- Date, normalized to an absolute `YYYY-MM-DD`. When the request carries a weekday label and a date that disagree (a "this Wednesday" label next to a Thursday date), or a relative day that conflicts with the summary's own dates, confirm which is meant before writing — a mislabeled day writes a full day onto the wrong date.
 - Parent task link, number, or uuid.
 - Daily work summary.
 - Target total, default `800000` ONES units = 1 workday = 8 hours.
@@ -35,9 +35,9 @@ If the parent task is ambiguous, if the current ONES identity does not match the
 1. Never echo ONES tokens, user ids, passwords, or cookie values.
 2. Always read the parent task first and use only its actual subtasks; do not invent tasks or write to a nearby parent.
 3. Always query existing manhours for the current owner and date before writing.
-4. Prefer add-only behavior. Do not update or delete existing manhours unless the user explicitly requests correction.
+4. Prefer add-only behavior. Do not update or delete existing manhours unless the user explicitly requests correction. Before a requested deletion, read the target record back and confirm its UTC+8 date matches the record the user means (and pass the API's required `mode` parameter) — a machine-local date read can aim the deletion at the adjacent day.
 5. Do not exceed the target total for the date. If existing unrelated records would make the target impossible, stop and report the conflict.
-6. Use the date's local midnight as `start_time`, `type=recorded`, and detailed mode when the ONES API supports it.
+6. Use the date's midnight **in the business timezone (UTC+8)** as `start_time`, `type=recorded`, and detailed mode when the ONES API supports it. All epoch↔date conversions — writing `start_time` and classifying read-back records by date — go through UTC+8, never the machine's local timezone: a machine in another timezone (e.g. PDT) shifts every record by a day and once nearly pointed a cleanup at the neighboring day's records.
 7. Treat dry-run and successful writes as different states. Completion requires post-write readback showing the expected total.
 8. Manhour descriptions must be neutral, factual, professional, and written at the level of the work category and its object (module, feature, topic) — not a record of who did or said what. Redact before writing: never put into a description any chat tone, jokes, sarcasm, venting, personal-life items, specific people's names, the who-said-what content of a discussion, customer/tenant names, credentials or secrets (passwords, tokens, keys), monetary or contract figures, vulnerability/exploit specifics, internal codenames, or IPs/hostnames. Abstract each item to its work type and object (e.g. "login module requirement alignment", not "discussed the rework with Wang"; "online security issue fix", not "fixed the SQL-injection dump for customer X"). These records are visible to managers and PMs.
 9. Never fabricate work to reach the target. Only real work produces allocations; if the screened real work cannot plausibly fill the target, stop and ask instead of padding with invented or non-work entries.
@@ -87,7 +87,7 @@ Screen the summary before mapping — a daily summary is raw chat, not a clean w
 
 - **Real work** — keep it and map it to a subtask below.
 - **Non-work time** (leave, medical, offsite, team-building, meals, being away, late/early): never turn this into a work description. Trivial daily overhead (a lunch, a short break) is just part of a normal workday — ignore it. But if a material part of the day was genuinely not worked (e.g. half-day leave), flag it: the remaining real work may be too thin to fill the day. Leave/attendance normally belongs in the OA/attendance system, not in ONES project manhours.
-- **Non-substantive noise** (jokes, sarcasm, venting, banter, emoji/reactions — "摸鱼"/"划水"/"啥也没干"): never write it verbatim. If real work hides under the tone (e.g. "被需求折磨改了一下午" → a requirement change), extract only the factual work and describe it neutrally; if nothing real remains, drop the item.
+- **Non-substantive noise** (jokes, sarcasm, venting, banter, emoji/reactions — "slacked off", "did nothing today"): never write it verbatim. If real work hides under the tone (e.g. "the requirement changes tortured me all afternoon" → a requirement change), extract only the factual work and describe it neutrally; if nothing real remains, drop the item.
 
 Then map the surviving real work to 3-6 subtask records. Keep the allocation readable rather than atomizing every chat item.
 
@@ -123,7 +123,7 @@ For each allocation, call the ONES manhour add endpoint or connector action with
 
 - owner = current ONES user uuid
 - task = subtask uuid
-- start_time = target date local midnight in seconds
+- start_time = target date UTC+8 midnight in seconds
 - hours = allocation units (ONES units, e.g. 800000 for a full day — not literal clock hours)
 - type = `recorded`
 - mode = `detailed` when required
