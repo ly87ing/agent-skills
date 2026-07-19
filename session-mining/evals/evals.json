@@ -1,0 +1,20 @@
+{
+  "skill_name": "session-mining",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "从claude、gpt、codex 的 memory 和历史会话获取应该优化到 agent-manager所管理的规则或者 skill",
+      "expected_output": "Should trigger session-mining. The run must inventory every local source first (Claude memory files, prompt history, full project transcripts; Codex session rollouts and memory stores; ChatGPT local data), report per-source counts and date ranges, extract via the bundled script with a delta against prompt history, dedupe candidates against the current core rules and managed skill bodies before calling anything new, and end with a coverage account plus promote/ignore recommendations for the user to decide — landing nothing without consent."
+    },
+    {
+      "id": 2,
+      "prompt": "查看三家 agent 本周产生的 memory 和会话,审查哪些应该提取和优化到当前项目维护的 skill 中。",
+      "expected_output": "Should trigger session-mining. A periodic harvest over recent memory and sessions follows the same pipeline: full-corpus inventory (never just the distilled layer), script-based extraction, read-only subagent mining with verbatim correction quotes, the false-new dedupe gate against existing rules and skills, and a final coverage table with candidates classified for the user's promote/ignore decision."
+    },
+    {
+      "id": 3,
+      "prompt": "把 ones-manhour-fill 的时区处理规则改成 UTC+8,顺便补一个 eval。",
+      "expected_output": "Should NOT trigger session-mining. This is a direct amendment to one known skill, not a harvest over memory and session history; it belongs to a normal skill edit under change discipline (edit the skill body, add the eval case, run the repo contract tests)."
+    }
+  ]
+}

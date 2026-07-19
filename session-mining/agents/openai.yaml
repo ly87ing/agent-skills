@@ -1,0 +1,4 @@
+interface:
+  display_name: "Session Mining"
+  short_description: "Harvest agent memory and sessions into managed rules and skills"
+  default_prompt: "Use $session-mining to mine local agent memory and session history for rule/skill promotion candidates."
