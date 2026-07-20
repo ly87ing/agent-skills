@@ -1,6 +1,6 @@
 ---
 name: reader-facing-writing
-description: Write or revise reader-facing documents, plans, reports, proposals, specs, checklists, Markdown, HTML decks, dashboards, decision briefs, and agent-facing instruction files (AGENTS.md, CLAUDE.md) — and decide what each page or slide says and in what form, whether that is prose, a diagram, a screenshot, a before/after comparison, or a long screen recording trimmed and sped up into demo material an audience can actually follow. Use when content is meant for humans or agents to read, decide from, act on, review, or reuse, including compacting source material without losing its framework, and when turning raw captures into material that carries a point to an audience.
+description: Write or revise reader-facing documents, plans, reports, proposals, specs, checklists, Markdown, HTML decks, dashboards, decision briefs, and agent-facing instruction files (AGENTS.md, CLAUDE.md) — and decide what each page or slide says and in what form, whether that is prose, a diagram, a screenshot, a before/after comparison, or a long screen recording trimmed and sped up into demo material an audience can actually follow. Use when content is meant for humans or agents to read, decide from, act on, review, or reuse, including compacting source material without losing its framework, when a broad rewrite is asked for with no target tone, structure, or ordering given and the target has to be agreed before executing, and when turning raw captures into material that carries a point to an audience.
 ---
 
 # Reader-facing Writing
