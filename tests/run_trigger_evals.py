@@ -23,6 +23,17 @@ A single run per case cannot tell a real failure from noise: borderline cases
 flip between runs. Judge a case more than once (`--runs-per-query 3`) and it
 passes when the expectation holds in at least `--trigger-threshold` of them.
 
+Known limit — do not decide a borderline case from one batch. Measured on
+2026-07-19 against one case sitting near the boundary: 12 serial judgements
+gave a 0.17 rate, 12 concurrent ones (--jobs 6) gave 0.42, and separate small
+batches of the identical configuration earlier returned 1.00. Sampling alone
+cannot produce that spread, so the rate itself drifts between batches; --jobs
+appears to shift it further, though 12-vs-12 is too small to prove causation.
+Practical rule: compare candidates inside ONE batch under identical settings,
+never against a number measured earlier; when the effect you are chasing is
+smaller than this spread, the instrument cannot settle it — say so instead of
+shipping a change the numbers appear to justify.
+
 Run with --model haiku/sonnet/opus in turn to cover the official
 "test with all models you plan to use" checklist item.
 Exit code: 0 when every selected case passes, 1 otherwise.
@@ -190,6 +201,8 @@ def main() -> int:
         print(f"{'PASS' if passed else 'FAIL'} {case['skill']}#{case['id']} expected={expectation} judged={judged}")
 
     print("---")
+    if failures and runs == 1:
+        print("note: one run cannot separate a real failure from noise — re-check each failure with --runs-per-query 3")
     for name, (passed_count, total) in sorted(per_skill.items()):
         print(f"{name}: {passed_count}/{total}")
     print(f"total: {len(cases) - failures}/{len(cases)} passed (model={args.model}, runs={runs})")
