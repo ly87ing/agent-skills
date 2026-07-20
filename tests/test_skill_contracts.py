@@ -228,11 +228,26 @@ class SkillContractTests(unittest.TestCase):
             cases = payload.get("evals")
             self.assertIsInstance(cases, list, skill_dir.name)
             self.assertGreaterEqual(len(cases), 3, skill_dir.name)
+            seen_ids: set = set()
             for index, case in enumerate(cases):
                 self.assertTrue(str(case.get("prompt", "")).strip(), f"{skill_dir.name}#{index} empty prompt")
-                self.assertTrue(
-                    str(case.get("expected_output", "")).strip(),
-                    f"{skill_dir.name}#{index} empty expected_output",
+                expectation = str(case.get("expected_output", "")).strip()
+                self.assertTrue(expectation, f"{skill_dir.name}#{index} empty expected_output")
+
+                # The runners select cases by id and classify them by this prefix.
+                # A duplicate id makes --ids ambiguous; a graded expectation
+                # ("should not STRONGLY trigger") reads as an absolute negative and
+                # fails a correct answer — as change-discipline#5 did until it was
+                # rewritten. A binary harness needs binary expectations.
+                case_id = case.get("id")
+                self.assertIsInstance(case_id, int, f"{skill_dir.name}#{index} id must be an int")
+                self.assertNotIn(case_id, seen_ids, f"{skill_dir.name}: duplicate eval id {case_id}")
+                seen_ids.add(case_id)
+                self.assertRegex(
+                    expectation,
+                    r"(?i)^should\s+(not\s+)?trigger\b",
+                    f"{skill_dir.name}#{case_id}: expected_output must open with "
+                    "'Should trigger' or 'Should NOT trigger' and state one side, not a degree",
                 )
 
     def test_long_reference_files_start_with_a_table_of_contents(self):
