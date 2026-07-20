@@ -35,6 +35,14 @@ Treat "merge succeeded" and "merge is correct" as two different things, and prod
 | "How should this conflict be resolved, and can I push after resolving it" | Engineering | repo path + conflicted files + source ref | Path 1 + Path 2 |
 | "The corresponding branches in these repos all need merging; help me confirm whether it is correct" | Release / Engineering | repo list + source refs | Path 1 + Path 2 |
 | "This branch looks already merged; help me prove whether it is really included" | Engineering / QA | repo path + source ref or merge commit | Path 3 |
+| "Review this merge request before we merge it" | Engineering | merge request link or id | resolve to refs first, then Path 1 + Path 2 |
+
+A merge request link is a pointer, not a ref pair. Resolve it before any path runs:
+read the request's source branch, target branch, and current head sha from the
+forge (the `gitlab` skill or `glab`/`gh` when available), then restate them as the
+source ref and target branch this review is actually about, and confirm the local
+repo has both fetched. A request retargeted or force-pushed since it was opened
+still shows its original title — trust the head sha you just read, not the link.
 
 ## Context Sources
 
