@@ -29,6 +29,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - Use scalable text, adequate hit areas, accessible modal/focus behavior, and one canonical visual per flow.
    - Match online/offline dependency strategy to where the artifact will run.
    - Load the rendered output; check console errors, key elements, and interactions; and capture a screenshot.
+   - When re-verifying a local file you just edited, hard-reload with the cache disabled; otherwise a stale cache shows the previous version and you verify the edit you did not make.
    - For anything rendered into a fixed frame (slides, cards, fixed-aspect canvases), check every instance for overflow and clipping at the target size — content that fits while drafting silently overflows the frame, and the clipped part is invisible to its author.
    - For a deck or page that will be projected, verify at OS-level full screen at the venue's aspect ratio (16:9) — a browser window's inline "full screen" is not the venue's — stepping through every page for leftover margins, overflow, and broken layout; when the venue is dark, also check for glare-bright text that dazzles in a dark room.
    - When playable media sits inside a click-to-dismiss overlay, stop the media's own clicks from reaching the dismiss handler and pause playback on close; otherwise the first click on the controls dismisses the overlay, and a dismissed overlay keeps playing.
