@@ -95,6 +95,21 @@
       "id": 19,
       "prompt": "排查部署问题时我想直接 cat 一下 hosts.ini 看看各节点配置,里面带着节点密码;另外刚才用高权限 admin token 修完权限了,后面接着用它跑日常任务省得再换。",
       "expected_output": "Should trigger artifact-hygiene. Plaintext credentials must stay out of live command output and logs: the result should read specific keys or mask secrets (***) instead of cat-ing a password-bearing inventory into the session transcript, and after the temporary privilege elevation restore the everyday low-privilege credential immediately and remind the user to revoke the admin token — never keep the elevated credential as the new default."
+    },
+    {
+      "id": 20,
+      "prompt": "这份上线复盘报告里,故障时间线那节该怎么写才让不在场的人看懂?顺序和详略帮我定一下。",
+      "expected_output": "Should NOT trigger artifact-hygiene. The ask is what the report says and in what order — a content and structure decision owned by reader-facing-writing. artifact-hygiene governs where a produced file lives, what must be redacted from it, and when it is cleaned up, not how its prose is organised."
+    },
+    {
+      "id": 21,
+      "prompt": "这个采集脚本默认写死了每 5 秒一次,我想把默认值改成 30 秒,直接改常量可以吗?",
+      "expected_output": "Should NOT trigger artifact-hygiene. Changing a shipped default is a config-contract edit owned by change-discipline (establish why the current value is what it is, check who depends on it, verify the smallest thing). Nothing here is about where a generated artifact lives or what must be scrubbed from it."
+    },
+    {
+      "id": 22,
+      "prompt": "新写的这个 parser 模块该放在项目哪个包下面?现在 utils 和 core 都塞得下。",
+      "expected_output": "Should NOT trigger artifact-hygiene. This is source-tree placement inside the project's own module structure, a dependency-boundary question for change-discipline. artifact-hygiene is about produced artifacts — outputs, dumps, captures, deliverables — not about where first-class source code belongs."
     }
   ]
 }

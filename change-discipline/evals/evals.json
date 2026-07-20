@@ -125,6 +125,16 @@
       "id": 25,
       "prompt": "我打算派几个并行子代理去审计这几个仓库的代码质量,让它们发现问题顺手就改掉、直接提交,效率高一些,这样安排合理吗?",
       "expected_output": "Should trigger change-discipline. The result should push back: delegate audits to subagents as read-only finders and apply findings yourself, and after they finish run git status and git ls-remote to confirm no subagent committed or pushed under the user's identity — parallel subagents have ignored read-only instructions and pushed as the user before."
+    },
+    {
+      "id": 26,
+      "prompt": "从零起一个新的命令行小工具,还没有任何代码,帮我把骨架搭出来。",
+      "expected_output": "Should NOT trigger change-discipline. Its hard gate is built on establishing why existing behaviour is what it is, checking callers, and not regressing a contract — none of which exists on a greenfield skeleton with no prior code, callers, or shipped defaults. Reach for it once the code exists and is being changed."
+    },
+    {
+      "id": 27,
+      "prompt": "把 feature/pay-v2 合进当前分支,冲突有点多,帮我确认合完没漏东西、能不能推。",
+      "expected_output": "Should NOT trigger change-discipline. Proving a merge is complete and its conflict resolution is sound — diff modelling, hotspot overlap, push go/no-go — is safe-merge-review's territory. change-discipline governs the discipline of an individual edit, not the correctness of integrating two branches."
     }
   ]
 }
