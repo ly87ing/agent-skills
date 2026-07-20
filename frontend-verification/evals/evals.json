@@ -60,6 +60,16 @@
       "id": 12,
       "prompt": "明天全员会要用大屏投这个 HTML 欢迎页,帮我检查一下全屏效果,确认每一页都不走形。现场大屏是深色的。",
       "expected_output": "Should trigger frontend-verification. Verification must happen at OS-level full screen at the venue's 16:9 aspect ratio (a browser window's inline full screen is not the venue's), stepping through every page for leftover margins, overflow, and broken layout, and checking for glare-bright text against the dark venue."
+    },
+    {
+      "id": 13,
+      "prompt": "年中总结的 deck 明天要投屏,现场是 16:9 深色大屏。帮我定每一页讲什么、哪些内容该砍掉,先把内容取舍定下来。",
+      "expected_output": "Should NOT trigger frontend-verification. Despite sharing the projection vocabulary (16:9, dark venue, deck), the request is a content decision — what each page says and what to cut — which belongs to reader-facing-writing. frontend-verification owns proving a built artifact renders correctly, not choosing what goes on it."
+    },
+    {
+      "id": 14,
+      "prompt": "把这个登录页 Playwright 用例里的 locator 换成更稳的写法,纯改测试代码,不用跑也不用截图。",
+      "expected_output": "Should NOT trigger frontend-verification. This is writing/debugging Playwright test code with no UI evidence to capture and no verification-strategy decision to make — the skill's own stop condition excludes it. The locator guidance lives in references/playwright-essentials.md, which the agent reaches only when a verification decision is actually in play."
     }
   ]
 }

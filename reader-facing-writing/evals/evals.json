@@ -95,6 +95,16 @@
       "id": 19,
       "prompt": "给年中总结会做一个大屏欢迎页 HTML,现场是深色大屏,要求全屏无留白,后排也能看清。",
       "expected_output": "Should trigger reader-facing-writing. The page must be designed for the venue's real full screen — OS-level 16:9 with no leftover margins (a browser window's inline full screen is not the venue's) — with every element adapted to the dark theme, glare-bright text toned down, and type sized for the back of the room."
+    },
+    {
+      "id": 20,
+      "prompt": "这个 dashboard 的 HTML 我已经写完了,帮我在浏览器里全屏过一遍,看看每页有没有溢出和串版。",
+      "expected_output": "Should NOT trigger reader-facing-writing. The content is already written; the ask is to prove the built artifact renders correctly at the target size — browser verification, which belongs to frontend-verification. reader-facing-writing owns deciding what the artifact says, not running the render check."
+    },
+    {
+      "id": 21,
+      "prompt": "我刚改了本地这个 HTML,浏览器里刷新看还是旧的样子,怎么确认我看到的是真的新版本?",
+      "expected_output": "Should NOT trigger reader-facing-writing. A stale-cache re-verification problem is a browser mechanic owned by frontend-verification (hard-reload with the cache disabled), not a decision about what the artifact says. The clause itself lives in both skills on purpose — each is loaded independently and each path ends in a browser check — so this case tests the routing of the symptom question, not where the clause is written."
     }
   ]
 }
