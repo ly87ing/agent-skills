@@ -17,6 +17,11 @@ Usage:
   python3 tests/run_trigger_evals.py --skill safe-merge-review --ids 12 13
   python3 tests/run_trigger_evals.py --model sonnet --jobs 4
   python3 tests/run_trigger_evals.py --limit 2              # 2 cases per skill
+  python3 tests/run_trigger_evals.py --runs-per-query 3     # decide by rate, not one sample
+
+A single run per case cannot tell a real failure from noise: borderline cases
+flip between runs. Judge a case more than once (`--runs-per-query 3`) and it
+passes when the expectation holds in at least `--trigger-threshold` of them.
 
 Run with --model haiku/sonnet/opus in turn to cover the official
 "test with all models you plan to use" checklist item.
@@ -129,6 +134,18 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=None, help="max cases per skill")
     parser.add_argument("--model", default="haiku", help="judge model passed to claude -p (default: haiku)")
     parser.add_argument("--jobs", type=int, default=1, help="concurrent judge calls (default: 1)")
+    parser.add_argument(
+        "--runs-per-query",
+        type=int,
+        default=1,
+        help="judge each case N times and decide by rate (default: 1); borderline cases flip between runs",
+    )
+    parser.add_argument(
+        "--trigger-threshold",
+        type=float,
+        default=0.5,
+        help="pass when the expectation holds in at least this fraction of runs (default: 0.5)",
+    )
     args = parser.parse_args()
 
     if shutil.which("claude") is None:
@@ -146,18 +163,23 @@ def main() -> int:
         print("error: no eval cases selected", file=sys.stderr)
         return 1
 
+    runs = max(1, args.runs_per_query)
+    trials = [case for case in cases for _ in range(runs)]
     with ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
-        verdicts = list(pool.map(lambda case: judge(catalog, skills, args.model, case), cases))
+        trial_verdicts = list(pool.map(lambda case: judge(catalog, skills, args.model, case), trials))
+    verdicts = [trial_verdicts[index * runs : (index + 1) * runs] for index in range(len(cases))]
+
+    def holds(case: dict, judged: str) -> bool:
+        if judged.startswith("error:"):
+            return False
+        return judged != case["skill"] if case["negative"] else judged == case["skill"]
 
     failures = 0
     per_skill: dict[str, list[int]] = {}
-    for case, judged in zip(cases, verdicts):
-        if judged.startswith("error:"):
-            passed = False
-        elif case["negative"]:
-            passed = judged != case["skill"]
-        else:
-            passed = judged == case["skill"]
+    for case, judged_runs in zip(cases, verdicts):
+        rate = sum(holds(case, judged) for judged in judged_runs) / runs
+        passed = rate >= args.trigger_threshold
+        judged = judged_runs[0] if runs == 1 else f"rate={rate:.2f} {','.join(sorted(set(judged_runs)))}"
         stats = per_skill.setdefault(case["skill"], [0, 0])
         stats[1] += 1
         if passed:
@@ -170,7 +192,7 @@ def main() -> int:
     print("---")
     for name, (passed_count, total) in sorted(per_skill.items()):
         print(f"{name}: {passed_count}/{total}")
-    print(f"total: {len(cases) - failures}/{len(cases)} passed (model={args.model})")
+    print(f"total: {len(cases) - failures}/{len(cases)} passed (model={args.model}, runs={runs})")
     return 1 if failures else 0
 
 
