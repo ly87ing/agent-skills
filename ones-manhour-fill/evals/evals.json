@@ -70,6 +70,16 @@
       "id": 14,
       "prompt": "帮我看看这个迭代还有哪些工作项没关闭,负责人是谁。",
       "expected_output": "Should NOT trigger ones-manhour-fill. This is a read-only ONES work-item query, which the ONES connector answers directly. ones-manhour-fill writes manhour records against a parent task's subtasks; it is not the route for querying iteration status or ownership."
+    },
+    {
+      "id": 15,
+      "prompt": "2026-07-20 工时填报:基础设施晨会 1h,平台团队晨会 2h,基础设施周会 1h,多环境开发问题沟通 1h,配置中心方案范围沟通 2h,容器存储问题根因追溯 1h。",
+      "expected_output": "Should trigger ones-manhour-fill even though no parent task is supplied. The run should resolve the current ONES identity without printing its uuid, query existing owner/date records, inspect a small window of recent same-owner manhours, and infer a parent only if exactly one parent uuid remains and every evidence task is an actual child returned by that parent. Otherwise it must ask for the parent before writing. It should preserve the explicit durations at 100000 units per hour, group compatible meetings without changing the 800000-unit total, write add-only records, and verify the final readback."
+    },
+    {
+      "id": 16,
+      "prompt": "刚才给 2026-07-20 写 4 条 ONES 工时时第三条超时了。请在父任务 #592151 下继续补齐当天,不要重复前两条。",
+      "expected_output": "Should trigger ones-manhour-fill. The run must treat the interrupted write outcome as requiring reconciliation: re-query the current owner's records for the UTC+8 target date before any retry, use the readback as the source of truth, preserve successful records, recompute the remaining gap, and add only allocations proven missing. It must never replay the whole batch, and completion still requires a final readback proving the target total and child-task membership."
     }
   ]
 }

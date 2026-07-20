@@ -1,6 +1,6 @@
 ---
 name: ones-manhour-fill
-description: Fills ONES manhour records from a daily work summary into a specific parent task's subtasks, with reasonable one-day allocation, existing-record checks, add-only writes by default, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary into a parent task, especially when the request includes a date plus an ONES parent task URL, number, or uuid. Also use for an explicitly requested correction or deletion of an existing record, which needs a read-back confirming the target's UTC+8 date before anything is removed, and when leave, absence, or chat noise has to be screened out of a summary and names, customers, secrets, and figures redacted from the descriptions written. For ONES bug fixing or QA evidence routing use internal-bug-loop; for pure ONES queries use the ONES connector directly.
+description: Fills ONES manhour records from a daily work summary into one parent task's actual subtasks, resolving an explicit parent or safely inferring a unique parent from recent same-owner worklogs, with exact-hour allocation, existing-record checks, add-only resumable writes, and post-write verification. Use when a user asks to register, backfill, complete, or distribute daily ONES work hours/worklogs/manhours from chat notes or a work summary, whether or not the request includes a parent task URL, number, or uuid. Also use for an explicitly requested correction or deletion of an existing record, which needs a read-back confirming the target's UTC+8 date before anything is removed, and when leave, absence, or chat noise has to be screened out of a summary and names, customers, secrets, and figures redacted from the descriptions written. For ONES bug fixing or QA evidence routing use internal-bug-loop; for pure ONES queries use the ONES connector directly.
 ---
 
 # ONES Manhour Fill
@@ -23,17 +23,17 @@ Use this skill only for ONES manhour/worklog entries. The normal target is exact
 ## Required Inputs
 
 - Date, normalized to an absolute `YYYY-MM-DD`. When the request carries a weekday label and a date that disagree (a "this Wednesday" label next to a Thursday date), or a relative day that conflicts with the summary's own dates, confirm which is meant before writing — a mislabeled day writes a full day onto the wrong date.
-- Parent task link, number, or uuid.
+- Parent task link, number, or uuid; when omitted, a unique parent proven from recent same-owner worklogs as described in Discover Parent and Subtasks.
 - Daily work summary.
 - Target total, default `800000` ONES units = 1 workday = 8 hours.
 - Current ONES identity from the available ONES connector or project profile.
 
-If the parent task is ambiguous, if the current ONES identity does not match the person being filled for, or if the date is missing, stop and ask for alignment before writing.
+If no unique parent can be resolved, if the current ONES identity does not match the person being filled for, or if the date is missing, stop and ask for alignment before writing.
 
 ## Hard Constraints
 
 1. Never echo ONES tokens, user ids, passwords, or cookie values.
-2. Always read the parent task first and use only its actual subtasks; do not invent tasks or write to a nearby parent.
+2. Always resolve and read exactly one parent task before planning, then use only its actual subtasks; do not invent tasks or write to a nearby parent.
 3. Always query existing manhours for the current owner and date before writing.
 4. Prefer add-only behavior. Do not update or delete existing manhours unless the user explicitly requests correction. Before a requested deletion, read the target record back and confirm its UTC+8 date matches the record the user means (and pass the API's required `mode` parameter) — a machine-local date read can aim the deletion at the adjacent day.
 5. Do not exceed the target total for the date. If existing unrelated records would make the target impossible, stop and report the conflict.
@@ -41,6 +41,7 @@ If the parent task is ambiguous, if the current ONES identity does not match the
 7. Treat dry-run and successful writes as different states. Completion requires post-write readback showing the expected total.
 8. Manhour descriptions must be neutral, factual, professional, and written at the level of the work category and its object (module, feature, topic) — not a record of who did or said what. Redact before writing: never put into a description any chat tone, jokes, sarcasm, venting, personal-life items, specific people's names, the who-said-what content of a discussion, customer/tenant names, credentials or secrets (passwords, tokens, keys), monetary or contract figures, vulnerability/exploit specifics, internal codenames, or IPs/hostnames. Abstract each item to its work type and object (e.g. "login module requirement alignment", not "discussed the rework with Wang"; "online security issue fix", not "fixed the SQL-injection dump for customer X"). These records are visible to managers and PMs.
 9. Never fabricate work to reach the target. Only real work produces allocations; if the screened real work cannot plausibly fill the target, stop and ask instead of padding with invented or non-work entries.
+10. Treat every failed, timed-out, interrupted, or unparsable write as requiring reconciliation. Re-query the owner/date records before retrying, use that readback as the source of truth, and add only allocations still missing; never replay the whole batch.
 
 ## Workflow
 
@@ -50,18 +51,25 @@ Resolve the ONES domain, team/space id, credential source, and current ONES user
 
 Confirm:
 
-- current ONES user name/uuid
+- current ONES user name and a verified non-empty uuid; never print the uuid
 - target date
-- target parent task number/name/uuid
+- target parent task number/name and a verified uuid; never print the uuid
 - target total units
 
 ### 2. Discover Parent and Subtasks
 
-Fetch the parent task detail using the stable task detail endpoint or equivalent connector action. Confirm:
+Prefer a parent supplied by the user. Fetch its detail using the stable task detail endpoint or equivalent connector action. Confirm:
 
 - parent number/name matches the user's request
 - `subtasks` is non-empty
 - subtask number, uuid, name, and status are available
+
+When the parent is omitted:
+
+1. Query a small recent window of current-owner manhours, such as the latest 30 records, and inspect each distinct target task.
+2. Read those task details and collect their non-empty `parent_uuid` values.
+3. Infer a parent only when exactly one parent remains and every recent task used as evidence is present in that parent's returned `subtasks` list.
+4. Read the inferred parent, show its number/name in the dry-run, and verify its subtasks cover the summary's work categories. Zero parents, multiple parents, a stale/missing parent, or any task outside the returned child list is ambiguous: stop and ask for the parent instead of choosing the most frequent candidate.
 
 If no subtask fits a work category, use a catch-all subtask only when the parent actually has one. Otherwise stop and show the missing category.
 
@@ -81,6 +89,8 @@ Decision:
 - total is below target: this is the normal fill-the-day case, so add `target - existing_total`; only skip the top-up if the user explicitly asked to log a partial amount
 - total exceeds target or unrelated records make the plan unsafe: stop and ask
 
+Before continuing any partially completed or previously failed fill, reconcile the plan against this readback. Preserve every existing record. Match already-realized allocations by task uuid, units, and description where possible, reduce the remaining target by the actual owner/date total, and construct only the missing writes. Never update or delete a record merely to make the original plan line up.
+
 ### 4. Build a Reasonable Allocation
 
 Screen the summary before mapping — a daily summary is raw chat, not a clean worklog. Sort each item into one of three buckets:
@@ -90,6 +100,8 @@ Screen the summary before mapping — a daily summary is raw chat, not a clean w
 - **Non-substantive noise** (jokes, sarcasm, venting, banter, emoji/reactions — "slacked off", "did nothing today"): never write it verbatim. If real work hides under the tone (e.g. "the requirement changes tortured me all afternoon" → a requirement change), extract only the factual work and describe it neutrally; if nothing real remains, drop the item.
 
 Then map the surviving real work to 3-6 subtask records. Keep the allocation readable rather than atomizing every chat item.
+
+When the summary supplies explicit durations, convert them exactly at `100000` ONES units per hour and use fixed `units`. Group compatible items without changing their summed duration. Use `weight` only when the summary gives relative effort rather than exact hours; do not round an explicit 1-hour item onto the default 0.1-day allocation grid.
 
 Use the actual subtask names as the taxonomy. Common mapping signals:
 
@@ -102,7 +114,7 @@ Use the actual subtask names as the taxonomy. Common mapping signals:
 
 Descriptions should be short, factual, and tied to the work summary. Avoid vague text such as "daily work" or "miscellaneous support" when a more specific grouped description is available. Keep them at the work-category level tied to an object (module/feature/topic); do not name specific people or transcribe what was said in a discussion — a 1:1 or meeting becomes e.g. "payment module approach review", not "aligned the refund flow with Li".
 
-Run `scripts/normalize_manhour_plan.py` when weights or units need deterministic normalization. The script validates total units, rounds to the configured unit step, checks duplicate tasks, and emits JSON suitable for review before writing.
+Run `scripts/normalize_manhour_plan.py` when weights or units need deterministic normalization. The script preserves fixed units exactly, rounds only weighted allocations to the configured unit step, checks duplicate tasks, and emits JSON suitable for review before writing.
 
 ### 5. Dry-Run Review
 
@@ -119,7 +131,7 @@ If the plan is surprising, too concentrated in one subtask, or depends on a weak
 
 ### 6. Write Additive Records
 
-For each allocation, call the ONES manhour add endpoint or connector action with:
+Prefer the available ONES connector. For each allocation, call the ONES manhour add endpoint or connector action with:
 
 - owner = current ONES user uuid
 - task = subtask uuid
@@ -129,7 +141,9 @@ For each allocation, call the ONES manhour add endpoint or connector action with
 - mode = `detailed` when required
 - description = reviewed description
 
-Handle `Hour.TooMany` or duplicate/day-full errors as a skip, then immediately re-query instead of retrying blindly.
+When raw HTTP is the only available fallback, build the GraphQL variables body with a standard JSON serializer and stream it to the HTTP client through stdin. Do not hand-concatenate a shell-interpolated `--data-raw` JSON string containing GraphQL variables or identity values. Parse and report only the response key/error so neither request bodies nor identity values reach logs.
+
+Write multi-record plans sequentially and retain each returned manhour key. Handle `Hour.TooMany` or duplicate/day-full errors as a skip, then immediately re-query instead of retrying blindly. After any other failed, timed-out, interrupted, or unparsable response, stop the batch, re-query the owner/date records, recompute the remaining gap, and continue only with allocations the readback proves are missing.
 
 ### 7. Verify and Report
 
@@ -163,6 +177,6 @@ Report only the useful summary: date, parent, subtask numbers, units/day fractio
 }
 ```
 
-Use `weight` for proportional planning or `units` for fixed values. Mixed `weight` and `units` records are allowed; fixed units are reserved first, and remaining units are distributed by weight.
+Use `weight` for proportional planning or `units` for fixed values. Mixed `weight` and `units` records are allowed; fixed units are preserved even when they are not multiples of `unit_step`, and only the remaining weighted amount must divide into that step. For explicit clock-hour summaries, use `100000` units per hour.
 
 Run it as `python3 scripts/normalize_manhour_plan.py plan.json --pretty` (or pass `-` to read the plan from stdin); it requires Python 3.10+ and uses only the standard library. It echoes the plan and adds `start_time`, `total_units`, `total_days`, and per-allocation `hours` (units) and `day_fraction` — the fields the step 5 Dry-Run Review inspects.

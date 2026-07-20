@@ -16,7 +16,8 @@ from typing import Any
 UNITS_PER_WORKDAY = 800000
 # Default fill target is one full workday unless the caller overrides target_units.
 DEFAULT_TARGET_UNITS = UNITS_PER_WORKDAY
-# Smallest allocatable step: 80000 units == 0.1 workday.
+# Default rounding step for weighted allocations: 80000 units == 0.1 workday.
+# Explicit fixed units are preserved independently of this step.
 DEFAULT_UNIT_STEP = 80000
 # ONES manhour timestamps are local; default to UTC+8 unless the plan sets timezone_offset_hours.
 DEFAULT_TIMEZONE_OFFSET_HOURS = 8
@@ -78,9 +79,7 @@ def distribute_units(allocations: list[dict[str, Any]], target_units: int, unit_
 
     for index, item in enumerate(allocations):
         if "units" in item and item["units"] is not None:
-            units = require_int(item["units"], f"allocations[{index}].units", minimum=unit_step)
-            if units % unit_step != 0:
-                raise PlanError(f"allocations[{index}].units must be a multiple of unit_step")
+            units = require_int(item["units"], f"allocations[{index}].units", minimum=1)
             fixed_units.append(units)
             total_fixed += units
         else:
@@ -104,6 +103,8 @@ def distribute_units(allocations: list[dict[str, Any]], target_units: int, unit_
 
     if remaining < unit_step:
         raise PlanError("remaining units are too small for weighted allocation")
+    if remaining % unit_step != 0:
+        raise PlanError("remaining weighted units must be a multiple of unit_step")
 
     total_weight = sum(float(allocations[index].get("weight", 1)) for index in weighted_indexes)
     assigned = total_fixed
@@ -143,9 +144,6 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
         plan.get("timezone_offset_hours", DEFAULT_TIMEZONE_OFFSET_HOURS),
         "timezone_offset_hours",
     )
-    if target_units % unit_step != 0:
-        raise PlanError("target_units must be a multiple of unit_step")
-
     raw_allocations = plan.get("allocations")
     if not isinstance(raw_allocations, list) or not raw_allocations:
         raise PlanError("allocations must be a non-empty list")
