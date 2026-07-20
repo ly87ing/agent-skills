@@ -75,6 +75,16 @@
       "id": 15,
       "prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?",
       "expected_output": "Should trigger safe-merge-review. This is a pre-merge go/no-go suitability review — deciding whether a branch is ready to be merged into the main branch — which is in scope. The result should model the diff (source ref, merge base, incoming commits, hotspot overlap), do a semantic pre-review, and give a completeness- and verification-backed recommendation on whether it is safe to merge, rather than treating it as a general branch code-quality review with no merge in play."
+    },
+    {
+      "id": 16,
+      "prompt": "帮我把这个函数里重复的三段逻辑抽成一个私有方法,当前分支上直接改。",
+      "expected_output": "Should NOT trigger safe-merge-review. No merge, merge audit, or conflict resolution is in play — this is an in-place refactor of existing code on the current branch, which belongs to change-discipline. safe-merge-review only applies once two lines of history have to be reconciled or a merge's completeness proved."
+    },
+    {
+      "id": 17,
+      "prompt": "给我看看这个仓库最近一周有哪些提交,谁提交的。",
+      "expected_output": "Should NOT trigger safe-merge-review. Listing recent commits and their authors is a plain history query answerable with git log; nothing is being merged, audited for completeness, or resolved. Loading a merge-proof workflow for a read-only history lookup is over-application."
     }
   ]
 }

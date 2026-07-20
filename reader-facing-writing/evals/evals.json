@@ -105,6 +105,16 @@
       "id": 21,
       "prompt": "我刚改了本地这个 HTML,浏览器里刷新看还是旧的样子,怎么确认我看到的是真的新版本?",
       "expected_output": "Should NOT trigger reader-facing-writing. A stale-cache re-verification problem is a browser mechanic owned by frontend-verification (hard-reload with the cache disabled), not a decision about what the artifact says. The clause itself lives in both skills on purpose — each is loaded independently and each path ends in a browser check — so this case tests the routing of the symptom question, not where the clause is written."
+    },
+    {
+      "id": 22,
+      "prompt": "这个 dashboard 页面在手机上打开会横向滚动,帮我看看是哪的问题。",
+      "expected_output": "Should NOT trigger reader-facing-writing. Diagnosing why a built page overflows at a given viewport is browser-side verification and layout diagnosis, owned by frontend-verification. reader-facing-writing decides what the page says and how it is structured for a reader, not why an existing render breaks."
+    },
+    {
+      "id": 23,
+      "prompt": "提交前帮我把这次改动的风险等级和影响范围定一下,再写提交信息。",
+      "expected_output": "Should NOT trigger reader-facing-writing. Classifying change risk and impact scope and producing a commit message is the pre-commit submission gate's job, not reader-facing document work. The audience here is a reviewer reading a diff, and the artifact is governed by the repo's commit conventions rather than by document structure and prose decisions."
     }
   ]
 }

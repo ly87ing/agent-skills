@@ -15,6 +15,16 @@
       "id": 3,
       "prompt": "把 ones-manhour-fill 的时区处理规则改成 UTC+8,顺便补一个 eval。",
       "expected_output": "Should NOT trigger session-mining. This is a direct amendment to one known skill, not a harvest over memory and session history; it belongs to a normal skill edit under change discipline (edit the skill body, add the eval case, run the repo contract tests)."
+    },
+    {
+      "id": 4,
+      "prompt": "帮我把上周和同事讨论的那个方案整理成一份能发出去的文档。",
+      "expected_output": "Should NOT trigger session-mining. Turning discussion material into a document for readers is reader-facing-writing. session-mining harvests an agent's own memory and session transcripts for rules and skills worth promoting into agent-manager, not chat content into deliverables."
+    },
+    {
+      "id": 5,
+      "prompt": "我这台机器上 claude 的会话记录存在哪个目录?",
+      "expected_output": "Should NOT trigger session-mining. A single factual lookup of where transcripts live needs no harvest run: the full pipeline — corpus inventory, script extraction, read-only subagent mining, the false-new dedupe gate, and a coverage account — is disproportionate to answering one path question."
     }
   ]
 }

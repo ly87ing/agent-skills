@@ -65,6 +65,11 @@
       "id": 13,
       "prompt": "填报本周三的工时:本周四(2026年7月16日)上午处理了线上问题,下午做了模块联调……父任务 #100200。",
       "expected_output": "Should trigger ones-manhour-fill. The weekday label ('this Wednesday') and the summary's own stated day ('this Thursday', 2026-07-16) disagree, so the result must confirm which date is meant before writing instead of picking one silently; and all date handling (start_time, read-back classification, any deletion check) must be computed at UTC+8 midnight, never the machine's local timezone."
+    },
+    {
+      "id": 14,
+      "prompt": "帮我看看这个迭代还有哪些工作项没关闭,负责人是谁。",
+      "expected_output": "Should NOT trigger ones-manhour-fill. This is a read-only ONES work-item query, which the ONES connector answers directly. ones-manhour-fill writes manhour records against a parent task's subtasks; it is not the route for querying iteration status or ownership."
     }
   ]
 }
