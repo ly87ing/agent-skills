@@ -261,28 +261,42 @@ def main() -> int:
     verdicts = [trial_verdicts[index * runs : (index + 1) * runs] for index in range(len(cases))]
 
     def holds(case: dict, judged: str) -> bool:
-        if judged.startswith("error:"):
-            return False
         return judged != case["skill"] if case["negative"] else judged == case["skill"]
 
     failures = 0
     undecided = 0
+    unmeasured = 0
     per_skill: dict[str, list[int]] = {}
     for case, judged_runs in zip(cases, verdicts):
-        holding = sum(holds(case, judged) for judged in judged_runs)
-        rate = holding / runs
+        # A judge call that errored (CLI failure, timeout, rate limit) measured
+        # nothing. Counting it as a wrong answer turns a throttled run into
+        # "rate=0.00, confirmed failure" — a whole batch once reported nine such
+        # phantom failures. Drop errors from the denominator and report them.
+        graded = [judged for judged in judged_runs if not judged.startswith("error:")]
+        errored = len(judged_runs) - len(graded)
+        if not graded:
+            unmeasured += 1
+            print(
+                f"SKIP {case['skill']}#{case['id']} expected="
+                f"{'NOT ' + case['skill'] if case['negative'] else case['skill']} "
+                f"judged=all {errored} run(s) errored: {judged_runs[0][:70]}"
+            )
+            continue
+        holding = sum(holds(case, judged) for judged in graded)
+        rate = holding / len(graded)
         passed = rate >= args.trigger_threshold
         if runs == 1:
             judged = judged_runs[0]
         else:
-            low, high = wilson_interval(holding, runs)
+            low, high = wilson_interval(holding, len(graded))
             # The verdict only means something if the whole interval sits on one
             # side of the threshold; otherwise this N cannot tell them apart.
             straddles = low <= args.trigger_threshold <= high
             undecided += straddles
+            dropped = f" ({errored} errored)" if errored else ""
             judged = (
-                f"rate={rate:.2f} CI[{low:.2f},{high:.2f}]{'?' if straddles else ''} "
-                f"{','.join(sorted(set(judged_runs)))}"
+                f"rate={rate:.2f} CI[{low:.2f},{high:.2f}]{'?' if straddles else ''}{dropped} "
+                f"{','.join(sorted(set(graded)))}"
             )
         stats = per_skill.setdefault(case["skill"], [0, 0])
         stats[1] += 1
@@ -296,12 +310,18 @@ def main() -> int:
     print("---")
     if failures and runs == 1:
         print("note: one run cannot separate a real failure from noise — re-check each failure with --runs-per-query 3")
+    if unmeasured:
+        print(f"note: {unmeasured} case(s) SKIPped — every judge call errored, so nothing was measured for them")
     if undecided:
         print(f"note: {undecided} case(s) marked ? — the confidence interval straddles the threshold, so this N decides nothing about them")
     for name, (passed_count, total) in sorted(per_skill.items()):
         print(f"{name}: {passed_count}/{total}")
-    print(f"total: {len(cases) - failures}/{len(cases)} passed (model={args.model}, runs={runs})")
-    return 1 if failures else 0
+    measured = len(cases) - unmeasured
+    tail = f", {unmeasured} unmeasured" if unmeasured else ""
+    print(f"total: {measured - failures}/{measured} passed (model={args.model}, runs={runs}{tail})")
+    # An unmeasured case is not a pass: exiting 0 here would report success for
+    # work that never ran.
+    return 1 if failures or unmeasured else 0
 
 
 if __name__ == "__main__":
