@@ -1,6 +1,6 @@
 ---
 name: session-mining
-description: Mine local AI-agent memory and session transcripts (Claude Code, Codex, ChatGPT) for recurring user corrections, preferences, and reusable workflows, dedupe them against currently managed rules and skills, and promote survivors into agent-manager rules or skill amendments under governed budgets. Use when asked to harvest, extract, or promote rules/skills from memory and past sessions, or to review what recent sessions should feed back into agent-manager. Not for editing one known skill directly.
+description: Mine local AI-agent memory and session transcripts (Claude Code, Codex, ChatGPT) for recurring user corrections, preferences, and reusable workflows, dedupe them against currently managed rules and skills, and promote survivors into agent-manager rules or skill amendments under governed budgets. Use when asked to harvest, extract, or promote rules/skills from memory and past sessions, or to review what recent sessions should feed back into agent-manager, when a recurring workflow that no existing skill owns might warrant proposing a new one, and when a harvest has to account for its own coverage — per-source totals, exclusions, and stores that are missing or empty rather than silently skipped. Not for editing one known skill directly.
 ---
 
 # Session Mining
