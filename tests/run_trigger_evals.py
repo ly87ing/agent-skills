@@ -86,6 +86,41 @@ Answer with exactly one skill name from the list above, or the word none. Output
 """
 
 
+def read_description(skill_md: Path) -> str:
+    match = re.match(r"^---\n(.*?)\n---", skill_md.read_text(encoding="utf-8"), re.DOTALL)
+    if not match:
+        raise SystemExit(f"error: frontmatter missing in {skill_md}")
+    frontmatter = dict(
+        (key.strip(), value.strip().strip('"'))
+        for key, value in (line.split(":", 1) for line in match.group(1).splitlines())
+    )
+    return frontmatter
+
+
+def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, str]:
+    """Skills the agent can also choose from but this repo does not own.
+
+    The repo holds 7 skills; a real agent picks among everything installed. A
+    catalog of only our own skills cannot surface the collisions that matter
+    most — ones-manhour-fill against a general ONES skill, safe-merge-review
+    against a GitLab skill — so measuring without them reads optimistically.
+    """
+    neighbours: dict[str, str] = {}
+    for raw_dir in catalog_dirs:
+        base = Path(raw_dir).expanduser()
+        if not base.is_dir():
+            raise SystemExit(f"error: catalog dir not found: {base}")
+        for skill_dir in sorted(base.iterdir()):
+            skill_md = skill_dir / "SKILL.md"
+            if not skill_md.exists():
+                continue
+            name = read_description(skill_md).get("name", skill_dir.name)
+            if name in own or name in neighbours:
+                continue
+            neighbours[name] = read_description(skill_md)["description"]
+    return neighbours
+
+
 def load_skills() -> dict[str, str]:
     skills: dict[str, str] = {}
     for skill_dir in sorted(ROOT.iterdir()):
@@ -138,7 +173,13 @@ def judge(catalog: str, skills: dict[str, str], model: str, case: dict) -> str:
     if result.returncode != 0:
         return f"error:claude-exit-{result.returncode}:{result.stderr.strip()[:120]}"
     answer = result.stdout.strip().lower()
-    mentioned = {name for name in skills if re.search(rf"\b{re.escape(name)}\b", answer)}
+    # Skill names contain hyphens, so \b is the wrong boundary: it treats "-" as a
+    # separator and lets "ones" match inside "ones-manhour-fill", making every
+    # answer naming the longer skill look ambiguous. Exclude hyphens from the
+    # boundary so only a whole skill name matches.
+    mentioned = {
+        name for name in skills if re.search(rf"(?<![\w-]){re.escape(name)}(?![\w-])", answer)
+    }
     if len(mentioned) == 1:
         return mentioned.pop()
     if len(mentioned) > 1:
@@ -177,6 +218,14 @@ def main() -> int:
         help="judge each case N times and decide by rate (default: 1); borderline cases flip between runs",
     )
     parser.add_argument(
+        "--catalog-dir",
+        action="append",
+        default=[],
+        metavar="DIR",
+        help="also show the judge every SKILL.md under DIR (repeatable), e.g. ~/.claude/skills — "
+        "our own skills alone are an optimistic catalog, since a real agent chooses among everything installed",
+    )
+    parser.add_argument(
         "--trigger-threshold",
         type=float,
         default=0.5,
@@ -193,8 +242,14 @@ def main() -> int:
     if unknown:
         print(f"error: unknown skill(s): {', '.join(sorted(unknown))}", file=sys.stderr)
         return 1
-    catalog = "\n".join(f"- {name}: {description}" for name, description in skills.items())
+    # Cases come from our own skills; the catalog the judge sees also carries the
+    # neighbours, so a case can fail by losing to a skill this repo does not own.
     cases = load_cases(skills, args.skill, args.ids, args.limit)
+    neighbours = load_neighbour_skills(args.catalog_dir, own=set(skills))
+    if neighbours:
+        print(f"catalog: {len(skills)} own + {len(neighbours)} neighbour skills", file=sys.stderr)
+    skills = {**skills, **neighbours}
+    catalog = "\n".join(f"- {name}: {description}" for name, description in skills.items())
     if not cases:
         print("error: no eval cases selected", file=sys.stderr)
         return 1
