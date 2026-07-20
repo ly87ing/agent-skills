@@ -23,16 +23,25 @@ A single run per case cannot tell a real failure from noise: borderline cases
 flip between runs. Judge a case more than once (`--runs-per-query 3`) and it
 passes when the expectation holds in at least `--trigger-threshold` of them.
 
-Known limit — do not decide a borderline case from one batch. Measured on
-2026-07-19 against one case sitting near the boundary: 12 serial judgements
-gave a 0.17 rate, 12 concurrent ones (--jobs 6) gave 0.42, and separate small
-batches of the identical configuration earlier returned 1.00. Sampling alone
-cannot produce that spread, so the rate itself drifts between batches; --jobs
-appears to shift it further, though 12-vs-12 is too small to prove causation.
-Practical rule: compare candidates inside ONE batch under identical settings,
-never against a number measured earlier; when the effect you are chasing is
-smaller than this spread, the instrument cannot settle it — say so instead of
-shipping a change the numbers appear to justify.
+Known limit — the rate drifts between runs, so a number measured earlier is
+not a baseline. One boundary case measured on 2026-07-19 returned 0.17, 0.58
+and 0.40 across separate well-formed runs of the IDENTICAL configuration.
+Sampling alone cannot produce that spread.
+
+To compare two candidate descriptions, alternate them one judgement at a time
+inside a single run (A, C, A, C ...), swapping which goes first. Two designs
+that look reasonable and are not:
+
+- concurrent judging (--jobs > 1) produced this case's most extreme readings
+  and reversed the ranking of two candidates outright — the losing candidate
+  scored 1.00 concurrently and 0.10 when judged in a paired interleaved run;
+- block designs (all of A, then all of C) let drift over time land entirely
+  on the candidate difference.
+
+Even done properly the spread above is wide, so only an effect larger than it
+is detectable. When the difference you are chasing is smaller, the instrument
+cannot settle it — say so, and leave the description alone, rather than
+shipping the reading that happened to look good.
 
 Run with --model haiku/sonnet/opus in turn to cover the official
 "test with all models you plan to use" checklist item.
