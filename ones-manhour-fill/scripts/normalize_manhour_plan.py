@@ -35,8 +35,8 @@ def load_plan(path: Path) -> dict[str, Any]:
     try:
         raw_text = sys.stdin.read() if str(path) == "-" else path.read_text(encoding="utf-8")
         data = json.loads(raw_text)
-    except FileNotFoundError as exc:
-        raise PlanError(f"input file not found: {path}") from exc
+    except OSError as exc:
+        raise PlanError(f"input file is not readable: {path} ({exc})") from exc
     except json.JSONDecodeError as exc:
         raise PlanError(f"input file is not valid JSON: {path}") from exc
     if not isinstance(data, dict):
@@ -44,11 +44,15 @@ def load_plan(path: Path) -> dict[str, Any]:
     return data
 
 
-def require_int(value: Any, field: str, *, minimum: int | None = None) -> int:
+def require_int(
+    value: Any, field: str, *, minimum: int | None = None, maximum: int | None = None
+) -> int:
     if not isinstance(value, int) or isinstance(value, bool):
         raise PlanError(f"{field} must be an integer")
     if minimum is not None and value < minimum:
         raise PlanError(f"{field} must be >= {minimum}")
+    if maximum is not None and value > maximum:
+        raise PlanError(f"{field} must be <= {maximum}")
     return value
 
 
@@ -143,6 +147,8 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
     timezone_offset_hours = require_int(
         plan.get("timezone_offset_hours", DEFAULT_TIMEZONE_OFFSET_HOURS),
         "timezone_offset_hours",
+        minimum=-23,
+        maximum=23,
     )
     raw_allocations = plan.get("allocations")
     if not isinstance(raw_allocations, list) or not raw_allocations:
@@ -161,7 +167,10 @@ def normalize(plan: dict[str, Any]) -> dict[str, Any]:
         task_name = require_string(raw_item.get("task_name"), f"allocations[{index}].task_name")
         description = require_string(raw_item.get("description"), f"allocations[{index}].description")
         if len(description) > MAX_DESCRIPTION_CHARS:
-            raise PlanError(f"allocations[{index}].description is too long")
+            raise PlanError(
+                f"allocations[{index}].description is too long "
+                f"(max {MAX_DESCRIPTION_CHARS} chars, got {len(description)})"
+            )
         item = {
             "task_uuid": task_uuid,
             "task_number": task_number,

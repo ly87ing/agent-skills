@@ -84,6 +84,32 @@ class DistributeUnitsMixedTests(unittest.TestCase):
         )
         self.assertEqual(result["total_units"], 100000)
         self.assertEqual(result["allocations"][0]["hours"], 100000)
+        # start_time must be midnight UTC+8, not midnight in the machine's zone.
+        self.assertEqual(result["start_time"], 1784476800)
+
+    def test_parse_date_anchors_midnight_to_the_requested_offset(self):
+        self.assertEqual(self.m.parse_date("2026-07-20", 8), 1784476800)
+        self.assertEqual(self.m.parse_date("2026-07-20", 0), 1784505600)
+
+    def test_parse_date_rejects_an_out_of_range_offset(self):
+        with self.assertRaisesRegex(self.m.PlanError, "timezone_offset_hours must be <= 23"):
+            self.m.normalize(
+                {
+                    "date": "2026-07-20",
+                    "target_units": 100000,
+                    "unit_step": self.step,
+                    "timezone_offset_hours": 99,
+                    "allocations": [
+                        {
+                            "task_uuid": "TASK_UUID",
+                            "task_number": 100200,
+                            "task_name": "Project support",
+                            "units": 100000,
+                            "description": "Environment support",
+                        }
+                    ],
+                }
+            )
 
 
 if __name__ == "__main__":
