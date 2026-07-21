@@ -86,15 +86,14 @@ Answer with exactly one skill name from the list above, or the word none. Output
 """
 
 
-def read_description(skill_md: Path) -> str:
+def read_frontmatter(skill_md: Path) -> dict[str, str]:
     match = re.match(r"^---\n(.*?)\n---", skill_md.read_text(encoding="utf-8"), re.DOTALL)
     if not match:
         raise SystemExit(f"error: frontmatter missing in {skill_md}")
-    frontmatter = dict(
+    return dict(
         (key.strip(), value.strip().strip('"'))
         for key, value in (line.split(":", 1) for line in match.group(1).splitlines())
     )
-    return frontmatter
 
 
 def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, str]:
@@ -114,10 +113,11 @@ def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, s
             skill_md = skill_dir / "SKILL.md"
             if not skill_md.exists():
                 continue
-            name = read_description(skill_md).get("name", skill_dir.name)
+            frontmatter = read_frontmatter(skill_md)
+            name = frontmatter.get("name", skill_dir.name)
             if name in own or name in neighbours:
                 continue
-            neighbours[name] = read_description(skill_md)["description"]
+            neighbours[name] = frontmatter["description"]
     return neighbours
 
 
@@ -127,13 +127,7 @@ def load_skills() -> dict[str, str]:
         skill_md = skill_dir / "SKILL.md"
         if not skill_dir.is_dir() or not skill_md.exists():
             continue
-        match = re.match(r"^---\n(.*?)\n---", skill_md.read_text(encoding="utf-8"), re.DOTALL)
-        if not match:
-            raise SystemExit(f"error: frontmatter missing in {skill_md}")
-        frontmatter = dict(
-            (key.strip(), value.strip().strip('"'))
-            for key, value in (line.split(":", 1) for line in match.group(1).splitlines())
-        )
+        frontmatter = read_frontmatter(skill_md)
         skills[frontmatter["name"]] = frontmatter["description"]
     return skills
 
