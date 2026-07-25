@@ -118,6 +118,11 @@ Verification commands:
 - `python3 tests/run_trigger_evals.py --model haiku` — judge each eval's triggering decision against a live model via `claude -p` (repeat with `--model sonnet` / `--model opus` to cover the multi-model checklist)
 - `python3 tests/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same prompt run without it; costs 3 model calls per case, so start narrow, and read its header for the one thing it cannot see (rules that live in `references/`)
 
+Two rules for reading trigger-eval results, both learned the expensive way:
+
+- **Re-check on the model you actually run before calling a case a defect.** The default judge is the cheapest model, and it manufactures failures the production model does not have — three cases that sat at 0.33-0.5 for a whole review pass came back 5/5 on a larger judge. A candidate description was drafted, a skill was split in two, and both were rolled back before that check was run.
+- **A single run decides nothing, and neither does a small total.** The same unchanged description scored 33/36 and 30/36 on identical cases, so differences inside that band are noise. Judge borderline cases at N≥9 and compare Wilson intervals per case, not summed pass counts — a candidate that wins one boundary case while losing another nets to zero, which is what most description edits do once a skill's cases already pass.
+
 Runtime adaptation rules:
 
 - `SKILL.md` is the single source of truth for the workflow; adapters may only map tools, invocation methods, and runtime safety restrictions.
