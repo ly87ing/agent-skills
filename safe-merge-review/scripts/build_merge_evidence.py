@@ -2,8 +2,12 @@
 """Render a deterministic Safe Merge Review evidence summary from CLI-supplied fields.
 
 Each Reporting field maps to a flag; unset scalar fields render as TODO (residual
-risks as "none recorded", proof method defaults to is-ancestor). Prints the markdown
-to stdout, or writes it to --output PATH. Standard library only.
+risks as "none recorded"). Prints the markdown to stdout, or writes it to
+--output PATH. Standard library only.
+
+Proof method has no default on purpose: rendering an unset one as "is-ancestor"
+would let a report that proved nothing claim the strongest proof, and is-ancestor
+is exactly the method that does not hold for a squash merge.
 """
 
 from __future__ import annotations
@@ -36,7 +40,7 @@ def build_markdown(args: argparse.Namespace) -> str:
         f"- dirty worktree status: {render_value(args.dirty_worktree)}",
         f"- merge strategy: {render_value(args.merge_strategy)}",
         f"- completeness proof: {render_value(args.completeness_proof)}",
-        f"- proof method: {render_value(args.proof_method, 'is-ancestor')}",
+        f"- proof method: {render_value(args.proof_method)}",
         f"- semantic review conclusion: {render_value(args.semantic_review)}",
         f"- push status: {render_value(args.push_status)}",
         "",
