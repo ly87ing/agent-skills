@@ -34,7 +34,8 @@ Facts below were last verified 2026-07-19; re-verify counts and layouts at run t
 Before proposing any candidate, grep for its concept in:
 
 - shared core rules: `~/agent-manager/agent-rule/rules/src/shared/core.md`
-- managed skill bodies: `~/Documents/github/agent-skills/*/SKILL.md`
+- skill bodies the agents actually load: `~/.claude/skills/*/SKILL.md` (symlinks resolve to the managed clone, and the same sweep covers company-side skills whose territory a candidate may already sit in)
+- the dev checkout you would edit: `~/Documents/github/agent-skills/*/SKILL.md` — grep both, since a candidate already landed in one copy but not yet the other still is not new
 - prior governance decisions: agent-manager project memory (records rejected promotions — do not re-litigate them)
 
 ## Landing

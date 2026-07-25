@@ -61,7 +61,8 @@ agent-skills/
 │   │   └── antigravity.md              # Antigravity CLI tool mapping notes
 │   ├── evals/
 │   ├── references/
-│   └── scripts/
+│   ├── scripts/
+│   └── tests/
 ├── ones-manhour-fill/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -84,7 +85,8 @@ agent-skills/
 ├── reader-facing-writing/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
-│   └── evals/
+│   ├── evals/
+│   └── references/
 └── session-mining/
     ├── SKILL.md
     ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -112,6 +114,7 @@ All 7 current skills already ship with `evals/evals.json`, aligning with Anthrop
 Verification commands:
 
 - `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite
+- `npx skills-ref validate ./<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
 - `python3 tests/run_trigger_evals.py --model haiku` — judge each eval's triggering decision against a live model via `claude -p` (repeat with `--model sonnet` / `--model opus` to cover the multi-model checklist)
 
 Runtime adaptation rules:

@@ -31,6 +31,13 @@ never said to run `git add -f` or fix the rule, so it verified the problem witho
 ever fixing it. A grader tuned until it agrees with you measures nothing. Loosen it
 only for a difference in wording or an equivalent command, never for a missing step.
 
+Known limit — this runner prepends SKILL.md's body and nothing else, so a rule that
+lives in `references/` is absent from the with-skill arm even though a real agent
+would load it on demand. Any case whose expectation rests on a bundled reference
+reads as a regression here that the runtime does not have. Judge such a case by
+reading the response for whether it went looking for the reference, or measure it
+in a runtime where the skill directory is actually installed.
+
 Usage:
   python3 tests/run_behaviour_evals.py --skill change-discipline --ids 23 24 25
   python3 tests/run_behaviour_evals.py --skill session-mining --runs-per-case 3
