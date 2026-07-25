@@ -116,6 +116,7 @@ Verification commands:
 - `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite
 - `npx skills-ref validate ./<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
 - `python3 tests/run_trigger_evals.py --model haiku` — judge each eval's triggering decision against a live model via `claude -p` (repeat with `--model sonnet` / `--model opus` to cover the multi-model checklist)
+- `python3 tests/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same prompt run without it; costs 3 model calls per case, so start narrow, and read its header for the one thing it cannot see (rules that live in `references/`)
 
 Runtime adaptation rules:
 
