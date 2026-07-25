@@ -121,6 +121,7 @@ Verification commands:
 Two rules for reading trigger-eval results, both learned the expensive way:
 
 - **Re-check on the model you actually run before calling a case a defect.** The default judge is the cheapest model, and it manufactures failures the production model does not have — three cases that sat at 0.33-0.5 for a whole review pass came back 5/5 on a larger judge. A candidate description was drafted, a skill was split in two, and both were rolled back before that check was run.
+- **A case can stay red because another skill's claim on it is better, and that is not a defect here.** One eval — a one-page HTML dashboard of metrics for a team — routes to a runtime's built-in data-visualisation skill whose description claims dashboards by design, and chart design genuinely belongs to it. The case is kept red rather than rewritten, because the honest record of a boundary is worth more than a green suite; re-test it only if that neighbour leaves the catalog.
 - **A single run decides nothing, and neither does a small total.** The same unchanged description scored 33/36 and 30/36 on identical cases, so differences inside that band are noise. Judge borderline cases at N≥9 and compare Wilson intervals per case, not summed pass counts — a candidate that wins one boundary case while losing another nets to zero, which is what most description edits do once a skill's cases already pass.
 
 Runtime adaptation rules:
