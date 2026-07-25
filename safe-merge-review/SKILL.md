@@ -17,25 +17,16 @@ Treat "merge succeeded" and "merge is correct" as two different things, and prod
 - Whether the minimal relevant verification passes
 - Whether the current result is safe to push, and what residual risks remain
 
-## Roles and Jobs
-
-- Engineering:
-  - Safely merge the source branch into the current branch
-  - Review whether the merge result has logical mismatches, missed merges, or wrong trade-offs
-- Release / QA:
-  - Decide whether a given merge is ready to continue verification, hand off to testing, or push
-  - Perform per-repo evidence checks for coordinated multi-repo merges
-
 ## Trigger Matrix
 
-| Trigger | Role | Required context | Path |
-| --- | --- | --- | --- |
-| "Merge `feature/foo` into the current branch" | Engineering | repo path + source ref | Path 1 + Path 2 |
-| "Check whether this merge missed anything" | Engineering / QA | repo path + source ref or merge commit | Path 1 + Path 3 |
-| "How should this conflict be resolved, and can I push after resolving it" | Engineering | repo path + conflicted files + source ref | Path 1 + Path 2 |
-| "The corresponding branches in these repos all need merging; help me confirm whether it is correct" | Release / Engineering | repo list + source refs | Path 1 + Path 2 |
-| "This branch looks already merged; help me prove whether it is really included" | Engineering / QA | repo path + source ref or merge commit | Path 3 |
-| "Review this merge request before we merge it" | Engineering | merge request link or id | resolve to refs first, then Path 1 + Path 2 |
+| Trigger | Required context | Path |
+| --- | --- | --- |
+| "Merge `feature/foo` into the current branch" | repo path + source ref | Path 1 + Path 2 |
+| "Check whether this merge missed anything" | repo path + source ref or merge commit | Path 1 + Path 3 |
+| "How should this conflict be resolved, and can I push after resolving it" | repo path + conflicted files + source ref | Path 1 + Path 2 |
+| "The corresponding branches in these repos all need merging; help me confirm whether it is correct" | repo list + source refs | Path 1 + Path 2 |
+| "This branch looks already merged; help me prove whether it is really included" | repo path + source ref or merge commit | Path 3 |
+| "Review this merge request before we merge it" | merge request link or id | resolve to refs first, then Path 1 + Path 2 |
 
 A merge request link is a pointer, not a ref pair. Resolve it before any path runs:
 read the request's source branch, target branch, and current head sha from the
@@ -77,7 +68,7 @@ Load these on demand instead of cramming every detail into the main flow:
 
 - When you need command templates, the strategy matrix, patch-equivalent, or completeness-verification methods, read [references/merge-workflow.md](references/merge-workflow.md)
 - When you need to judge hotspot risk, conflict semantics, or post-merge logical-mismatch patterns, read [references/merge-review-checklist.md](references/merge-review-checklist.md)
-- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling fields each time. Pass each Reporting field as a flag — `--repo`, `--current-branch`, `--source-ref`, `--merge-base`, `--left-right-counts`, `--dirty-worktree`, `--merge-strategy`, `--completeness-proof`, `--proof-method`, `--semantic-review`, `--push-status` — and repeat `--incoming-commit`, `--hotspot`, `--conflict`, `--verification`, `--risk` once per item. It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent dirs). Any field left unset renders as a placeholder marker (residual risks as `none recorded`, proof method defaults to `is-ancestor`), so fill every field before treating the summary as final.
+- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling fields each time. Pass each Reporting field as a flag — `--repo`, `--current-branch`, `--source-ref`, `--merge-base`, `--left-right-counts`, `--dirty-worktree`, `--merge-strategy`, `--completeness-proof`, `--proof-method`, `--semantic-review`, `--push-status` — and repeat `--incoming-commit`, `--hotspot`, `--conflict`, `--verification`, `--risk` once per item. It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent dirs). Any field left unset renders as a visible unfilled marker — including `proof method`, which deliberately has no default, so a summary built before the completeness check ran can never read as an is-ancestor proof it never performed — while residual risks render as `none recorded`. Fill every field before treating the summary as final.
 
 ## Workflow Paths
 
@@ -111,7 +102,7 @@ Load these on demand instead of cramming every detail into the main flow:
 3. Prove "complete merge".
    - Prove the source ref is included in `HEAD`
    - Prove `HEAD..<source-ref>` is empty
-   - For a squash merge, `is-ancestor` does not apply; choose an alternative proof method per [references/merge-workflow.md](references/merge-workflow.md) section 7.5 and annotate `proof-method`
+   - For a squash merge, `is-ancestor` does not apply; choose an alternative proof method per [references/merge-workflow.md](references/merge-workflow.md) section 7.5, "Squash merge completeness verification", and annotate `proof-method`
    - List the files and diffs that actually landed
 4. Do another post-merge semantic re-review.
    - Check whether the final code is just one side's logic winning by mistake
@@ -132,7 +123,7 @@ Load these on demand instead of cramming every detail into the main flow:
 2. Reconstruct the expected diff.
    - Recompute the merge base, incoming commits, file sets, and hotspot overlap
    - Do not equate "there is no diff now" with "it was merged correctly back then"
-   - On parallel/independent baseline lines, the same logical change often lands via a **different commit and issue id** on each line; `is-ancestor <sha>`, a commit-id search, and an issue-number search can all report "missing" while the content is actually present. Judge "does this branch contain the fix" by the **file content / patch**, not the commit graph or issue id (see [references/merge-workflow.md](references/merge-workflow.md) section 3.4).
+   - On parallel/independent baseline lines, the same logical change often lands via a **different commit and issue id** on each line; `is-ancestor <sha>`, a commit-id search, and an issue-number search can all report "missing" while the content is actually present. Judge "does this branch contain the fix" by the **file content / patch**, not the commit graph or issue id (see [references/merge-workflow.md](references/merge-workflow.md) section 3.4, "Parallel baseline lines").
 3. Check completeness and semantics.
    - Cross-check the source ref, the landed files, and the final code
    - Focus on the post-merge error patterns in [references/merge-review-checklist.md](references/merge-review-checklist.md)
