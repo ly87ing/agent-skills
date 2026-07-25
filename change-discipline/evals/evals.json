@@ -135,6 +135,16 @@
       "id": 27,
       "prompt": "把 feature/pay-v2 合进当前分支,冲突有点多,帮我确认合完没漏东西、能不能推。",
       "expected_output": "Should NOT trigger change-discipline. Proving a merge is complete and its conflict resolution is sound — diff modelling, hotspot overlap, push go/no-go — is safe-merge-review's territory. change-discipline governs the discipline of an individual edit, not the correctness of integrating two branches."
+    },
+    {
+      "id": 28,
+      "prompt": "改动我已经写完了,帮我把提交信息和 MR 描述写出来,风险等级和影响范围也标一下。",
+      "expected_output": "Should NOT trigger change-discipline. The code change is already made; what remains is composing the submission — commit message, MR description, risk level, impact scope — which belongs to a pre-commit submission gate or writing workflow. change-discipline governs how an edit to existing code is decided and verified, not how it is described afterwards."
+    },
+    {
+      "id": 29,
+      "prompt": "帮我统计一下这个仓库最近三个月的提交,按人分组,看看谁改动最多。",
+      "expected_output": "Should NOT trigger change-discipline. This is a read-only history query answerable with git log and shortlog. change-discipline's gate exists to govern an impending edit to existing behaviour — establishing why it is what it is, checking callers, verifying the smallest thing — and nothing here is being edited."
     }
   ]
 }

@@ -130,6 +130,21 @@
       "id": 26,
       "prompt": "刚用 root 账号把那台机器的权限问题修好了,后面的日常巡检脚本我就继续用这个 root 连接串跑了,省得再配一套。",
       "expected_output": "Should trigger artifact-hygiene. A temporary elevation must be handed back once the privileged step is done: routine checks should run under the everyday low-privilege credential, not inherit root because it is convenient. The result should push back on making the elevated credential the new default, restore the ordinary account for the recurring job, and remind that the temporary high-privilege access be revoked rather than left standing."
+    },
+    {
+      "id": 27,
+      "prompt": "这个仓库 clone 下来快 4 个 G,拉一次太慢了。帮我改成只拉我要的那个子目录,用 sparse checkout 或者浅克隆都行。",
+      "expected_output": "Should NOT trigger artifact-hygiene. Making a checkout cheaper with sparse or shallow clone is a git fetch-strategy question about an existing history; artifact-hygiene decides what may enter a repository, where a generated file belongs, and what to redact or delete — none of which this request touches. It shares only the vocabulary of repository size."
+    },
+    {
+      "id": 28,
+      "prompt": "帮我写个定时任务,每天凌晨清理 /tmp 下超过 7 天没访问过的文件,还在用的别删。",
+      "expected_output": "Should NOT trigger artifact-hygiene. The deliverable is a general-purpose cleanup utility the user will ship and run on a schedule — a normal feature to design and implement. artifact-hygiene governs where this run's own generated files go and whether they are deleted on completion, not the retention policy of a tool being built."
+    },
+    {
+      "id": 29,
+      "prompt": "生产库的备份策略帮我定一下:多久备一次、保留多长时间、存到哪个存储桶。",
+      "expected_output": "Should NOT trigger artifact-hygiene. Retention and storage siting for production database backups is a data-operations policy decision about business data. artifact-hygiene covers artifacts an agent run produces — debug output, captures, dumps, deliverables — and the pre-edit `.bak` copies it should not create, not backup policy for a live system."
     }
   ]
 }

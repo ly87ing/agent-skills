@@ -80,6 +80,16 @@
       "id": 16,
       "prompt": "刚才给 2026-07-20 写 4 条 ONES 工时时第三条超时了。请在父任务 #592151 下继续补齐当天,不要重复前两条。",
       "expected_output": "Should trigger ones-manhour-fill. The run must treat the interrupted write outcome as requiring reconciliation: re-query the current owner's records for the UTC+8 target date before any retry, use the readback as the source of truth, preserve successful records, recompute the remaining gap, and add only allocations proven missing. It must never replay the whole batch, and completion still requires a final readback proving the target total and child-task membership."
+    },
+    {
+      "id": 17,
+      "prompt": "帮我把我这个月已经登记的 ONES 工时导出成 Excel,财务要对账。",
+      "expected_output": "Should NOT trigger ones-manhour-fill. Exporting already-recorded worklogs is a read-and-format task the ONES connector answers directly. ones-manhour-fill writes new manhour records for a date against one parent task's subtasks; nothing here is being written."
+    },
+    {
+      "id": 18,
+      "prompt": "我今天的工作总结写好了,帮我发到部门的企业微信群里。",
+      "expected_output": "Should NOT trigger ones-manhour-fill. The summary is being delivered to a chat group, not turned into manhour allocations against a ONES parent task. A daily work summary is this skill's input, but only when the request is to register, backfill, or distribute hours in ONES."
     }
   ]
 }
