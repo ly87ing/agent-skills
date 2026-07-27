@@ -28,14 +28,10 @@ in `SKILL.md` still apply to every word on them.
 
 ## HTML And Interactive Documents
 
-- Use readable scalable type that stays usable at 200% zoom.
-- Meet contrast minimums: 4.5:1 for body text, 3:1 for large text and chart elements.
-- Keep content readable at a 320px width without horizontal scrolling.
-- Decide online/offline dependencies before building.
+- Design so the page can clear the rendering checks rather than checking them here: readable when zoomed, high enough contrast, and no horizontal scrolling on a narrow screen. The thresholds those become, and the verification of a rendered page against them, belong to the `frontend-verification` skill — including the cache-defeating reload that proves you are looking at the version you just edited.
+- Decide online/offline dependencies before building — match them to where the artifact will actually run.
 - Surface click-triggered details where the reader is looking — and to hold both readability and authenticity, keep one restateable conclusion in large type — with its primary proving visual, per the adjacency rule — on the surface and demote the full-detail real artifact (a screenshot, report, or recording) to a click-to-open evidence layer opened only when challenged — the click-capable form of show-before-telling, not an exception to it: the real artifact stays one click away.
 - When material does not fit the time or space budget, attach it as an explicitly optional item the reader can open on demand instead of deleting it — the click-capable form of the demote-don't-delete rule: label it with wording that permits use ("open it whenever") rather than discouraging it ("we won't cover this"), and give it a click target big enough to hit live.
 - Use one canonical visual per flow — when several captures show the same flow, keep the best one and cut the rest.
-- Verify the rendered result before declaring completion.
-- When re-verifying a local file you just edited in a browser, hard-reload with the cache disabled; otherwise a stale cache shows the previous version.
 - For a deck meant to be projected and talked through (not read alone), size it for a room: large type and a generous content area that fills the screen with minimal empty margins, and a navigation menu or anchored sections a presenter can jump between rather than only scrolling top-to-bottom. Design for the room's real full screen — the OS-level full screen the venue will use, at its aspect ratio (16:9), with no leftover margins; a browser window's inline "full screen" is not the venue's. When the venue or design is dark-themed, adapt every element to it and tone down glare-bright text; a page that dazzles in a dark room reads as unfinished. Build each claim-carrying body slide as assertion plus evidence: a one-sentence claim as the headline and the visual that proves it beneath, not a topic title over bullet lists.
 - Use motion only to aid comprehension — a progressive reveal that paces a dense slide, or an animated build that walks through a process step by step — never as decoration; a static form that reads instantly beats motion that delays the point.
