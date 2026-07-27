@@ -133,6 +133,15 @@ class SkillContractTests(unittest.TestCase):
         for skill_dir in skill_dirs():
             skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
             self.assertLessEqual(len(skill_text.splitlines()), 500, skill_dir.name)
+            # A line count is the wrong anchor for what a loaded skill actually costs:
+            # these bodies run one long rule per line, so reader-facing-writing sat at
+            # 22 KB across 92 lines — under a fifth of the 500-line cap while being the
+            # heaviest thing in the catalog. Characters are what the context window
+            # pays for, so cap those too. The limit is set just above today's largest
+            # body: its job is to stop a silent slide back, not to dictate a target.
+            # Raising it needs the same justification a rule-budget bump needs — say
+            # which content earned the increase, in a comment here.
+            self.assertLessEqual(len(skill_text), 16000, f"{skill_dir.name}: SKILL.md too large")
 
             for forbidden_doc_name in ("README.md", "CHANGELOG.md", "INSTALL.md", "INSTALLATION.md"):
                 self.assertFalse((skill_dir / forbidden_doc_name).exists(), f"{skill_dir.name}/{forbidden_doc_name}")
@@ -156,6 +165,24 @@ class SkillContractTests(unittest.TestCase):
             allowed_agent_files = {"openai.yaml"} | RUNTIME_ADAPTERS
             current_agent_files = {path.name for path in agents_dir.iterdir() if path.is_file()}
             self.assertEqual(current_agent_files, allowed_agent_files, skill_dir.name)
+
+    def test_descriptions_stay_within_the_resident_budget(self):
+        # Every description in this catalog is loaded into EVERY session before the
+        # user types anything — they are the resident cost of the catalog, the way a
+        # shared rule core is the resident cost of the rule layer. A per-description
+        # cap already exists above (1024, the platform limit), but nothing watched the
+        # sum, and five descriptions each written up against that cap add up to more
+        # than twice the entire shared rule core.
+        #
+        # The cap is set just above today's total. It is not a target to fill: a
+        # description earns length by covering a triggering scenario that is actually
+        # being missed, and the same edit should be judged on trigger evals, not on
+        # having room left. Raising this number requires naming, here, which skill's
+        # triggering it bought.
+        total = 0
+        for skill_dir in skill_dirs():
+            total += len(read_frontmatter(skill_dir).get("description", ""))
+        self.assertLessEqual(total, 5200, f"resident description budget exceeded: {total}B")
 
     def test_rule_derived_skills_exist_and_retired_skinning_skills_are_absent(self):
         current = {path.name for path in skill_dirs()}
@@ -191,8 +218,19 @@ class SkillContractTests(unittest.TestCase):
                 "HTML",
             ],
         }
+        # The assertion is that the rule's intent survives somewhere in the skill
+        # PACKAGE, not that it sits in SKILL.md's main path. Scoping it to SKILL.md
+        # was correct while every skill was a single file; once a skill splits its
+        # facets into references/ (progressive disclosure), the same intent is still
+        # loaded on demand and the old scope would forbid the split rather than
+        # protect the intent.
         for skill_name, phrases in expected_phrases.items():
-            text = (ROOT / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            skill_dir = ROOT / skill_name
+            text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            references_dir = skill_dir / "references"
+            if references_dir.exists():
+                for reference_path in sorted(references_dir.glob("*.md")):
+                    text += "\n" + reference_path.read_text(encoding="utf-8")
             for phrase in phrases:
                 self.assertIn(phrase, text, skill_name)
 

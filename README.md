@@ -57,7 +57,8 @@ agent-skills/
 ├── change-discipline/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
-│   └── evals/
+│   ├── evals/
+│   └── references/
 ├── frontend-verification/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}

@@ -5,7 +5,10 @@ description: Applies to every edit of something that already exists, however sma
 
 # Change Discipline
 
-Applies whenever you edit something that already exists. Start with the hard gate, then use the facet that matches the change — boundary/architecture, or style/naming/validation/comments. Many changes touch both. The gate is a lightweight always-on habit; the two facets below apply only when the change actually has a boundary or a style/contract dimension.
+Applies whenever you edit something that already exists. The hard gate below is a
+lightweight always-on habit and runs on every such edit. The two facets — boundary
+and style — apply only when the change actually has that dimension, and live in
+bundled references so a routine edit does not carry them.
 
 ## Before you change anything that already exists (hard gate)
 
@@ -24,52 +27,12 @@ Applies to EVERY edit of existing code, a config/contract value, a default, a te
 - **A call the user already made also stays made when a review wants to reverse it.** A verified finding — from a review pass, a subagent, or your own later re-read — about something the user deliberately removed, rejected, or chose is a recommendation to raise, not a defect to apply: check history for the deliberate decision (`git log -S`, `git log --diff-filter=D`), surface it, and let the user rule. Naming it in your summary while applying it in the same pass is not consent. A real case: a review flagged a line the user had explicitly deleted as "missing", the agent restored it and added an in-tree comment telling future editors not to remove it again — reversing the user's call and then defending the reversal in the file.
 - **Working-tree changes you did not make belong to a human until proven otherwise.** When files you never touched show up `deleted`/`modified`, assume the user edited them by hand and ask before acting on them; never `git restore .` / `git checkout .` / `git clean` over unexplained changes, and never attribute them to a sync service, an editor, or an environment glitch without first gathering evidence for that attribution. If you must clear the tree, `git stash` to preserve the state first. A real case: an agent blamed a batch of unexplained deletions on cloud-sync drift — on a machine with no such sync configured — and bulk-restored, silently undoing the user's own manual cleanup.
 
-## Boundary and architecture
+## Bundled Resources
 
-1. Identify the boundary being changed.
-   - Name the current entry point, callers, owners, and generated or synced outputs.
-   - State whether the change is local, shared, cross-module, or cross-repository.
-2. Prefer the smallest local change.
-   - Do not introduce a new abstraction unless there are at least two real consumers or a clear boundary problem.
-   - Keep existing framework, helpers, and dependency direction unless the current boundary is the bug.
-   - Before hand-rolling test scaffolding, a fixture, or a UI helper, search for what the repo already ships and reuse it — reinventing a component the project already provides is a defect, not a neutral choice. When the existing entry point was hard to discover, record it (a make target, a README line, a fixture path) so the next person or agent finds it without re-deriving it.
-   - When the same file exists as copies across repos or packages (vendored, sync-distributed, generated), establish the single upstream before editing: land the fix upstream and let the sync fan it out, never patch only the downstream copy — the next sync silently reverts it. `diff` the copies first to learn which way drift actually flows.
-   - When a file or function has grown large and mixes responsibilities, split it along existing responsibility seams (extract a module or function), not by an arbitrary line count; leave generated artifacts, data, vendored code, and large test files alone.
-   - **Not impacting other business is the first-priority constraint.** In the design phase, evaluate whether the change can live at a leaf/endpoint instead of in shared or public code, and state the blast radius (which other callers of the shared symbol it touches). Route through shared/public code only when a leaf placement genuinely cannot achieve the same result — and say why. A real regression came from doing data-masking in shared code and breaking many unrelated features when the correct place was the endpoint.
-   - **Resource impact is a first-class constraint too, not just business blast radius.** Anything that runs on shared or production infrastructure must bound its CPU, memory, disk, and IO footprint: sense real pressure and self-throttle (start conservative, ramp up, back off or pause new work when load/IO climbs), leave headroom instead of running at the machine's ceiling, and never let a batch or build job starve the platform it runs on. Maximizing a job's own throughput at the cluster's expense is a regression even when the job "succeeds".
-   - Importing external best-practice guidance is itself an abstraction decision: first inventory what the current rules/skills already cover, judge each item by necessity × existing-coverage × where it belongs, and prefer folding it into an existing skill/rule over creating a new one. A new skill needs ≥2 real consumers or a clear gap — do not copy an external guide wholesale.
-3. Check dependency direction.
-   - UI or CLI may depend on application/service code.
-   - Application code may depend on domain code.
-   - Infrastructure details should stay behind adapters instead of leaking inward.
-4. Define contract changes explicitly.
-   - For config, schema, or workflow changes, state defaults, failure mode, rollback path, and whether migration is required.
-   - For a setup, provisioning, sync, or migration action meant to run more than once, state and ensure it is idempotent: re-running converges to the same state — applying only the missing delta and pruning what no longer belongs — instead of duplicating, clobbering, or failing on the second run. A non-idempotent re-run is a defect for anything automated or re-entrant.
-   - For shared helpers or public surfaces, keep the interface narrow and name the concrete caller or test that justifies it.
-5. Verify the boundary before completion.
-   - Beyond the hard gate's smallest-test run, re-read the final diff for circular dependencies, unclear ownership, or accidental public-surface expansion.
-   - Delegate audits and exploration to subagents as read-only finders and apply their findings yourself; after they finish, run `git status` and `git ls-remote` to confirm no subagent committed or pushed under your identity — parallel subagents have ignored read-only instructions and pushed as the user before.
+Load the facet the change actually has instead of carrying both on every edit:
 
-## Style, naming, validation, comments
-
-1. Match the local style first.
-   - Use the repository's established formatter, lint, type-check, naming, and file layout.
-   - New warnings introduced by your change count as regressions.
-2. Use names with business meaning.
-   - Avoid single-letter names and unclear abbreviations outside tiny local scopes.
-   - Keep public fields and config keys consistent with existing contracts.
-3. Validate inputs fail-close.
-   - Reject malformed, unsupported, or ambiguous external input and config.
-   - Do not silently coerce values unless an existing compatibility contract requires it.
-   - In serialized config (YAML/TOML/JSON), keep values from changing the parse. An unquoted YAML scalar containing `: `, a leading `#`, or a `|`/`>` can silently reparse as a nested map, a comment, or a block scalar and load as the wrong thing — and a naive `split(":")` check won't catch it (a real case: an unquoted `description:` with `: ` in it made two skills silently fail to load). Quote the scalar, use ` — ` as an inline separator, and validate with a real parser, not string slicing.
-4. Keep comments rare and useful.
-   - Explain invariants, edge cases, or tradeoffs.
-   - Do not narrate obvious line-by-line behavior.
-5. Re-read the diff before completion.
-   - Remove accidental churn, dead code, debug leftovers, misleading names, and stale comments.
-   - Before deleting code, confirm why it exists (check version-control history) and that it is truly dead.
-   - When told a resource is retired/no-longer-maintained, do a full-footprint sweep (`git grep` across code, tests, docs, Makefile, config, and wiring) and handle sibling retired resources together — do not clean up only the one that was named while leaving the rest half-removed.
-   - Distinguish a tombstone guard (a test asserting a removed feature stays gone — safe to delete along with the feature) from a build-safety/security guard (content or invariant checks kept for a build or security reason). The commit that added the guard tells you which; do not delete the latter as "redundant".
+- When the change touches a boundary — a shared symbol, a public interface, dependency direction, a config/schema contract with a rollback path, a file that exists as copies across repos, a module that mixes responsibilities, or a re-runnable setup/migration that must stay idempotent — read [references/boundaries-and-contracts.md](references/boundaries-and-contracts.md).
+- When the change has a style, naming, input-validation, or comments dimension — including serialized config where an unquoted value can change how the file parses, and the final diff re-read before declaring done — read [references/style-and-validation.md](references/style-and-validation.md).
 
 ## Stop Conditions
 
