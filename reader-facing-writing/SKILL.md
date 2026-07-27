@@ -58,7 +58,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 ## Visuals, decks, and HTML
 
-Before designing, choosing, or reviewing any chart, diagram, screenshot, before/after pair, screen recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) and apply it: it carries the rules those artifacts fail on — which form the content earns, keeping captured evidence real rather than redrawn, chart encoding and color, projection at the venue's own full screen, and HTML that stays readable when zoomed or narrowed. A prose-only document does not need it; the decision of whether the content wants a visual at all is above, under Write for scanning.
+Before designing, choosing, or reviewing any chart, diagram, screenshot, before/after pair, screen recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) and apply it: it carries the rules those artifacts fail on — which form the content earns, keeping captured evidence real rather than redrawn, chart encoding and color, projection at the venue's own full screen, and designing an HTML page so it can clear the rendering checks. A prose-only document does not need it; the decision of whether the content wants a visual at all is above, under Write for scanning. Proving a built page or deck actually renders correctly is the `frontend-verification` skill's job, not this one's.
 
 ## Agent-facing instruction files
 
