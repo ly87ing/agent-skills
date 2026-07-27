@@ -14,6 +14,7 @@
     {
       "id": 3,
       "prompt": "Turn this iteration's to-do items into an action-plan document for the team, with an owner, a date, and a done-criterion for each item.",
+      "behaviour_prompt": "Turn this iteration's to-do items into an action-plan document for the team.\n\nThe items, as they came out of planning: refactor the token-refresh path in the login module; switch analytics reporting from synchronous to asynchronous; add pagination tests for the order list; evaluate a replacement log-collection pipeline; fix avatar upload failing on iOS. Ren is on the login and analytics work, Sam has the order list, and nobody has picked up the last two yet. We ship at the end of the month.",
       "expected_output": "Should trigger reader-facing-writing. The result should give each action item a single owner and a verb-first action, plus a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion, and must not state a future/desired state as the current state."
     },
     {
@@ -49,6 +50,7 @@
     {
       "id": 10,
       "prompt": "Turn our messy release-readiness notes into a pre-launch checklist the on-call team can actually run through.",
+      "behaviour_prompt": "Turn our messy release-readiness notes into a pre-launch checklist the on-call team can actually run through.\n\nThe notes, as they were dumped in the channel: db migration needs to run first, someone should check it. Rollback — we tested it last week, worked. Feature flags: the new checkout one defaults off, remember to flip after smoke. Monitoring dashboards, are they even updated? On-call handover doc. Cache warmup takes 20 min so start early. Also the CDN purge, Priya knows the command. Load test results were fine except p99 on search.",
       "expected_output": "Should trigger reader-facing-writing. The result should lead each item with its check/takeaway, keep peer items parallel (the same fields in the same order, e.g. check / owner / done criterion), sequence the items on one explicit logic (time, structure, or descending importance), and make the set non-overlapping and collectively complete — flagging any gap or leftover 'other'. It should preserve source wording for owners, dates, and uncertain values, mark unknowns as TBD rather than inventing to look complete, and must not present an aspirational or desired state as already done."
     },
     {
@@ -64,6 +66,7 @@
     {
       "id": 13,
       "prompt": "我在写一份给评审看的系统说明:一段是多个服务按时间先后来回调用、最后触发雪崩的过程,现在全是文字、大家说顺序看不清;另一段是模块的父子层级结构。帮我把这两段讲清楚。",
+      "behaviour_prompt": "我在写一份给评审看的系统说明,下面这两段现在全是文字,大家说看不清,帮我把这两段讲清楚。\n\n第一段(雪崩过程):用户请求先到网关,网关调用订单服务;订单服务同步调用库存服务扣减库存,库存服务回调订单服务确认;订单服务接着调用支付服务,支付服务超时后订单服务重试三次,每次重试都重新占用一条库存连接;库存服务连接池耗尽后,网关上所有请求开始排队,整条链路雪崩。\n\n第二段(模块层级):平台分接入层、业务层、数据层。接入层下有网关模块、鉴权模块;业务层下有订单模块、库存模块、支付模块,其中订单模块又分下单子模块和履约子模块;数据层下有主库、只读副本、缓存。",
       "expected_output": "Should trigger reader-facing-writing. Because each piece has a shape a diagram conveys faster than prose, the result should reach for a diagram instead of describing it in words, and match the type to the content: a sequence diagram for the services interacting over time, and a tree for the parent-child module hierarchy — not a mind map, which suits exploratory overviews rather than formal structure. Each diagram should carry a single message and stay legible, paired with a short caption instead of repeating the flow in prose."
     },
     {
@@ -74,6 +77,7 @@
     {
       "id": 15,
       "prompt": "这页状态汇报里全是干巴巴的数字——'47 个工单'、'62%'、'13 个仓库'——评审说这些数字不知所谓。帮我改得能落地。",
+      "behaviour_prompt": "我要改一页给评审看的季度状态汇报,里面全是干巴巴的数字,评审说这些数字不知所谓。原文是这样的:\n\n「本季度共处理工单 47 个,完成率 62%,涉及仓库 13 个。团队响应速度较上季度有明显提升,自动化覆盖范围持续扩大,整体交付质量稳中向好。」\n\n帮我改得能落地。",
       "expected_output": "Should trigger reader-facing-writing. The result should make each figure state what it counts and its basis (period, population, definition) instead of leaving bare counts and percentages the reader cannot interpret, and aggregate raw counts into the categories that carry the insight (for example which items are in scope and their status) or cut numbers that do not advance the point. It should not add figures merely to look rigorous."
     },
     {

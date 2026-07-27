@@ -40,8 +40,11 @@ looking for that material, and a real reading of one such response had it locate
 unrelated `AGENTS.md` under the working directory and answer that the file did not
 match the description — never performing the task, so both arms fail identically.
 Both arms therefore now answer from an empty temporary directory, which makes the
-failure honest rather than random, but does not make such a case measurable: to
-measure one, inline the material into the prompt so both arms see the same thing.
+failure honest rather than random, but does not by itself make such a case
+measurable. To measure one, give it a `behaviour_prompt`: the same request with
+the material inlined, which only this runner reads, leaving `prompt` free to stay
+the way a user really opens the request for run_trigger_evals.py. Editing `prompt`
+itself to fix behaviour measurement would silently move the trigger reading too.
 Cases whose expectation is about method rather than a produced artifact (compress
 this, rewrite with no tone given) do not have this problem.
 
@@ -168,6 +171,22 @@ def grade(prompt: str, expectation: str, response: str | None, model: str, cwd: 
     return None
 
 
+def answered_prompt(case: dict) -> str:
+    """The prompt both arms actually answer.
+
+    A case's `prompt` is written the way a user opens the request, because that is
+    what run_trigger_evals.py measures — and real openings routinely name material
+    they do not carry ("this iteration's to-do items", "这两段"). That is correct
+    for triggering and fatal for behaviour: both arms go looking for material that
+    is not there and fail identically, printing `with 0/N without 0/N`, which
+    measures nothing. `behaviour_prompt` restates the same request with the
+    material inlined, so one case can serve both harnesses without one prompt
+    having to serve both jobs. Cases that carry their own material need only
+    `prompt`.
+    """
+    return case.get("behaviour_prompt") or case["prompt"]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--skill", required=True, help="skill whose behaviour to measure")
@@ -202,13 +221,14 @@ def main() -> int:
 
     for case in cases:
         scores = {"with": 0, "without": 0, "n": 0}
+        asked = answered_prompt(case)
         for _ in range(runs):
             answers = {
-                "with": run_claude(f"{body}\n\n---\n\n{case['prompt']}", args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
-                "without": run_claude(case["prompt"], args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
+                "with": run_claude(f"{body}\n\n---\n\n{asked}", args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
+                "without": run_claude(asked, args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
             }
             verdicts = {
-                arm: grade(case["prompt"], case["expected_output"], answers[arm], args.model, cwd=sandbox)
+                arm: grade(asked, case["expected_output"], answers[arm], args.model, cwd=sandbox)
                 for arm in ("with", "without")
             }
             if None in verdicts.values():

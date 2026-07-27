@@ -80,7 +80,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `agents/openai.yaml`: Codex/OpenAI UI metadata and default invocation hints — the only file in `agents/`, because it is the only one a runtime actually reads
 - `references/`: reference material loaded on demand (when a single file exceeds 100 lines, put a table of contents at the top so a partial read still conveys the full picture)
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
-- `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing; every other field stays English.
+- `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing — as may the optional `behaviour_prompt` that restates one of them with its material inlined for the behaviour runner; every other field stays English.
 - `tests/`: per-skill unit tests guarding fragile script logic, run automatically by the top-level suite
 
 All 5 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
@@ -90,7 +90,7 @@ Verification commands:
 - `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite
 - `npx skills-ref validate ./<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
 - `python3 tests/run_trigger_evals.py --model haiku` — judge each eval's triggering decision against a live model via `claude -p` (repeat with `--model sonnet` / `--model opus` to cover the multi-model checklist)
-- `python3 tests/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same prompt run without it; costs 3 model calls per case, so start narrow, and read its header for the one thing it cannot see (rules that live in `references/`)
+- `python3 tests/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same prompt run without it; costs 3 model calls per case, so start narrow, and read its header for the one thing it cannot see (rules that live in `references/`). A case whose `prompt` names material it does not carry cannot be measured here — both arms go looking, fail identically, and print `with 0/N without 0/N`. Give such a case a `behaviour_prompt` restating the request with the material inlined; only this runner reads it, so `prompt` stays the way a user really opens the request and the trigger reading does not move.
 
 Four rules for reading trigger-eval results, all learned the expensive way:
 

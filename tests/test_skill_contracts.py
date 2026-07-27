@@ -289,6 +289,43 @@ class SkillContractTests(unittest.TestCase):
                     "'Should trigger' or 'Should NOT trigger' and state one side, not a degree",
                 )
 
+    def test_behaviour_prompts_inline_what_their_case_only_names(self):
+        # `behaviour_prompt` exists because one prompt cannot serve both harnesses.
+        # run_trigger_evals.py needs the words a user really opens with, and real
+        # openings routinely name material they do not carry ("this iteration's
+        # to-do items"); run_behaviour_evals.py needs that material present, or
+        # both arms fail identically and the case measures nothing. The field is
+        # opt-in, so the failure mode to guard is not absence but a copy that
+        # silently measures the same unmeasurable thing, or one parked on a
+        # negative case the behaviour runner never reads.
+        for skill_dir in skill_dirs():
+            payload = json.loads((skill_dir / "evals" / "evals.json").read_text(encoding="utf-8"))
+            for case in payload.get("evals", []):
+                if "behaviour_prompt" not in case:
+                    continue
+                case_id = case.get("id")
+                behaviour = str(case["behaviour_prompt"]).strip()
+                self.assertTrue(behaviour, f"{skill_dir.name}#{case_id}: empty behaviour_prompt")
+                self.assertNotEqual(
+                    behaviour,
+                    str(case.get("prompt", "")).strip(),
+                    f"{skill_dir.name}#{case_id}: behaviour_prompt duplicates prompt; it "
+                    "exists to inline the material the prompt only names",
+                )
+                self.assertGreater(
+                    len(behaviour),
+                    len(str(case.get("prompt", "")).strip()),
+                    f"{skill_dir.name}#{case_id}: behaviour_prompt is shorter than prompt; "
+                    "inlining material makes it longer, so this one probably trimmed the "
+                    "request instead of carrying its material",
+                )
+                self.assertNotRegex(
+                    str(case.get("expected_output", "")),
+                    r"(?i)^should\s+not\s+trigger",
+                    f"{skill_dir.name}#{case_id}: negative cases are trigger-only; the "
+                    "behaviour runner never reads them",
+                )
+
     def test_long_reference_files_start_with_a_table_of_contents(self):
         for skill_dir in skill_dirs():
             references_dir = skill_dir / "references"
@@ -337,12 +374,18 @@ class SkillContractTests(unittest.TestCase):
             if path.name == "evals.json" and path.parent.name == "evals":
                 # Eval prompts simulate real user phrasing and may be written
                 # in the primary user's language (Chinese); a blanket CJK ban
-                # here left Chinese triggering permanently untested. Every
-                # other evals.json field stays English.
+                # here left Chinese triggering permanently untested. The same
+                # carve-out covers `behaviour_prompt`, which restates one of
+                # those prompts with its material inlined and is therefore in
+                # the same language. Every other evals.json field stays English.
                 payload = json.loads(text)
                 fields = [str(payload.get("skill_name", ""))]
                 for case in payload.get("evals", []):
-                    fields.extend(str(value) for key, value in case.items() if key != "prompt")
+                    fields.extend(
+                        str(value)
+                        for key, value in case.items()
+                        if key not in ("prompt", "behaviour_prompt")
+                    )
                 for field in fields:
                     self.assertIsNone(
                         CJK_PATTERN.search(field),
