@@ -31,6 +31,25 @@ never said to run `git add -f` or fix the rule, so it verified the problem witho
 ever fixing it. A grader tuned until it agrees with you measures nothing. Loosen it
 only for a difference in wording or an equivalent command, never for a missing step.
 
+Read `with 0/N without 0/N` as "measured nothing", never as the delete test firing.
+The delete test needs `without` to PASS; a case where BOTH arms fail says the harness
+could not put the model in a position to answer, and the commonest cause is a prompt
+that names material it does not carry ("our repo's AGENTS.md", "this iteration's
+to-do items", "这页状态汇报"). `claude -p` is a full agent with file tools: it goes
+looking for that material, and a real reading of one such response had it locate an
+unrelated `AGENTS.md` under the working directory and answer that the file did not
+match the description — never performing the task, so both arms fail identically.
+Both arms therefore now answer from an empty temporary directory, which makes the
+failure honest rather than random, but does not make such a case measurable: to
+measure one, inline the material into the prompt so both arms see the same thing.
+Cases whose expectation is about method rather than a produced artifact (compress
+this, rewrite with no tone given) do not have this problem.
+
+A second reason both arms can fail: an expectation that is a conjunction of four or
+five clauses fails on any single missed clause, so it measures the model's coverage
+of a checklist rather than the skill's effect. Split such a case, or read the
+response before believing the verdict.
+
 Known limit — this runner prepends SKILL.md's body and nothing else, so a rule that
 lives in `references/` is absent from the with-skill arm even though a real agent
 would load it on demand. Any case whose expectation rests on a bundled reference
@@ -54,6 +73,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,13 +109,15 @@ Answer with exactly one word: PASS or FAIL.
 """
 
 
-def run_claude(prompt: str, model: str, timeout: int) -> str | None:
+def run_claude(prompt: str, model: str, timeout: int, cwd: str | None = None) -> str | None:
     try:
         result = subprocess.run(
             ["claude", "-p", prompt, "--model", model],
             capture_output=True,
             text=True,
             timeout=timeout,
+            stdin=subprocess.DEVNULL,
+            cwd=cwd,
         )
     except subprocess.TimeoutExpired:
         return None
@@ -127,13 +149,14 @@ def skill_body(skill: str) -> str:
     return re.sub(r"^---\n.*?\n---\n", "", text, count=1, flags=re.DOTALL).strip()
 
 
-def grade(prompt: str, expectation: str, response: str | None, model: str) -> bool | None:
+def grade(prompt: str, expectation: str, response: str | None, model: str, cwd: str | None = None) -> bool | None:
     if response is None:
         return None
     verdict = run_claude(
         GRADE_TEMPLATE.format(prompt=prompt, expectation=expectation, response=response),
         model,
         GRADE_TIMEOUT_SECONDS,
+        cwd=cwd,
     )
     if verdict is None:
         return None
@@ -170,15 +193,22 @@ def main() -> int:
     ungraded = 0
     totals = {"with": 0, "without": 0, "n": 0}
 
+    # Both arms answer from an empty directory. `claude -p` is a full agent with
+    # file tools, so run from a real repo it goes looking for whatever the prompt
+    # names and answers about what it found — see the header note on prompts that
+    # reference material they do not carry.
+    sandbox_dir = tempfile.TemporaryDirectory(prefix="behaviour-eval-")
+    sandbox = sandbox_dir.name
+
     for case in cases:
         scores = {"with": 0, "without": 0, "n": 0}
         for _ in range(runs):
             answers = {
-                "with": run_claude(f"{body}\n\n---\n\n{case['prompt']}", args.model, ANSWER_TIMEOUT_SECONDS),
-                "without": run_claude(case["prompt"], args.model, ANSWER_TIMEOUT_SECONDS),
+                "with": run_claude(f"{body}\n\n---\n\n{case['prompt']}", args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
+                "without": run_claude(case["prompt"], args.model, ANSWER_TIMEOUT_SECONDS, cwd=sandbox),
             }
             verdicts = {
-                arm: grade(case["prompt"], case["expected_output"], answers[arm], args.model)
+                arm: grade(case["prompt"], case["expected_output"], answers[arm], args.model, cwd=sandbox)
                 for arm in ("with", "without")
             }
             if None in verdicts.values():
