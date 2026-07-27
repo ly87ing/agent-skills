@@ -24,11 +24,15 @@ RETIRED_SKILLS = {
     "legacy-component-skinning",
     "legacy-component-skinning",
 }
-RUNTIME_ADAPTERS = {
-    "antigravity.md",
-    "claude.md",
-    "codex.md",
-}
+# `agents/` carries exactly one file, and it is the only one a runtime reads.
+# `agents/openai.yaml` is Codex's real convention (its own bundled skills ship
+# that file and nothing else). The per-runtime `claude.md` / `codex.md` /
+# `antigravity.md` notes this catalog used to ship were read by nobody: no
+# SKILL.md referenced them, no distribution code opened them, and no runtime
+# loads an unreferenced file from a skill directory. They were removed in
+# favour of SKILL.md staying the single source of truth — do not re-add a
+# per-runtime note without first naming what actually loads it.
+ALLOWED_AGENT_FILES = {"openai.yaml"}
 FORBIDDEN_CORE_RUNTIME_TERMS = {
     "AskUserQuestion",
     "TaskCreate",
@@ -162,9 +166,8 @@ class SkillContractTests(unittest.TestCase):
 
             agents_dir = skill_dir / "agents"
             self.assertTrue(agents_dir.exists(), skill_dir.name)
-            allowed_agent_files = {"openai.yaml"} | RUNTIME_ADAPTERS
             current_agent_files = {path.name for path in agents_dir.iterdir() if path.is_file()}
-            self.assertEqual(current_agent_files, allowed_agent_files, skill_dir.name)
+            self.assertEqual(current_agent_files, ALLOWED_AGENT_FILES, skill_dir.name)
 
     def test_descriptions_stay_within_the_resident_budget(self):
         # Every description in this catalog is loaded into EVERY session before the
@@ -354,25 +357,6 @@ class SkillContractTests(unittest.TestCase):
                     f"{path.relative_to(ROOT)}:{line_no} contains non-English character "
                     f"{match.group(0)!r}; skill content and README must be all English"
                 )
-
-    def test_runtime_adapters_are_thin_and_core_referenced(self):
-        for skill_dir in skill_dirs():
-            for adapter_name in RUNTIME_ADAPTERS:
-                adapter_path = skill_dir / "agents" / adapter_name
-                self.assertTrue(adapter_path.exists(), f"{skill_dir.name}/{adapter_name}")
-                adapter = adapter_path.read_text(encoding="utf-8")
-
-                self.assertIn("Core source of truth: `SKILL.md`.", adapter, f"{skill_dir.name}/{adapter_name}")
-                self.assertIn("Do not duplicate or weaken", adapter, f"{skill_dir.name}/{adapter_name}")
-                self.assertLessEqual(len(adapter.splitlines()), 20, f"{skill_dir.name}/{adapter_name}")
-
-            claude_adapter = (skill_dir / "agents" / "claude.md").read_text(encoding="utf-8")
-            codex_adapter = (skill_dir / "agents" / "codex.md").read_text(encoding="utf-8")
-            antigravity_adapter = (skill_dir / "agents" / "antigravity.md").read_text(encoding="utf-8")
-            self.assertIn(f"/{skill_dir.name}", claude_adapter, skill_dir.name)
-            self.assertIn(f"${skill_dir.name}", codex_adapter, skill_dir.name)
-            self.assertIn("Antigravity CLI", antigravity_adapter, skill_dir.name)
-            self.assertIn(skill_dir.name, antigravity_adapter, skill_dir.name)
 
 
 if __name__ == "__main__":

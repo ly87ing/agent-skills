@@ -46,31 +46,28 @@ agent-skills/
 ├── safe-merge-review/
 │   ├── SKILL.md                        # runtime-neutral source
 │   ├── agents/
-│   │   ├── openai.yaml                 # Codex/OpenAI UI metadata
-│   │   ├── codex.md                    # Codex tool mapping notes
-│   │   ├── claude.md                   # Claude Code tool mapping notes
-│   │   └── antigravity.md              # Antigravity CLI tool mapping notes
+│   │   └── openai.yaml                 # Codex/OpenAI UI metadata
 │   ├── evals/
 │   ├── references/
 │   ├── scripts/
 │   └── tests/
 ├── change-discipline/
 │   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   ├── agents/openai.yaml
 │   ├── evals/
 │   └── references/
 ├── frontend-verification/
 │   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   ├── agents/openai.yaml
 │   ├── evals/
 │   └── references/
 ├── artifact-hygiene/
 │   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+│   ├── agents/openai.yaml
 │   └── evals/
 └── reader-facing-writing/
     ├── SKILL.md
-    ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
+    ├── agents/openai.yaml
     ├── evals/
     └── references/
 ```
@@ -80,10 +77,7 @@ The top-level skill directories are the single source of truth, and the only con
 Each canonical skill directory should be as self-contained as possible, typically including:
 
 - `SKILL.md`: cross-runtime trigger conditions and the main workflow, kept open-standard and runtime-neutral
-- `agents/openai.yaml`: Codex/OpenAI UI metadata and default invocation hints
-- `agents/codex.md`: a thin adapter note for Codex tool mapping, progress tracking, and verification entry points
-- `agents/claude.md`: a thin adapter note for Claude Code commands, tool mapping, and safety considerations
-- `agents/antigravity.md`: a thin adapter note for Antigravity CLI invocation, progress tracking, and tool boundaries
+- `agents/openai.yaml`: Codex/OpenAI UI metadata and default invocation hints — the only file in `agents/`, because it is the only one a runtime actually reads
 - `references/`: reference material loaded on demand (when a single file exceeds 100 lines, put a table of contents at the top so a partial read still conveys the full picture)
 - `scripts/`: fragile steps suitable for distilling into deterministic helpers
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing; every other field stays English.
@@ -106,12 +100,9 @@ Two rules for reading trigger-eval results, both learned the expensive way:
 
 Runtime adaptation rules:
 
-- `SKILL.md` is the single source of truth for the workflow; adapters may only map tools, invocation methods, and runtime safety restrictions.
+- `SKILL.md` is the single source of truth for the workflow, and it is the only file every runtime loads. Keep it open-standard: name capabilities (a browser tool, a task tracker) rather than one runtime's tool names.
 - Codex/OpenAI-specific config goes in `agents/openai.yaml`, with `default_prompt` explicitly referencing `$skill-name`.
-- Claude Code-specific invocation methods, tool names, and dynamic context-injection restrictions go in `agents/claude.md`, not in core.
-- Codex-specific tool conventions (such as plan tracking, local browser selection, image viewing) go in `agents/codex.md`, not in core.
-- Antigravity CLI-specific invocation methods, plan / status surfaces, and tool boundaries go in `agents/antigravity.md`, not in core.
-- Adapters may not add, remove, or relax the verification gates, stop conditions, and status-transition requirements in `SKILL.md`.
+- Do not add per-runtime notes beside it. This catalog shipped `agents/{claude,codex,antigravity}.md` until it was confirmed that nothing read them — no `SKILL.md` referenced them, no distribution code opened them, and a runtime loads no unreferenced file from a skill directory. A file no runtime reads cannot adapt anything; it only drifts against `SKILL.md`. If a runtime later gains a real convention, add it only with the loader named.
 
 ## How to Use
 
@@ -149,7 +140,7 @@ Skills split out of the rule system should carry only low-frequency, topic-speci
 - `SKILL.md` keeps only the core workflow; don't stuff README, CHANGELOG, or installation instructions into the skill package.
 - Distill repeated and fragile steps into `scripts/` first, instead of restating them over and over in prose.
 - Write trigger conditions for real user requests, not as abstract slogans.
-- When adapting to Claude Code, Codex, and Antigravity CLI at the same time, keep `SKILL.md` open-standard and converge runtime differences into the `agents/` adapters.
+- When targeting Claude Code, Codex, and Antigravity CLI at the same time, keep `SKILL.md` open-standard — name the capability, not one runtime's tool — instead of writing per-runtime files no runtime reads.
 - If a skill is meant for repeated team use, it should at least be able to answer:
   - who will use it
   - how the user will trigger it
