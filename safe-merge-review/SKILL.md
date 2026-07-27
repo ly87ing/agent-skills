@@ -7,15 +7,7 @@ description: Use when the user wants to merge a branch, a remote ref, or the cor
 
 ## Outcome
 
-Treat "merge succeeded" and "merge is correct" as two different things, and produce verifiable evidence:
-
-- Which repos and which refs the current merge covers
-- Whether the source changes really need to enter the current branch
-- Which hotspot files and shared boundaries require deep reading
-- Whether the conflict resolution preserved the necessary semantics from both sides
-- Whether the source ref has been fully included in `HEAD`
-- Whether the minimal relevant verification passes
-- Whether the current result is safe to push, and what residual risks remain
+Treat "merge succeeded" and "merge is correct" as two different things, and produce verifiable evidence for every field of the Reporting skeleton at the end of this file — that field list is the definition of done.
 
 ## Trigger Matrix
 
@@ -37,30 +29,13 @@ still shows its original title — trust the head sha you just read, not the lin
 
 ## Context Sources
 
-Collect the minimal context before starting:
+Path 1 collects the repo scope, worktree state, and merge evidence step by step. Before starting, scan instead for the boundaries that change how those steps run, because each one invalidates a default the workflow would otherwise take:
 
-- Repo scope:
-  - Whether the current directory is a git repo
-  - Single-repo or multi-repo
-  - Current branch (the intended target), source ref, remote
-- Worktree state:
-  - `git status --short --branch`
-  - Whether there are uncommitted changes, staged changes, or a user's manual conflict-resolution work in progress
-- Merge evidence:
-  - Source ref or merge commit
-  - Affected files, hotspot overlap, key incoming commits
-  - Whether the repo uses a fast-forward, merge commit, squash, or other history strategy
-- Verification context:
-  - Minimal relevant verification commands
-  - Whether each repo must be verified separately
-- Risk boundaries:
-  - Whether there is a dirty worktree, multi-repo coordination, submodules, binary files, large numbers of renames, or rebase/squash history
-  - Whether a networked `fetch` is required
+- A dirty worktree, multi-repo coordination, submodules, binary files, or large numbers of renames — none of these are handled by a plain diff model
+- The repo's history strategy (fast-forward, merge commit, squash, or a rewritten history) — it decides which completeness proof is even valid
+- Whether a networked `fetch` is required, and whether it is available
 
-Environment prerequisites:
-
-- A working git CLI and read/write access to the repo are required
-- Judging a remote source ref usually requires a networked `fetch`
+Environment prerequisites: a working git CLI with read/write access to the repo; judging a remote source ref usually requires a networked `fetch`.
 
 ## Bundled Resources
 
@@ -130,14 +105,6 @@ Load these on demand instead of cramming every detail into the main flow:
 4. Run the minimal relevant verification and produce a conclusion.
    - The conclusion can only be `Green / Yellow / Red`
    - It must come with an evidence matrix and residual risks
-
-## Verification Matrix
-
-| Path | Check | Evidence |
-| --- | --- | --- |
-| Path 1 | The source ref and target branch are locked down, and the diff set and hotspot files are modeled | merge base, left/right counts, incoming commits, hotspot file list |
-| Path 2 | The merge result is fully included and the minimal relevant verification is complete | completeness proof, final landed files, verification commands and results, push decision |
-| Path 3 | The correctness of a completed merge is re-audited | source ref / merge commit, semantic re-review conclusion, verification results, Green/Yellow/Red verdict |
 
 ## Failure and Escalation
 

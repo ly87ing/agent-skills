@@ -7,6 +7,7 @@ final diff re-read before declaring the change done.
 1. Match the local style first.
    - Use the repository's established formatter, lint, type-check, naming, and file layout.
    - New warnings introduced by your change count as regressions.
+   - Stop if a style change would reformat unrelated files: keep the diff to what the change itself needs, and land a broad reformat as its own commit.
 2. Use names with business meaning.
    - Avoid single-letter names and unclear abbreviations outside tiny local scopes.
    - Keep public fields and config keys consistent with existing contracts.
@@ -17,6 +18,7 @@ final diff re-read before declaring the change done.
 4. Keep comments rare and useful.
    - Explain invariants, edge cases, or tradeoffs.
    - Do not narrate obvious line-by-line behavior.
+   - Stop if the comment explains intent that clearer code should carry instead — rename or restructure rather than annotate.
 5. Re-read the diff before completion.
    - Remove accidental churn, dead code, debug leftovers, misleading names, and stale comments.
    - Before deleting code, confirm why it exists (check version-control history) and that it is truly dead.

@@ -33,13 +33,3 @@ Load the facet the change actually has instead of carrying both on every edit:
 
 - When the change touches a boundary — a shared symbol, a public interface, dependency direction, a config/schema contract with a rollback path, a file that exists as copies across repos, a module that mixes responsibilities, or a re-runnable setup/migration that must stay idempotent — read [references/boundaries-and-contracts.md](references/boundaries-and-contracts.md).
 - When the change has a style, naming, input-validation, or comments dimension — including serialized config where an unquoted value can change how the file parses, and the final diff re-read before declaring done — read [references/style-and-validation.md](references/style-and-validation.md).
-
-## Stop Conditions
-
-- The current behavior you are about to change is a deliberate earlier fix (per git history) whose intent you have not confirmed, or the change sits on an unresolved design/security/contract decision — escalate with the evidence instead of picking a side.
-- The proposed abstraction has fewer than two real consumers and no clear boundary problem.
-- The migration or rollback path is unknown, or a data contract change lacks a compatibility/migration story.
-- A dependency boundary would be crossed, or a change routed through shared/public code, only to make the current patch easier when a leaf/endpoint placement would achieve the same result.
-- A split would only chase a size threshold, with no responsibility boundary behind it.
-- A style change would reformat unrelated files.
-- A comment explains intent that should instead be expressed by clearer code.
