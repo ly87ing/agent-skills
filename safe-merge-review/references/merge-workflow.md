@@ -10,6 +10,7 @@
 - 6. Conflict handling
 - 7. Merge completeness verification
 - 8. Minimal relevant verification and push decision
+- 9. Reporting skeleton: `scripts/build_merge_evidence.py`
 
 ## 1. Repo scope and worktree cleanliness
 
@@ -378,3 +379,26 @@ Only when all of the following conditions hold simultaneously may you suggest or
 - The post-merge semantic re-review passes
 - The minimal relevant verification passes
 - The user requested a push, or the repo process explicitly requires continuing to push
+
+## 9. Reporting skeleton: `scripts/build_merge_evidence.py`
+
+Run it after the refs are locked down and the risks identified, so the Reporting section of `SKILL.md` is assembled the same way every time.
+
+Single-value flags, one per Reporting field:
+
+```text
+--repo --current-branch --source-ref --merge-base --left-right-counts
+--dirty-worktree --merge-strategy --completeness-proof --proof-method
+--semantic-review --push-status
+```
+
+Repeatable flags, once per item: `--incoming-commit`, `--hotspot`, `--conflict`, `--verification`, `--risk`.
+
+It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent directories).
+
+Two behaviors to rely on:
+
+- Any field left unset renders as a visible unfilled marker. `--proof-method` deliberately has no default, so a summary built before the completeness check ran can never read as an `is-ancestor` proof it never performed.
+- Residual risks render as `none recorded` when none were passed.
+
+Fill every field before treating the summary as final.
