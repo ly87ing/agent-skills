@@ -145,6 +145,16 @@
       "id": 29,
       "prompt": "帮我统计一下这个仓库最近三个月的提交,按人分组,看看谁改动最多。",
       "expected_output": "Should NOT trigger change-discipline. This is a read-only history query answerable with git log and shortlog. change-discipline's gate exists to govern an impending edit to existing behaviour — establishing why it is what it is, checking callers, verifying the smallest thing — and nothing here is being edited."
+    },
+    {
+      "id": 30,
+      "prompt": "复审报告说这个函数里少了一行空值判断,算缺陷。但我印象里这行是我上一轮特意删掉的。按报告补回去吧?",
+      "expected_output": "Should trigger change-discipline. The result should check history for the deliberate removal (git log -S, git log --diff-filter=D) and surface the finding as a recommendation for the user to rule on, rather than restoring the line in this pass — a call the user already made stays made when a review wants to reverse it."
+    },
+    {
+      "id": 31,
+      "prompt": "git status 里冒出来一批我没碰过的文件显示 deleted,大概是同步工具抽风了。先 git checkout . 清干净再接着干活?",
+      "expected_output": "Should trigger change-discipline. The result should treat unexplained working-tree changes as the user's own until proven otherwise: ask before acting, refuse to git restore/checkout/clean over them, decline to attribute them to a sync service without evidence, and git stash first if the tree must be cleared."
     }
   ]
 }

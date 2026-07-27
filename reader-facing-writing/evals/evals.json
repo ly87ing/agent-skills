@@ -115,6 +115,11 @@
       "id": 23,
       "prompt": "提交前帮我把这次改动的风险等级和影响范围定一下,再写提交信息。",
       "expected_output": "Should NOT trigger reader-facing-writing. Classifying change risk and impact scope and producing a commit message is the pre-commit submission gate's job, not reader-facing document work. The audience here is a reviewer reading a diff, and the artifact is governed by the repo's commit conventions rather than by document structure and prose decisions."
+    },
+    {
+      "id": 24,
+      "prompt": "讲稿和渲染出来的 deck 是分开的两份,我把讲稿第三节的说法改了,deck 那边还是旧措辞。帮我把这次调整在两边都落一遍,别落漏。",
+      "expected_output": "Should trigger reader-facing-writing. The result should apply the change across both mirrored artifacts — the script and the deck it renders into — and re-check every line that depended on the wording that changed, instead of editing one surface and leaving the other stale."
     }
   ]
 }

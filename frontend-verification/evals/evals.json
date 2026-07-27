@@ -70,6 +70,26 @@
       "id": 14,
       "prompt": "把这个登录页 Playwright 用例里的 locator 换成更稳的写法,纯改测试代码,不用跑也不用截图。",
       "expected_output": "Should NOT trigger frontend-verification. This is writing/debugging Playwright test code with no UI evidence to capture and no verification-strategy decision to make — the skill's own stop condition excludes it. The locator guidance lives in references/playwright-essentials.md, which the agent reaches only when a verification decision is actually in play."
+    },
+    {
+      "id": 15,
+      "prompt": "刚才用浏览器提交那张工单,提到一半连接断了,页面也没了。我直接从头再走一遍流程重新提一次吧?",
+      "expected_output": "Should trigger frontend-verification. The result should treat the interrupted mutating flow as possibly already committed server-side: re-query the ticket by id and resume from it rather than restarting the flow, which risks a duplicate submission."
+    },
+    {
+      "id": 16,
+      "prompt": "点了保存之后整个页面变成白屏了,是不是保存失败了?你帮我看一眼再重试一次。",
+      "expected_output": "Should trigger frontend-verification. The result should refuse to read the save's success or failure off a blank render — that is a load failure, not a result — and re-verify the outcome from an independent record before retrying."
+    },
+    {
+      "id": 17,
+      "prompt": "刚截的这张图上首屏卡片是空的、配图也没显示出来,是不是这页布局炸了?你按截图改一下吧。",
+      "expected_output": "Should trigger frontend-verification. The result should treat a defect visible only in an early capture as a possible phantom: settle entrance/scroll animations and wait for image decoding, re-capture, and confirm the defect is real before editing the page against a false screenshot."
+    },
+    {
+      "id": 18,
+      "prompt": "这个弹层里嵌了段视频,一点播放控件整个弹层就被关掉了;而且焦点落在视频上以后,左右方向键就不翻页了。帮我确认下是不是这样,再定怎么改。",
+      "expected_output": "Should trigger frontend-verification. The result should stop the media's own clicks from reaching the click-to-dismiss handler and pause playback on close, then decide explicitly which keys belong to focused media and drive the page to confirm clicking content does not navigate and the player has not swallowed the navigation keys."
     }
   ]
 }
