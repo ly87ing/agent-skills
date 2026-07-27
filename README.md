@@ -21,21 +21,12 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | Skill | Description |
 | --- | --- |
 | [safe-merge-review](./safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
-| [ones-manhour-fill](./ones-manhour-fill/SKILL.md) | Fills ONES daily manhour records from a work summary into a parent task's actual subtasks, with existing-record checks, add-only writes, allocation normalization, and post-write verification; ships with triggering evals. |
 | [change-discipline](./change-discipline/SKILL.md) | Disciplined changes to existing code: one pre-change hard gate (establish why current behavior exists, symptom-is-not-spec, blast radius, smallest verification) plus two facets — boundary/architecture review and code style/contract/naming/validation/comment constraints; ships with triggering evals. |
 | [frontend-verification](./frontend-verification/SKILL.md) | Handles UI, browser automation, interactive HTML, responsive states, and frontend verification tool selection; ships with triggering evals. |
 | [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents; ships with triggering evals. |
-| [session-mining](./session-mining/SKILL.md) | Mines local agent memory and session transcripts for recurring corrections, preferences, and workflows, dedupes them against currently managed rules and skills, and proposes promotions with an auditable coverage account; ships with triggering evals. |
 
-## Companion Skills and Prerequisites
-
-Most skills here are self-contained. Two are not fully standalone:
-
-- `ones-manhour-fill` drives an external issue tracker through a companion connector this repository does not ship: it expects a project-local `ones` skill / connector in the runtime for reading and writing ONES work items. Adopt it with that connector, or accept the raw-HTTP fallback path.
-- `session-mining` promotes its findings into a consuming rule/skill manager. Its `references/data-sources.md` records one deployment's store paths and landing commands as dated, re-verify-at-run-time facts; adopt it by rewriting that file for your own layout.
-
-The other five skills have no cross-skill prerequisites.
+All five skills are self-contained and have no cross-skill prerequisites.
 
 ## Design Principles
 
@@ -63,12 +54,6 @@ agent-skills/
 │   ├── references/
 │   ├── scripts/
 │   └── tests/
-├── ones-manhour-fill/
-│   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
-│   ├── evals/
-│   ├── scripts/
-│   └── tests/
 ├── change-discipline/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
@@ -82,17 +67,11 @@ agent-skills/
 │   ├── SKILL.md
 │   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
 │   └── evals/
-├── reader-facing-writing/
-│   ├── SKILL.md
-│   ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
-│   ├── evals/
-│   └── references/
-└── session-mining/
+└── reader-facing-writing/
     ├── SKILL.md
     ├── agents/{openai.yaml,codex.md,claude.md,antigravity.md}
     ├── evals/
-    ├── references/
-    └── scripts/
+    └── references/
 ```
 
 The top-level skill directories are the single source of truth, and the only content layer this repository maintains publicly.
@@ -109,7 +88,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing; every other field stays English.
 - `tests/`: per-skill unit tests guarding fragile script logic, run automatically by the top-level suite
 
-All 7 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All 5 current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 Verification commands:
 

@@ -99,10 +99,11 @@ def read_frontmatter(skill_md: Path) -> dict[str, str]:
 def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, str]:
     """Skills the agent can also choose from but this repo does not own.
 
-    The repo holds 7 skills; a real agent picks among everything installed. A
+    The repo holds 5 skills; a real agent picks among everything installed. A
     catalog of only our own skills cannot surface the collisions that matter
-    most — ones-manhour-fill against a general ONES skill, safe-merge-review
-    against a GitLab skill — so measuring without them reads optimistically.
+    most — safe-merge-review against a GitLab skill, frontend-verification
+    against a runtime's built-in dataviz skill — so measuring without them
+    reads optimistically.
     """
     neighbours: dict[str, str] = {}
     for raw_dir in catalog_dirs:
@@ -168,7 +169,8 @@ def judge(catalog: str, skills: dict[str, str], model: str, case: dict) -> str:
         return f"error:claude-exit-{result.returncode}:{result.stderr.strip()[:120]}"
     answer = result.stdout.strip().lower()
     # Skill names contain hyphens, so \b is the wrong boundary: it treats "-" as a
-    # separator and lets "ones" match inside "ones-manhour-fill", making every
+    # separator and lets a short neighbour name like "ones" match inside a longer
+    # one like "ones-manhour-fill", making every
     # answer naming the longer skill look ambiguous. Exclude hyphens from the
     # boundary so only a whole skill name matches.
     mentioned = {

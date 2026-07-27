@@ -1,4 +1,0 @@
-interface:
-  display_name: "ONES Manhour Fill"
-  short_description: "Fill ONES manhours from daily notes"
-  default_prompt: "Use $ones-manhour-fill to distribute and register this daily ONES manhour entry."

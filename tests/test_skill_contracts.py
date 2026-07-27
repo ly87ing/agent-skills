@@ -11,10 +11,8 @@ MAINTAINED_SKILLS = {
     "artifact-hygiene",
     "change-discipline",
     "frontend-verification",
-    "ones-manhour-fill",
     "reader-facing-writing",
     "safe-merge-review",
-    "session-mining",
 }
 RULE_DERIVED_SKILLS = {
     "artifact-hygiene",

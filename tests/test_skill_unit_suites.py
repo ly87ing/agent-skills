@@ -1,4 +1,4 @@
-"""Run every skill's private unit-test suite (e.g. ones-manhour-fill/tests/).
+"""Run every skill's private unit-test suite (e.g. safe-merge-review/tests/).
 
 Per-skill suites guard fragile script logic next to the script they test, but
 top-level discovery never imports them (hyphenated skill directories are not

@@ -40,7 +40,7 @@ in a runtime where the skill directory is actually installed.
 
 Usage:
   python3 tests/run_behaviour_evals.py --skill change-discipline --ids 23 24 25
-  python3 tests/run_behaviour_evals.py --skill session-mining --runs-per-case 3
+  python3 tests/run_behaviour_evals.py --skill safe-merge-review --runs-per-case 3
 
 Cost: 3 model calls per case per run (with, without, grade). Start narrow.
 Exit code: 0 when every selected case shows positive lift, 1 otherwise.
