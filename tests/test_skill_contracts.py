@@ -342,6 +342,31 @@ class SkillContractTests(unittest.TestCase):
                     f"{skill_dir.name}/references/{reference_path.name} (>100 lines) needs a top-of-file Table of Contents",
                 )
 
+    def test_skill_content_carries_no_comments(self):
+        # A skill file is loaded into a live context window, so a maintainer note
+        # inside it is paid for by every session that triggers the skill and read
+        # by nobody it was written for. Whether a given host strips HTML comments
+        # is not a licence to add them: hosts differ, the same file ships to all of
+        # them, and any of them may show the comment when the file is opened with a
+        # read tool. Notes about a skill belong in this repository's README, which
+        # no runtime loads. Code fences are exempt: a `#` there is sample code.
+        for skill_dir in skill_dirs():
+            paths = [skill_dir / "SKILL.md", *sorted((skill_dir / "references").glob("*.md"))]
+            for path in paths:
+                in_fence = False
+                for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                    if line.lstrip().startswith("```"):
+                        in_fence = not in_fence
+                        continue
+                    if in_fence:
+                        continue
+                    where = f"{path.relative_to(ROOT)}:{number}"
+                    self.assertNotIn("<!--", line, f"{where} carries an HTML comment")
+                    self.assertFalse(
+                        line.lstrip().startswith("//"),
+                        f"{where} carries a comment line: {line!r}",
+                    )
+
     def test_skill_descriptions_stay_third_person(self):
         # The skill must describe itself in third person, but quoted trigger
         # examples may quote a user's own words ("fix my bugs"), so strip
