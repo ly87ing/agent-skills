@@ -8,9 +8,10 @@ load. A positive case (expected_output starting "Should trigger") passes when
 the judge picks this skill; a negative case ("Should not/NOT ...") passes
 when the judge picks anything else, including none.
 
-Requires the `claude` CLI, logged in. The judge prompt is self-contained,
-but `claude -p` still loads user-level CLAUDE.md, so treat results as a
-realistic triggering signal for this machine, not a hermetic benchmark.
+Requires the `claude` CLI, logged in. Every judge call starts in a fresh empty
+directory with ambient Claude customizations, slash-command skills, MCP servers,
+tools, and session persistence disabled. The catalog and request in the judge
+prompt are therefore the only task-specific context.
 
 Usage:
   python3 tests/run_trigger_evals.py                        # all skills
@@ -60,6 +61,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -68,6 +70,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # claude -p pays CLI startup plus model latency per call; generous headroom
 # so cold starts never flake a run.
 JUDGE_TIMEOUT_SECONDS = 180
+CLAUDE_ISOLATION_ARGS = (
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-session-persistence",
+    "--strict-mcp-config",
+)
 
 NEGATIVE_EXPECTATION = re.compile(r"^\s*should\s+not\b", re.IGNORECASE)
 
@@ -157,12 +165,24 @@ def load_cases(skills: dict[str, str], only_skills: list[str], ids: list[int], l
 def judge(catalog: str, skills: dict[str, str], model: str, case: dict) -> str:
     prompt = JUDGE_TEMPLATE.format(catalog=catalog, prompt=case["prompt"])
     try:
-        result = subprocess.run(
-            ["claude", "-p", prompt, "--model", model],
-            capture_output=True,
-            text=True,
-            timeout=JUDGE_TIMEOUT_SECONDS,
-        )
+        with tempfile.TemporaryDirectory(prefix="trigger-eval-") as sandbox:
+            result = subprocess.run(
+                [
+                    "claude",
+                    "-p",
+                    prompt,
+                    "--model",
+                    model,
+                    *CLAUDE_ISOLATION_ARGS,
+                    "--tools",
+                    "",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=JUDGE_TIMEOUT_SECONDS,
+                stdin=subprocess.DEVNULL,
+                cwd=sandbox,
+            )
     except subprocess.TimeoutExpired:
         return "error:judge-timeout"
     if result.returncode != 0:
