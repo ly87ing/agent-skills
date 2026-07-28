@@ -209,11 +209,17 @@ class SkillContractTests(unittest.TestCase):
                 "Disposable run artifacts",
                 "Playwright",
                 "gitignore",
+                (
+                    "Do not create or widen `.gitignore`, config conventions, or repository "
+                    "directories just to host disposable outputs."
+                ),
             ],
             "frontend-verification": [
                 "Choose the browser tool by intent",
-                "Playwright",
-                "Chrome DevTools",
+                "Use Playwright for reproducible assertions, regression coverage",
+                "Use Chrome DevTools for one-off visual inspection",
+                "Preserve authenticated context deliberately",
+                "report that tool failure before falling back",
             ],
             "reader-facing-writing": [
                 "reader",

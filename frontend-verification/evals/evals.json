@@ -90,6 +90,11 @@
       "id": 18,
       "prompt": "这个弹层里嵌了段视频,一点播放控件整个弹层就被关掉了;而且焦点落在视频上以后,左右方向键就不翻页了。帮我确认下是不是这样,再定怎么改。",
       "expected_output": "Should trigger frontend-verification. The result should stop the media's own clicks from reaching the click-to-dismiss handler and pause playback on close, then decide explicitly which keys belong to focused media and drive the page to confirm clicking content does not navigate and the player has not swallowed the navigation keys."
+    },
+    {
+      "id": 19,
+      "prompt": "我们的 Playwright UI 回归连着自家后端跑时偶尔不稳定。是不是把所有 frontend-backend 请求都 mock 掉,然后把绿灯当成完整回归证据?",
+      "expected_output": "Should trigger frontend-verification. The result should choose mocking from the test's claim rather than ownership alone: a fully mocked test can prove the UI response to controlled states but cannot prove frontend-backend integration. Keep at least one real integration path, allow targeted owned-API mocks for UI-only edge states when a separate contract or integration check covers the boundary, and label the evidence at the scope it actually proves."
     }
   ]
 }

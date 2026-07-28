@@ -155,6 +155,11 @@
       "id": 31,
       "prompt": "git status 里冒出来一批我没碰过的文件显示 deleted,大概是同步工具抽风了。先 git checkout . 清干净再接着干活?",
       "expected_output": "Should trigger change-discipline. The result should treat unexplained working-tree changes as the user's own until proven otherwise: ask before acting, refuse to git restore/checkout/clean over them, decline to attribute them to a sync service without evidence, and git stash first if the tree must be cleared."
+    },
+    {
+      "id": 32,
+      "prompt": "这个现有配置文件没有进 Git,也查不到 blame 或历史,但我需要改其中一个默认值。是不是没历史就只能停下来?",
+      "expected_output": "Should trigger change-discipline. Missing version-control history must be stated, but it is neither permission to guess nor an automatic blocker. The result should reconstruct intent from primary evidence that still exists — current callers and consumers, schemas or contracts, neighboring tests and docs, and observed behavior — then make the smallest justified change and run the narrowest real verification."
     }
   ]
 }

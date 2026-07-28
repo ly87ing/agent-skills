@@ -124,6 +124,12 @@
       "id": 24,
       "prompt": "讲稿和渲染出来的 deck 是分开的两份,我把讲稿第三节的说法改了,deck 那边还是旧措辞。帮我把这次调整在两边都落一遍,别落漏。",
       "expected_output": "Should trigger reader-facing-writing. The result should apply the change across both mirrored artifacts — the script and the deck it renders into — and re-check every line that depended on the wording that changed, instead of editing one surface and leaving the other stale."
+    },
+    {
+      "id": 25,
+      "prompt": "给熟悉这套系统的值班工程师写一份故障切换 how-to。他们需要按步骤操作,不是看决策简报。请把现在这份材料改得能直接照着做。",
+      "behaviour_prompt": "给熟悉这套系统的值班工程师写一份故障切换 how-to。他们需要按步骤操作,不是看决策简报。请改写下面这份现有材料,保留其中的事实和命令,不要补造系统细节:\n\n# 故障切换说明\n主站 5xx 比例连续 5 分钟超过 30% 时可以考虑切换。先运行 `failoverctl check --target standby`;只有输出 `ready=true` 才能继续,否则停止并升级。然后运行 `failoverctl drain --target primary`,再运行 `failoverctl switch --target standby`。切换后检查 `/health` 返回 200、5xx 比例低于 1%,并确认一笔测试请求成功。如果任一检查失败,运行 `failoverctl switch --target primary` 回滚。完成后记录事件编号、切换时间和验证结果。",
+      "expected_output": "Should trigger reader-facing-writing. The result should fit the form to a doing document: use action- or outcome-led headings, directly instruct the operator where instruction is the document's job, preserve prerequisites, commands, decision points, rollback, and done checks, and avoid forcing claim-style headings, evidence for every familiar tool name, or per-reader persuasion rules from a decision brief onto the how-to."
     }
   ]
 }

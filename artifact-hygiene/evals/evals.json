@@ -145,6 +145,16 @@
       "id": 29,
       "prompt": "生产库的备份策略帮我定一下:多久备一次、保留多长时间、存到哪个存储桶。",
       "expected_output": "Should NOT trigger artifact-hygiene. Retention and storage siting for production database backups is a data-operations policy decision about business data. artifact-hygiene covers artifacts an agent run produces — debug output, captures, dumps, deliverables — and the pre-edit `.bak` copies it should not create, not backup policy for a live system."
+    },
+    {
+      "id": 30,
+      "prompt": "这个仓库有产品 logo、文档截图和一个必须随包发布的小型 PDF。既然媒体会让 Git 变大,是不是所有二进制都应该 gitignore?",
+      "expected_output": "Should trigger artifact-hygiene. The result should not ignore media by file type alone. Required, reviewable product or documentation assets are project assets and should follow the repository's existing versioning or large-file policy; generated, disposable, sensitive, or oversized media that does not belong in source history should be ignored or stored elsewhere. It should distinguish those classes before changing ignore rules."
+    },
+    {
+      "id": 31,
+      "prompt": "为了复用登录态,我把 Playwright 的 storageState 写成 auth/session.json 了。这个文件要不要和测试一起提交?",
+      "expected_output": "Should trigger artifact-hygiene. The result should treat storageState as credential-bearing material, keep it out of version control and shipped artifacts, and place it in an existing ignored auth/output path when the maintained suite reuses it or in a disposable run directory for one-off verification. It should not create a repository convention solely for temporary state."
     }
   ]
 }

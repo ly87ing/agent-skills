@@ -329,17 +329,28 @@ git diff HEAD <source-ref> -- <hotspot-files>
 
 If the diff of the hotspot files is empty or only contains follow-up changes exclusive to the current branch, the source changes have landed.
 
-**Method 2: cherry-pick --no-commit no-op check**
+**Method 2: isolated cherry-pick no-op check**
 
 ```bash
-git stash
-git cherry-pick --no-commit <source-commits>
-git diff --cached --stat
-git cherry-pick --abort
-git stash pop
+audit_root=$(mktemp -d)
+git worktree add --detach "$audit_root/worktree" HEAD
+git -C "$audit_root/worktree" cherry-pick --no-commit <source-commits>
+git -C "$audit_root/worktree" diff --cached --quiet
+git -C "$audit_root/worktree" diff --quiet
 ```
 
-If, after the cherry-pick, the staged area is empty or has only conflicts (because the changes already exist), the content is already included.
+Run this only in the disposable worktree, never by stashing and mutating the user's current worktree. Interpret it as follows:
+
+- The cherry-pick exits successfully and both diff checks are quiet: the selected patches are a no-op on `HEAD`; record `proof-method: cherry-pick-noop`.
+- The cherry-pick exits successfully but either diff is non-empty: the source still contributes content, so it is not a no-op.
+- The cherry-pick conflicts: the result is inconclusive. A conflict can come from a different target-side change and does not prove that the source content is present; fall back to file-content or patch-equivalent evidence.
+
+After recording the result, remove only the disposable worktree and its empty parent:
+
+```bash
+git worktree remove --force "$audit_root/worktree"
+rmdir "$audit_root"
+```
 
 **Method 3: tree-level diff**
 
@@ -354,7 +365,7 @@ Confirm file by file: the differences come only from the current branch's subseq
 Verdict rules for the squash merge scenario:
 
 - You cannot use `is-ancestor` as the sole completeness evidence
-- Prefer Method 1 (patch-equivalent / final-state file diff) by default, use Method 3 (tree-diff) for a quick sanity pass, and reach for Method 2 (cherry-pick no-op) only when the other two are inconclusive, since it mutates the worktree
+- Prefer Method 1 (patch-equivalent / final-state file diff) by default, use Method 3 (tree-diff) for a quick sanity pass, and reach for Method 2 (isolated cherry-pick no-op) only when the other two are inconclusive
 - You must use at least one of the above methods, and annotate `proof-method: patch-equivalent` or `proof-method: tree-diff` in the evidence matrix
 - If the source branch still has new commits after the squash, you must recheck rather than reuse the old conclusion
 

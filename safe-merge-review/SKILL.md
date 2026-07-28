@@ -35,7 +35,7 @@ Path 1 collects the repo scope, worktree state, and merge evidence step by step.
 - The repo's history strategy (fast-forward, merge commit, squash, or a rewritten history) — it decides which completeness proof is even valid
 - Whether a networked `fetch` is required, and whether it is available
 
-Environment prerequisites: a working git CLI with read/write access to the repo; judging a remote source ref usually requires a networked `fetch`.
+Environment prerequisites: a working git CLI with read access for modeling or auditing, and write access only for Path 2; judging a remote source ref usually requires a networked `fetch`.
 
 ## Bundled Resources
 

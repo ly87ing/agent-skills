@@ -85,6 +85,11 @@
       "id": 17,
       "prompt": "给我看看这个仓库最近一周有哪些提交,谁提交的。",
       "expected_output": "Should NOT trigger safe-merge-review. Listing recent commits and their authors is a plain history query answerable with git log; nothing is being merged, audited for completeness, or resolved. Loading a merge-proof workflow for a read-only history lookup is over-application."
+    },
+    {
+      "id": 18,
+      "prompt": "这个 feature 分支之前是 squash 进来的。我在当前工作树里 cherry-pick --no-commit 原提交时只剩冲突,这能证明改动已经完整包含了吗?",
+      "expected_output": "Should trigger safe-merge-review. Conflicts are inconclusive: they can come from different target-side changes and do not prove that the source patch is present. The result should reject the current-worktree stash/cherry-pick recipe, use an isolated disposable worktree if a cherry-pick no-op check is still needed, accept only a clean successful application with no index or worktree diff as a no-op, and otherwise fall back to file-content or patch-equivalent evidence."
     }
   ]
 }

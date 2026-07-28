@@ -152,7 +152,8 @@ After the merge, confirm at least once more:
 
 - The source ref is already an ancestor of `HEAD`
 - `HEAD..<source-ref>` is empty
-- For a squash merge, `is-ancestor` does not apply; you must verify with patch-equivalent, tree-diff, or a cherry-pick no-op, and annotate `proof-method` in the evidence
+- For a squash merge, `is-ancestor` does not apply; verify with patch-equivalent, tree-diff, or an isolated cherry-pick no-op, and annotate `proof-method` in the evidence
+- Count a cherry-pick check as a no-op only when it completes successfully in a clean disposable worktree with no index or worktree diff; conflicts are inconclusive, not proof of containment
 - The actually-landed files match the expected files
 - No conflict markers remain
 - No case of "thought it was merged but it did not actually land on the working branch"
