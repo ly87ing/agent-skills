@@ -5,6 +5,11 @@ recording, deck, dashboard, or HTML page. It holds the form-selection, evidence-
 chart-encoding, projection, and accessibility rules those artifacts must pass; the prose rules
 in `SKILL.md` still apply to every word on them.
 
+Where the runtime ships a dedicated chart or visual-design skill, prefer it for the chart itself
+and keep these rules for the page around it. Where none is installed, the chart is this skill's
+job too rather than nobody's — a neighbour present on one runtime is not present on the next, and
+deferring to one that was never loaded leaves the reader with an unowned visual.
+
 ## Designing And Verifying Visuals
 
 - For material that will be presented or demonstrated rather than read alone, show before telling: replace prose that asserts a claim with the artifact that demonstrates it — a screenshot, a diagram, a recording, a real case — and never state a belief or conclusion as a bare line of text when an instance would let the reader reach it themselves. Prefer a capture of the real thing over a drawing of it.
@@ -25,7 +30,7 @@ in `SKILL.md` still apply to every word on them.
 - Title each visual with its takeaway, and label series directly instead of relying on a legend.
 - Put each visual at the exact point where the text argues from it, and draw its conclusion in the adjacent prose — a reader should never scroll between a claim and its evidence, and a figure no sentence argues from is decoration however informative it looks. This is the inverse of the no-restating rule: reference and conclude, don't re-describe.
 - Auto-layout diagrams (e.g. Mermaid) render differently per tool (label width, fonts, rendering mode), so long or CJK-heavy labels can clip — keep diagram labels short. When the content carries more than the layout engine can place — coexisting states, nested containers, several classes of connection, or elements that must hold position while the state around them changes — author the geometry yourself (a fixed viewBox with explicit coordinates, color through variables so both themes work, mutually exclusive states as groups switched by one attribute) instead of falling back to a table and losing the relationship the diagram existed to show. Reach for the table when the content is a lookup, not when the diagram is merely hard to lay out.
-- Open every visual you authored at its real viewing size and read it as the reader before shipping it: what the eye lands on first, whether every label is legible, whether anything collides, overlaps, or is cut, and whether each line, color, and arrow still means what its key says. Render-only defects — a connector whose style contradicts the legend, a gap left where a hidden element used to sit, text struck through by a rule — are most of what makes an authored visual unreadable, and none of them are visible in the source. Judging the source instead of the render is how a visual ships broken; if no rendering surface is available, say the visual is unverified rather than presenting it as checked.
+- Open every visual you authored at its real viewing size and read it as the reader before shipping it: what the eye lands on first, whether every label is legible, whether anything collides, overlaps, or is cut, and whether each line, color, and arrow still means what its key says. Render-only defects — a connector whose style contradicts the legend, a gap left where a hidden element used to sit, text struck through by a rule — are most of what makes an authored visual unreadable, and none of them are visible in the source. Judging the source instead of the render is how a visual ships broken; if no rendering surface is available, say the visual is unverified rather than presenting it as checked. This read is the author's own — whether the visual still means what it claims — and sits beside the page-level thresholds the `frontend-verification` skill owns, not inside them: a page can pass every contrast and zoom check and still carry a connector whose color contradicts its legend.
 
 ## HTML And Interactive Documents
 
