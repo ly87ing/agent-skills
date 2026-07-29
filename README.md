@@ -37,7 +37,7 @@ All five skills are self-contained and have no cross-skill prerequisites.
 - Tool-neutral: enforce real observation of effects, but do not hard-bind to any one specific tool.
 - Project-neutral: skills do not hardcode a single project's absolute paths, repo names, branches, internal UUIDs, or credential locations; project-specific information is injected via a discoverable project profile (resolved on demand or by asking the user), so the same skill can be reused across projects.
 - Clear safety boundaries: spell out when it is okay to act automatically and when you must stop and escalate.
-- Progressive loading: keep `SKILL.md` concise, push details down into `references/`, and push fragile steps into `scripts/` where possible.
+- Progressive loading: keep `SKILL.md` concise, push details down into `references/`, and push fragile steps into `scripts/` where possible. Measured caveat, 2026-07-29: a rule living only in a reference is not guaranteed to reach the model. A behaviour eval put one request to two arms differing solely in whether `references/visuals-and-decks.md` carried a rule against settling for an auto-layout diagram; both arms returned near-identical mermaid flowcharts, neither so much as named the alternative the rule prescribes, and the lift was +0.00 across three runs. The arm that had the rule did the half the rule permits (shorten the labels) and skipped the half it requires. Push detail down for context economy, but do not assume a reference-only rule changes behaviour — if a rule must fire, measure that it does, and consider whether its trigger condition has to sit in `SKILL.md` itself to be seen at all.
 
 ## Repository Structure
 
