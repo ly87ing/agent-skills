@@ -264,6 +264,24 @@ def main() -> int:
     neighbours = load_neighbour_skills(args.catalog_dir, own=set(skills))
     if neighbours:
         print(f"catalog: {len(skills)} own + {len(neighbours)} neighbour skills", file=sys.stderr)
+        for raw_dir in args.catalog_dir:
+            stamp = Path(raw_dir).expanduser() / "CAPTURED"
+            if stamp.exists():
+                print(f"  {Path(raw_dir).name}: {stamp.read_text(encoding='utf-8').strip()}", file=sys.stderr)
+    else:
+        # Silence here is how an optimistic run passes for a real one: a case scores
+        # green because the neighbour that would have taken it was never shown, and
+        # the output looks identical to a run that measured the whole catalog.
+        print(
+            f"WARNING: no --catalog-dir given — the judge chooses among these {len(skills)} "
+            "skills alone, which is not the catalog any real agent faces. Runtime built-ins "
+            "have no directory to read, so they are absent unless you supply them. Results "
+            "from this catalog read optimistically and CANNOT establish a boundary: a green "
+            "here may only mean the competing skill was missing. Pass "
+            "--catalog-dir tests/fixtures/builtin-skills (plus your runtime's own skill dirs) "
+            "for any result you intend to act on.",
+            file=sys.stderr,
+        )
     skills = {**skills, **neighbours}
     catalog = "\n".join(f"- {name}: {description}" for name, description in skills.items())
     if not cases:

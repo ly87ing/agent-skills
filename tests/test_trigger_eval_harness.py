@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import subprocess
 import unittest
 from pathlib import Path
@@ -47,6 +49,45 @@ class TriggerEvalHarnessTests(unittest.TestCase):
         self.assertEqual(command[tools_index + 1], "")
         self.assertIs(stdin, subprocess.DEVNULL)
         self.assertFalse(sandbox.exists())
+
+
+class CatalogDisclosureTests(unittest.TestCase):
+    """A run that saw only our own skills must not look like a run that saw everything.
+
+    Both produce the same PASS/FAIL lines, so without an explicit warning an optimistic
+    measurement is indistinguishable from a real one — which is how a green scored against
+    a missing competitor once got recorded as a settled boundary.
+    """
+
+    def _run_main(self, argv: list[str]) -> tuple[int, str]:
+        # An unmatched id makes main exit right after the catalog is announced,
+        # so no judge call is ever made.
+        stderr = io.StringIO()
+        with mock.patch("sys.argv", ["run_trigger_evals.py", *argv]):
+            with mock.patch.object(runner.shutil, "which", return_value="/usr/bin/claude"):
+                with contextlib.redirect_stderr(stderr):
+                    code = runner.main()
+        return code, stderr.getvalue()
+
+    def test_run_without_catalog_dir_warns_that_a_green_may_mean_a_missing_competitor(self):
+        code, err = self._run_main(["--skill", "reader-facing-writing", "--ids", "99999"])
+
+        self.assertEqual(code, 1)
+        self.assertIn("no --catalog-dir", err)
+        self.assertIn("CANNOT establish a boundary", err)
+
+    def test_supplied_catalog_reports_its_capture_version_so_staleness_is_visible(self):
+        fixtures = Path(__file__).with_name("fixtures") / "builtin-skills"
+        self.assertTrue((fixtures / "CAPTURED").exists(), "fixture must state what it was captured from")
+
+        code, err = self._run_main(
+            ["--skill", "reader-facing-writing", "--ids", "99999", "--catalog-dir", str(fixtures)]
+        )
+
+        self.assertEqual(code, 1)
+        self.assertIn("neighbour skills", err)
+        self.assertIn("Claude Code", err)
+        self.assertNotIn("no --catalog-dir", err)
 
 
 if __name__ == "__main__":
