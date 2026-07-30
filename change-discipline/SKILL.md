@@ -31,5 +31,5 @@ Applies to EVERY edit of existing code, a config/contract value, a default, a te
 
 Load the facet the change actually has instead of carrying both on every edit:
 
-- When the change touches a boundary — a shared symbol, a public interface, dependency direction, a config/schema contract with a rollback path, a file that exists as copies across repos, a module that mixes responsibilities, or a re-runnable setup/migration that must stay idempotent — read [references/boundaries-and-contracts.md](references/boundaries-and-contracts.md).
+- When the change touches a boundary — a shared symbol, a public interface, dependency direction, a new abstraction about to be introduced, a config/schema contract with a rollback path, a file that exists as copies across repos, a module that mixes responsibilities, a re-runnable setup/migration that must stay idempotent, or an audit or exploration delegated to subagents that must stay read-only — read [references/boundaries-and-contracts.md](references/boundaries-and-contracts.md).
 - When the change has a style, naming, input-validation, or comments dimension — including serialized config where an unquoted value can change how the file parses, and the final diff re-read before declaring done — read [references/style-and-validation.md](references/style-and-validation.md).

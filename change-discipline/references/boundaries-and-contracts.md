@@ -1,8 +1,10 @@
 # Boundary and architecture
 
 Read this when the change crosses or defines a boundary: a shared symbol, a public
-interface, a dependency direction, a config or schema contract, a file that exists as
-copies across repos, or a module that has grown to mix responsibilities.
+interface, a dependency direction, a new abstraction about to be introduced, a config
+or schema contract, a file that exists as copies across repos, a module that has grown
+to mix responsibilities, or an audit or exploration delegated to subagents that must
+stay read-only.
 
 1. Identify the boundary being changed.
    - Name the current entry point, callers, owners, and generated or synced outputs.
