@@ -95,6 +95,16 @@
       "id": 19,
       "prompt": "我们的 Playwright UI 回归连着自家后端跑时偶尔不稳定。是不是把所有 frontend-backend 请求都 mock 掉,然后把绿灯当成完整回归证据?",
       "expected_output": "Should trigger frontend-verification. The result should choose mocking from the test's claim rather than ownership alone: a fully mocked test can prove the UI response to controlled states but cannot prove frontend-backend integration. Keep at least one real integration path, allow targeted owned-API mocks for UI-only edge states when a separate contract or integration check covers the boundary, and label the evidence at the scope it actually proves."
+    },
+    {
+      "id": 20,
+      "prompt": "我在浏览器里本来登录着运营后台,刚才那个标签页被一个扩展抢走又关掉了。帮我把登录态拿回来接着截图取证,别让我重新登录一遍。",
+      "expected_output": "Should trigger frontend-verification. The result should recover the lost authenticated session without discarding its cookies: open a new tab in the same browser profile so the login carries over, rather than relaunching a fresh or isolated context that discards the auth or making the user log in again; any relaunch that could touch account state needs the user's confirmation first."
+    },
+    {
+      "id": 21,
+      "prompt": "Playwright 调试跑完留下了 trace、录像和一堆截图,这些文件该放到哪?要不要提交到仓库?",
+      "expected_output": "Should NOT trigger frontend-verification. Despite the Playwright and screenshot vocabulary, the ask is where produced evidence files should live and whether they enter version control — placement and cleanup of generated artifacts, owned by artifact-hygiene. frontend-verification produces and reads browser evidence; it does not decide where the files go."
     }
   ]
 }

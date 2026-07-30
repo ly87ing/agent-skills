@@ -155,6 +155,11 @@
       "id": 31,
       "prompt": "为了复用登录态,我把 Playwright 的 storageState 写成 auth/session.json 了。这个文件要不要和测试一起提交?",
       "expected_output": "Should trigger artifact-hygiene. The result should treat storageState as credential-bearing material, keep it out of version control and shipped artifacts, and place it in an existing ignored auth/output path when the maintained suite reuses it or in a disposable run directory for one-off verification. It should not create a repository convention solely for temporary state."
+    },
+    {
+      "id": 32,
+      "prompt": "我刚从内网门户下载了一个安装包和两份导出的 CSV,现在都堆在仓库根目录里。这些下载来的文件该放哪?",
+      "expected_output": "Should trigger artifact-hygiene. The result should classify each download by its role rather than leave it in the repository root: an installer or export needed only for the current run is a disposable download that belongs in a temporary directory outside tracked paths and gets cleaned up when done, while a file the user asked for as a deliverable or that future runs will need again goes to a durable maintained location. Downloads must not keep accumulating in the working tree."
     }
   ]
 }

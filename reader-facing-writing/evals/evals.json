@@ -142,6 +142,11 @@
       "prompt": "架构图我画完了,配色和连线都是照着图例来的,直接发给评审应该没问题吧?",
       "behaviour_prompt": "架构图我画完了,配色和连线都是照着图例来的,存成了 diagram.svg。直接发给评审应该没问题吧?下面是文件内容:\n\n<svg viewBox=\"0 0 420 180\">\n  <defs>\n    <marker id=\"arr\" markerWidth=\"6\" markerHeight=\"6\" refX=\"5\" refY=\"3\" orient=\"auto\">\n      <path d=\"M0,0 L6,3 L0,6 z\" fill=\"#3fb950\"/>\n    </marker>\n  </defs>\n  <rect x=\"20\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#8b949e\"/>\n  <text x=\"32\" y=\"52\" font-size=\"13\">老控制面</text>\n  <text x=\"70\" y=\"52\" font-size=\"13\">apiserver 6443</text>\n  <rect x=\"250\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#3fb950\"/>\n  <text x=\"262\" y=\"58\" font-size=\"13\">新控制面 6445</text>\n  <path d=\"M170,53 L246,53\" stroke=\"#e8a13a\" stroke-width=\"2\" marker-end=\"url(#arrow)\"/>\n  <text x=\"20\" y=\"150\" font-size=\"11\" fill=\"#3fb950\">绿色 = 新增组件</text>\n  <text x=\"140\" y=\"150\" font-size=\"11\" fill=\"#e8a13a\">橙色 = 保留不动</text>\n</svg>",
       "expected_output": "Should trigger reader-facing-writing. The answer should refuse to judge the visual from its source: it must be opened at its real viewing size and read as the reader would — what the eye lands on first, whether every label is legible, whether anything collides, overlaps, or is cut, and whether each line, color, and arrow still means what its key says — because render-only defects are invisible in the source however carefully it was written. If no rendering surface is available, it should say the visual is unverified rather than presenting it as checked."
+    },
+    {
+      "id": 28,
+      "prompt": "这份 deck 的内容我已经定稿了,现在帮我看看这个文件该放在仓库哪里、怎么打包发给隔壁团队让他们双击就能看。",
+      "expected_output": "Should NOT trigger reader-facing-writing. The content is already settled; the ask is where the finished deliverable lives and how to package it for handover — artifact placement and packaging, owned by artifact-hygiene. reader-facing-writing decides what the deck says and how it reads, not where its file goes or how it ships."
     }
   ]
 }
