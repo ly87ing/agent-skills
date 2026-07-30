@@ -207,7 +207,7 @@ git diff --cached --name-only
 git diff --cached
 ```
 
-After confirming the result is correct, create the final merge commit.
+After confirming the result is correct, create the final merge commit. Its message must not carry AI/agent provenance (`Co-Authored-By: Claude`, `Generated with Claude Code`, `🤖`, or any generation disclosure) — strip any such line a global default or harness convention injects; the same applies to a conflict-resolution commit.
 
 Do not treat `git merge --no-edit <source-ref>` as the default path, unless you have already proven this is a low-risk, low-ambiguity trivial merge.
 
