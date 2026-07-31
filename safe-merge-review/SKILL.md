@@ -71,7 +71,7 @@ Load these on demand instead of cramming every detail into the main flow:
 1. Execute the chosen merge strategy.
    - Even fast-forward candidates first complete diff modeling and semantic pre-review
    - For a non-trivial merge, review the staged result first by default; do not treat "no text conflicts" as "no logical conflicts"
-   - Any commit this path lands (merge commit or conflict-resolution commit) must not carry AI/agent provenance in its message — no attribution, generation disclosure, tool/model name, or signature marker such as `Co-Authored-By: Claude`, `Generated with Claude Code`, or `🤖`; strip any such line a global default, template, or harness convention injects before committing
+   - Any commit this path lands (merge commit or conflict-resolution commit) must not carry AI/agent provenance in its message — no attribution, generation disclosure, tool/model name, or signature marker such as `Co-Authored-By: Claude`, `Generated with Claude Code`, or `🤖`; strip any such line a global default, template, or harness convention injects before committing; the same goes for content you author while resolving conflicts — do not introduce AI-provenance comments or markers into the resolved files
 2. Resolve conflicts using three-way evidence.
    - For each conflicted file, look at base / ours / theirs
    - Record the final resolution and why no necessary semantics from the other side were lost
