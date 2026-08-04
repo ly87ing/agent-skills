@@ -14,7 +14,7 @@ description: Decide safe locations, redaction, and cleanup rules for generated f
 
 ## Placement Rules
 
-1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion. A session-level "put temporary files in the scratchpad" instruction does not override this — it governs disposable run artifacts, not a deliverable the user asked you to produce; when the two seem to conflict, the deliverable's placement wins. Once a deliverable lands in its maintained path, that file is the only copy: edit it in place rather than keeping a scratchpad duplicate to sync over, which drifts and invites edits to the wrong file.
+1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion. A session-level "put temporary files in the scratchpad" instruction does not override this, because it governs disposable run artifacts, not requested deliverables. Once a deliverable lands in its maintained path, that file is the only copy: edit it in place rather than keeping a scratchpad duplicate to sync over, which drifts and invites edits to the wrong file.
 2. Put project assets in the maintained project path.
 3. Put workflow-consumed artifacts in the project's existing gitignored output path.
 4. Put disposable artifacts in `mktemp -d`, `$TMPDIR`, or `/tmp` unless a working-tree path is required.
@@ -46,7 +46,7 @@ description: Decide safe locations, redaction, and cleanup rules for generated f
 
 - Do not create or widen `.gitignore`, config conventions, or repository directories just to host disposable outputs.
 - Do not invent a project-local output convention unless the user explicitly asks for a reusable convention.
-- Never place disposable artifacts in tracked or likely-to-be-committed paths such as repo root, `docs/`, `scripts/`, `tests/fixtures/`, or ad hoc folders.
+- Never place disposable artifacts in tracked or likely-to-be-committed paths.
 - When a file is already under version control (git etc.), do not create `.bak`, backup, or timestamped duplicate copies of it before editing — history already preserves the prior state, so such copies are disposable clutter. Without version control, a pre-edit backup can be legitimate. If a *feature* needs to snapshot data (e.g. a pre-upgrade config backup), make it opt-in and default-off rather than always producing copies.
 
 ## Repository Weight From Binaries
