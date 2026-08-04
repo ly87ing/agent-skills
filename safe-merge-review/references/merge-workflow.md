@@ -51,13 +51,7 @@ git rev-parse <source-ref>
 git rev-parse --abbrev-ref HEAD
 ```
 
-If the request is "merge the remote branch into the current branch", you usually first run:
-
-```bash
-git fetch origin <source-branch>
-```
-
-Then use `origin/<source-branch>` as the source ref, rather than a stale local branch name.
+For "merge the remote branch into the current branch", fetch first and use `origin/<source-branch>` as the source ref, rather than a stale local branch name.
 
 ## 3. Diff modeling and patch-equivalent check
 
@@ -69,18 +63,11 @@ First find the common ancestor:
 git merge-base HEAD <source-ref>
 ```
 
-This result is the baseline for all subsequent judgments of "who is ahead, who is behind, which files overlap".
-
 ### 3.2 Left/right exclusive commit counts
 
 ```bash
 git rev-list --left-right --count HEAD...<source-ref>
 ```
-
-Explanation:
-
-- Left column: the number of commits exclusive to the current branch relative to the source branch
-- Right column: the number of commits exclusive to the source branch relative to the current branch
 
 ### 3.3 incoming commits
 
@@ -207,7 +194,7 @@ git diff --cached --name-only
 git diff --cached
 ```
 
-After confirming the result is correct, create the final merge commit. Its message must not carry AI/agent provenance (`Co-Authored-By: Claude`, `Generated with Claude Code`, `🤖`, or any generation disclosure) — strip any such line a global default or harness convention injects; the same applies to a conflict-resolution commit.
+After confirming the result is correct, create the final merge commit. Its message — like a conflict-resolution commit's — falls under the AI-provenance ban in `SKILL.md` Path 2, step 1.
 
 Do not treat `git merge --no-edit <source-ref>` as the default path, unless you have already proven this is a low-risk, low-ambiguity trivial merge.
 
@@ -228,12 +215,6 @@ git show :2:path/to/file
 git show :3:path/to/file
 ```
 
-Meaning:
-
-- `:1:` base
-- `:2:` ours
-- `:3:` theirs
-
 Conflict-handling rules:
 
 - First state what was originally in base.
@@ -241,13 +222,11 @@ Conflict-handling rules:
 - Then state what the source branch changed.
 - The final result must be able to explain why one side's logic was preserved, merged, or discarded.
 
-After resolving, additionally check:
+After resolving, additionally check for residual conflict markers and whitespace errors:
 
 ```bash
 git diff --check
 ```
-
-This finds residual conflict markers, whitespace errors, and similar issues.
 
 ## 7. Merge completeness verification
 

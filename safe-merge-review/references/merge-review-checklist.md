@@ -148,40 +148,11 @@ If the current request involves "frontend and backend", "main repo + companion r
 
 ## 6. Completeness and wrap-up
 
-After the merge, confirm at least once more:
-
-- The source ref is already an ancestor of `HEAD`
-- `HEAD..<source-ref>` is empty
-- For a squash merge, `is-ancestor` does not apply; verify with patch-equivalent, tree-diff, or an isolated cherry-pick no-op, and annotate `proof-method` in the evidence
-- Count a cherry-pick check as a no-op only when it completes successfully in a clean disposable worktree with no index or worktree diff; conflicts are inconclusive, not proof of containment
-- The actually-landed files match the expected files
-- No conflict markers remain
-- No case of "thought it was merged but it did not actually land on the working branch"
-- The minimal relevant verification has been executed
-- If it is not verified, has that been clearly stated?
+After the merge, prove completeness per `merge-workflow.md` section 7, "Merge completeness verification" — including the squash-merge alternatives in its 7.5 — plus the minimal relevant verification; if anything is left unverified, state that plainly.
 
 ## 7. Evidence-matrix template
 
-Use the template below to produce the final conclusion:
-
-| Item | Content |
-| --- | --- |
-| Repo | |
-| Current branch | |
-| Source ref | |
-| Merge base | |
-| Left/right counts | |
-| Incoming key commits | |
-| Hotspot overlap files | |
-| Dirty worktree status | |
-| Merge strategy | |
-| Conflicted files | |
-| Completeness proof | |
-| Proof method | is-ancestor / patch-equivalent / tree-diff / cherry-pick-noop |
-| Semantic review conclusion | |
-| Verification command(s) | |
-| Push status | |
-| Residual risks | |
+The evidence fields, their canonical order, and the rendered template live in `scripts/build_merge_evidence.py` — run it to produce the matrix; what each field means is listed in the Reporting section of `SKILL.md`.
 
 Suggested verdict rules:
 

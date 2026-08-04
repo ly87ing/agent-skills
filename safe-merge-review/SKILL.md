@@ -123,21 +123,24 @@ Stop or escalate, instead of continuing to guess, when:
 After completing, report at least the following:
 
 ### Safe merge review summary
-- repo:
-- current branch:
-- source ref:
-- merge base:
-- left/right counts:
-- incoming key commits:
-- hotspot overlap files:
-- dirty worktree status:
-- merge strategy:
-- conflicted files and reasoning:
-- completeness proof:
+
+The skeleton and field order come from [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py); what each field means:
+
+- repo: the repository under review
+- current branch: the target branch `HEAD` actually points to
+- source ref: the exact ref being merged in
+- merge base: the common ancestor all diff modeling is based on
+- left/right counts: commits exclusive to each side
+- incoming key commits: the source-side commits that matter semantically
+- hotspot overlap files: files both sides changed since the merge base
+- dirty worktree status: worktree state and how it was handled
+- merge strategy: already-contained / fast-forward / no-ff / squash, and why
+- conflicted files and reasoning: each conflict and why the resolution loses no needed semantics
+- completeness proof: the evidence that the source landed fully
 - proof method: (is-ancestor | patch-equivalent | tree-diff | cherry-pick-noop)
-- semantic review conclusion:
-- verification command(s):
-- push status:
-- residual risks:
+- semantic review conclusion: result of the post-merge semantic re-review
+- verification command(s): the minimal relevant verification actually run
+- push status: pushed / not pushed, and the gate decision
+- residual risks: anything skipped, unverified, or still risky
 
 For a multi-repo scenario, report per repo; do not substitute a single "all merged fine".
