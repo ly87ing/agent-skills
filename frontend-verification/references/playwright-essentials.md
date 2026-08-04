@@ -1,51 +1,21 @@
 # Playwright Essentials
 
-The durable practices that keep a Playwright check trustworthy and stable. This is the small,
-cross-cutting core that matters whenever you drive Playwright for verification — not a full test-authoring
+The durable practices that keep a Playwright check trustworthy and stable — not a full test-authoring
 cookbook. For a large, long-lived spec suite (deep POM, sharding, component/Electron/extension testing,
 per-topic recipes) use the project's own Playwright guidance or a dedicated Playwright skill.
 
-## Table of Contents
-
-1. [Locators: prefer user-facing, resilient selectors](#locators)
-2. [Assertions & waiting: web-first, never hard-wait](#assertions--waiting)
-3. [Authentication: reuse storageState](#authentication)
-4. [Mocking: mock at the boundary only](#mocking)
-5. [Test isolation & Page Objects](#isolation--page-objects)
-6. [Flaky tests: find the root cause, don't add retries](#flaky-tests)
-
 ## Locators
 
-Pick the most resilient locator available, in this order:
-
-1. **Role** — `getByRole('button', { name: 'Submit' })` (matches what users and assistive tech perceive)
-2. **Label** — `getByLabel('Email')`, `getByPlaceholder(...)`
-3. **Text** — `getByText(...)`, `getByTitle(...)`
-4. **Test id** — `getByTestId('submit-btn')` when no semantic locator fits
-5. **CSS / XPath** — last resort only
-
-Narrow with `filter({ hasText })` / `filter({ has })` and chaining instead of brittle compound selectors.
-
-Anti-patterns: `page.locator('.btn-primary')` / `#dynamic-id-123` (breaks on restyle/rerender), and asserting
-on implementation details instead of user-visible behavior.
+Prefer user-facing locators (`getByRole`, `getByLabel`, `getByText`), fall back to `getByTestId` when no
+semantic locator fits, and treat CSS/XPath as a last resort. Narrow with `filter(...)` and chaining rather
+than brittle compound selectors, and assert user-visible behavior, not implementation details.
 
 ## Assertions & Waiting
 
-Use **web-first assertions** — `expect(locator)` auto-retries until the condition holds or times out:
-
-```typescript
-await expect(page.getByRole('heading')).toHaveText('Welcome');
-await expect(page.getByRole('button', { name: 'Save' })).toBeEnabled();
-await expect(page).toHaveURL(/\/dashboard/);
-```
-
-Generic `expect(value).toBe(...)` does **not** retry — use it only for non-UI values.
-
-**Never hard-wait.** `page.waitForTimeout(ms)` / `setTimeout` are the #1 source of flake and slowness. Instead:
-
-- Let actions auto-wait (`click`/`fill` wait for attached, visible, stable, enabled).
-- Wait on a real signal: `waitForResponse('**/api/...')`, `waitForURL(...)`, `locator.waitFor({ state })`.
-- Poll a condition with `expect(...).toPass(...)` or `expect.poll(...)` rather than a manual retry loop.
+Use web-first `expect(locator)` assertions, which auto-retry; generic `expect(value).toBe(...)` does not.
+Never hard-wait (`page.waitForTimeout`, `setTimeout`) — wait on a real signal (`waitForResponse`,
+`waitForURL`, `locator.waitFor`), let actions auto-wait, or poll with `expect(...).toPass(...)` /
+`expect.poll(...)`.
 
 ## Authentication
 
@@ -54,18 +24,6 @@ localStorage, and start every later test already authenticated. The file may con
 can impersonate the test account: keep it in an existing ignored auth/output path or a disposable run
 directory, and never commit, print, or ship it. Introduce a narrow project ignore convention only when the
 maintained suite will reuse the state; otherwise keep the one-off state temporary.
-
-```typescript
-// once: capture the session
-await page.goto('/login');
-await page.getByLabel('Username').fill(user);
-await page.getByLabel('Password').fill(pass);
-await page.getByRole('button', { name: 'Log in' }).click();
-await page.context().storageState({ path: 'playwright/.auth/user.json' });
-
-// config: every test starts logged in
-use: { storageState: 'playwright/.auth/user.json' }
-```
 
 Prefer an API login (`context.request.post('/api/auth/login', ...)`) over driving the login UI when you are not
 testing the login flow itself. Only use a fresh, unauthenticated context when the test *is* the login flow.
@@ -86,11 +44,10 @@ Choose the mocking boundary from what the test claims to prove.
 
 ## Isolation & Page Objects
 
-- Each test must be independent: no reliance on order, no shared mutable accounts/data across parallel workers.
-- Put per-test setup/teardown in fixtures; don't leak state between tests.
-- Reuse the project's existing Page Objects. Extract one only when stable locators or flows recur across tests;
-  keep a one-off check local rather than creating an abstraction for hypothetical reuse. A useful Page Object
-  makes tests read as intent (`loginPage.login(email, pass)`) and gives repeated UI changes one update point.
+Each test must be independent: no reliance on order, no shared mutable accounts/data across parallel workers;
+put per-test setup/teardown in fixtures. Reuse the project's existing Page Objects, and extract one only when
+stable locators or flows recur across tests — keep a one-off check local rather than creating an abstraction
+for hypothetical reuse.
 
 ## Flaky Tests
 
