@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -24,6 +25,28 @@ def render(*args: str) -> str:
     if result.returncode != 0:
         raise AssertionError(f"exit {result.returncode}: {result.stderr}")
     return result.stdout
+
+
+def git(repo: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repo), *args],
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise AssertionError(f"git {' '.join(args)} failed: {result.stderr}")
+    return result.stdout.strip()
+
+
+def init_repo(repo: Path) -> None:
+    git(repo.parent, "init", "-b", "main", str(repo))
+    git(repo, "config", "user.name", "Test User")
+    git(repo, "config", "user.email", "test@example.com")
+    (repo / "shared.txt").write_text("base\n", encoding="utf-8")
+    git(repo, "add", "shared.txt")
+    git(repo, "commit", "-m", "base")
 
 
 class BuildMergeEvidenceTests(unittest.TestCase):
@@ -67,6 +90,97 @@ class BuildMergeEvidenceTests(unittest.TestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
+
+
+    def test_collect_derives_premerge_git_evidence(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "repo"
+            init_repo(repo)
+            git(repo, "branch", "source")
+
+            (repo / "shared.txt").write_text("main\n", encoding="utf-8")
+            git(repo, "commit", "-am", "main change")
+            git(repo, "checkout", "source")
+            (repo / "shared.txt").write_text("source\n", encoding="utf-8")
+            git(repo, "commit", "-am", "source change")
+            git(repo, "checkout", "main")
+
+            output = render("--collect", "--repo", str(repo), "--source-ref", "source")
+
+        self.assertIn(f"- repo: {repo.resolve()}", output)
+        self.assertIn("- current branch: main", output)
+        self.assertIn("- source ref: source", output)
+        self.assertIn("- left/right counts: 1\t1", output)
+        self.assertIn("- dirty worktree status: clean", output)
+        self.assertIn("source change", output)
+        self.assertIn("- shared.txt", output)
+        self.assertIn("- completeness proof: TODO", output)
+        self.assertIn("- proof method: TODO", output)
+
+    def test_collect_marks_contained_source_with_ancestry_proof(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "repo"
+            init_repo(repo)
+            git(repo, "checkout", "-b", "source")
+            (repo / "source.txt").write_text("source\n", encoding="utf-8")
+            git(repo, "add", "source.txt")
+            git(repo, "commit", "-m", "source change")
+            git(repo, "checkout", "main")
+            git(repo, "merge", "--ff-only", "source")
+
+            output = render("--collect", "--repo", str(repo), "--source-ref", "source")
+
+        self.assertIn("- proof method: is-ancestor", output)
+        self.assertIn(
+            "- completeness proof: source is an ancestor of HEAD and HEAD..source is empty",
+            output,
+        )
+
+    def test_collect_rejects_unknown_source_ref(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "repo"
+            init_repo(repo)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--collect",
+                    "--repo",
+                    str(repo),
+                    "--source-ref",
+                    "missing",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source ref is not a commit", result.stderr)
+
+
+    def test_collect_rejects_option_like_source_ref(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "repo"
+            init_repo(repo)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--collect",
+                    "--repo",
+                    str(repo),
+                    "--source-ref=-fake",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source ref must not start with", result.stderr)
 
 
 if __name__ == "__main__":

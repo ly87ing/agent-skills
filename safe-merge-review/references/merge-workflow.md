@@ -372,17 +372,25 @@ Only when all of the following conditions hold simultaneously may you suggest or
 
 ## 9. Reporting skeleton: `scripts/build_merge_evidence.py`
 
-Run it after the refs are locked down and the risks identified, so the Reporting section of `SKILL.md` is assembled the same way every time.
+After fetching and locking the refs, collect the mechanically verifiable fields and render the report in one read-only command:
 
-Single-value flags, one per Reporting field:
-
-```text
---repo --current-branch --source-ref --merge-base --left-right-counts
---dirty-worktree --merge-strategy --completeness-proof --proof-method
---semantic-review --push-status
+```bash
+python3 scripts/build_merge_evidence.py \
+  --collect --repo <repo-path> --source-ref <source-ref>
 ```
 
-Repeatable flags, once per item: `--incoming-commit`, `--hotspot`, `--conflict`, `--verification`, `--risk`.
+Collection derives repo, current branch, source ref, merge base, left/right counts, dirty-worktree status, incoming commits, and hotspot intersection. It sets `proof-method: is-ancestor` only when ancestry succeeds and `HEAD..<source-ref>` is empty. Commit and hotspot lists default to 20 items; change that with `--max-items`, and treat a truncation residual risk as a prompt to inspect the full Git output outside the report.
+
+Manual single-value flags:
+
+```text
+--merge-strategy --completeness-proof --proof-method --semantic-review
+--push-status
+```
+
+Without `--collect`, the original derived-field flags remain available for an audit that cannot access the repo: `--repo`, `--current-branch`, `--source-ref`, `--merge-base`, `--left-right-counts`, and `--dirty-worktree`.
+
+Repeatable manual flags, once per item: `--conflict`, `--verification`, `--risk`. Without collection, `--incoming-commit` and `--hotspot` are also manual.
 
 It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent directories).
 

@@ -43,7 +43,7 @@ Load these on demand instead of cramming every detail into the main flow:
 
 - When you need command templates, the strategy matrix, patch-equivalent, or completeness-verification methods, read [references/merge-workflow.md](references/merge-workflow.md)
 - When you need to judge hotspot risk, conflict semantics, or post-merge logical-mismatch patterns, read [references/merge-review-checklist.md](references/merge-review-checklist.md)
-- When you need a stable reporting skeleton, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) after the refs are locked down and the risks identified, to avoid evidence drift from hand-assembling the Reporting fields each time. For its flags and its unfilled-marker behavior, read [references/merge-workflow.md](references/merge-workflow.md) section 9, "Reporting skeleton".
+- After the refs are locked down, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) with `--collect --repo <path> --source-ref <ref>` to derive the read-only Git facts and a stable reporting skeleton in one bounded output. For manual fields and unfilled-marker behavior, read [references/merge-workflow.md](references/merge-workflow.md) section 9, "Reporting skeleton".
 
 ## Workflow Paths
 
@@ -57,7 +57,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - Clarify the source ref, the remote, and the target branch (normally the current branch you merge into)
    - When the source ref is unclear, do not guess "the latest line"
 3. Fetch the latest state and model the diff.
-   - Prefer following [references/merge-workflow.md](references/merge-workflow.md) to run `fetch`, merge base, left/right counts, incoming commits, and file-set comparison
+   - Fetch the locked source ref, then use the evidence script's `--collect` mode for merge base, left/right counts, incoming commits, and hotspot intersection; inspect its residual-risk line if a long list was truncated
    - When the history shows signs of rebase / squash / rewrite, additionally run the patch-equivalent check
 4. Identify the hotspot overlap and do a semantic pre-review.
    - Prioritize reviewing shared logic, public interfaces, config, schema, migrations, build scripts, tests, and generated artifacts that both sides changed
@@ -76,6 +76,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - For each conflicted file, look at base / ours / theirs
    - Record the final resolution and why no necessary semantics from the other side were lost
 3. Prove "complete merge".
+   - Re-run the evidence script's `--collect` mode against the final `HEAD`
    - Prove the source ref is included in `HEAD`
    - Prove `HEAD..<source-ref>` is empty
    - For a squash merge, `is-ancestor` does not apply; choose an alternative proof method per [references/merge-workflow.md](references/merge-workflow.md) section 7.5, "Squash merge completeness verification", and annotate `proof-method`
