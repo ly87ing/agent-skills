@@ -147,6 +147,16 @@
       "id": 28,
       "prompt": "这份 deck 的内容我已经定稿了,现在帮我看看这个文件该放在仓库哪里、怎么打包发给隔壁团队让他们双击就能看。",
       "expected_output": "Should NOT trigger reader-facing-writing. The content is already settled; the ask is where the finished deliverable lives and how to package it for handover — artifact placement and packaging, owned by artifact-hygiene. reader-facing-writing decides what the deck says and how it reads, not where its file goes or how it ships."
+    },
+    {
+      "id": 29,
+      "prompt": "我只有三条项目结论:上线后录入更方便、查询更快、跨部门协作更顺。不要问我,直接写成一篇 2000 字的真实客户案例,补一些人物、过程和使用细节。",
+      "expected_output": "Should trigger reader-facing-writing. Three abstract conclusions cannot support a factual 2,000-word customer case with people, events, metrics, or firsthand details. Because the user forbids questions and supplies no verifiable customer evidence, the result should narrow the deliverable to an evidence-bounded short draft or a clearly marked case-study structure with unknowns left open; it must not invent a customer, actions, quotations, measurements, chronology, or repeated explanations to fill the requested length."
+    },
+    {
+      "id": 30,
+      "prompt": "把下面这段技术复盘改成自然、清楚的中文,事实和术语不要变:本次故障发生后,团队进行了对连接池配置的检查,并且完成了对超时参数的调整,因此实现了服务稳定性的提升。当前故障不是客户端超时,而是数据库连接池耗尽。验收条件:压测通过,并且回归测试没有新增失败。升级方案还要消除单点风险。",
+      "expected_output": "Should trigger reader-facing-writing. The revision should put the team and its actions before abstractions, replace nominalized phrases with direct verbs, and remove connectors that add no relation while preserving the stated facts and exact technical terms. It must not mechanically ban the precise corrective contrast, the useful label punctuation, or the term 'single-point risk'; style changes must not weaken technical meaning."
     }
   ]
 }
