@@ -7,20 +7,17 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 ## Workflow
 
-1. Fix the reader and decision.
-   - State scope and the key takeaway up front.
-   - Give just enough context and the trigger for why this matters now before the detail.
-   - Match depth, terminology, and format to what the reader must decide or do.
-   - Scope content to the reader's role: cover what they own and must act on, and abstract mechanics owned by another layer (for example platform-managed versus developer-owned configuration) behind a named boundary rather than exposing internals they cannot change.
-   - Pitch detail to the document's purpose, and cut detail that falls below it.
-   - Give each document one job — such as deciding, doing, looking up, or understanding — and split by job, not by topic count: a decision brief that grows a reference inventory, or a how-to that grows design rationale, becomes two documents that cite each other. A brief may cover many topics and still be one job. Demote the second job first — a paragraph of rationale rides along as a note — and split only when it outgrows a demoted layer and can stand alone.
-   - Fix the reading occasion — a pre-meeting read, a review gate, an on-call lookup — and size the main path to what the occasion grants: minutes of linear reading for a brief, one direct hit for a lookup, and for a document read on several occasions, the most frequent one with the rest demoted. When content overflows that budget, demote it ("Demote, don't delete" below) rather than stretch the read — a main path sized to the author's effort instead of the reader's occasion is how documents turn unreadable.
-   - Calibrate the opening to the audience's starting familiarity. When the goal is to change how people think or act and the reader already knows the subject, lead with what the material means for them. But for an outward or introductory piece to readers new to the subject, first establish what the subject is in the plainest terms before its implications — a fresh audience cannot absorb what a thing means for them until they know what the thing is.
-   - For a large restructure or subjective rewrite where the user has not specified the target tone, structure, or ordering, show a compact target outline or 2-3 concrete options before executing. For small edits or explicit user directions, proceed directly and preserve choices already made.
-   - In a persuasive brief or proposal to domain experts, do not tell them how to do work they own: state your own facts, capabilities, and evidence, and let them draw the operational conclusions. Advice aimed into their expertise reads as condescension and discredits the material that would otherwise have persuaded them. This does not apply when the document's job is doing or teaching — a how-to should instruct its operator directly. Address a mixed audience as one room — do not aim a section or a "now it's your turn" line at one segment — and state your position on its own terms rather than against a named competitor.
-   - Treat a structure, framework, or list of corrections the user supplies as a standing checklist that survives every later revision: re-check each new draft against every item, and never let your own reframing quietly replace what they gave. If the given structure is wrong, say so and propose the change rather than drifting from it.
-   - When the user asks for something at a given prominence — its own section, a demo, a page — a passing mention, a footnote, or a note to the presenter is not delivery. If it is genuinely redundant, say so and still produce it at the requested prominence unless the user agrees to drop it.
-   - Match scope and length to the material that can be verified: research accessible public gaps, ask only for user-owned facts, or narrow the deliverable; never fill a quota with repeated explanation, inference promoted to fact, or invented examples.
+1. Set the reader's task before drafting.
+   - Before drafting, determine what the reader already knows, whether they need to decide, do, find, or understand something, what outcome the material should enable, and when or where they will read it.
+   - Use those choices to govern depth, terminology, form, and omission. Do not automatically label the audience, purpose, or writing process in the artifact; the visible opening starts with what the reader came for, while required formal metadata stays where its convention expects it. Keep any scope that changes how a claim or its evidence must be interpreted — environment, period, population, definition, or excluded cases — visible beside that claim instead of hiding it as writing metadata.
+   - Give each artifact one main job and split by job, not topic count. A decision brief that grows a reference inventory, or a how-to that grows design rationale, first demotes the second job to a note and becomes a separate linked artifact only when that layer can stand alone.
+   - Fit the main path to the reading occasion: minutes of linear reading for a brief, one direct hit for a lookup, an executable path for an operator. For several occasions, optimize for the most frequent and demote the rest rather than stretching every reading path.
+   - Scope content to what the reader owns and must act on; name a boundary around mechanics owned by another layer instead of exposing internals the reader cannot change.
+   - Calibrate the opening to familiarity. Lead a familiar audience with what the material means for them; first establish what an unfamiliar subject is for a new audience, then explain its implications.
+   - For a large subjective rewrite with no target tone, structure, or ordering, show a compact outline or 2-3 concrete options before executing. Proceed directly for small edits or explicit directions.
+   - In a persuasive brief to domain experts, state facts, capabilities, and evidence without instructing them how to do work they own. A doing or teaching artifact should instruct its operator directly. Address a mixed audience as one room, and state the case on its own terms rather than against a named competitor.
+   - Preserve a structure, framework, or correction list the user supplied across every revision. Treat requested prominence as a delivery contract: a section, page, or demo is not satisfied by a passing mention, footnote, or presenter note. If either choice conflicts with the artifact's job, propose the change instead of silently overriding it.
+   - Match scope and length to verifiable material: research accessible public gaps, ask only for user-owned facts, or narrow the deliverable; never fill a quota with repetition, promoted inference, or invented examples.
 2. Preserve source truth.
    - Keep the source framework when condensing; reword a layer, do not delete it.
    - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
@@ -32,35 +29,52 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - When reporting an improvement, give the local gain and the end-to-end gain it actually produces, and explain why they differ — a step-level speedup presented as the system-level outcome sets an expectation the system cannot meet.
    - Preserving source truth is not adopting the source's framing: when the source was written for a different audience or kind of organization, keep its verified facts but re-fit its stance, scope, and examples to what is true for your reader.
    - A number only supports a claim if it measures that claim over a matching period and population — a baseline gathered before the change you are crediting cannot show that change's effect. Cut such data or reframe the claim, and never add figures just to look rigorous.
-3. Write for scanning.
-   - Match each heading to the document's job: use claim-led headings for decisions and understanding ("Costs rose 40%"), action- or outcome-led headings for doing ("Fail traffic over", "Service is healthy again"), and searchable terms for lookup. In briefs and reports, lead each section, paragraph, and item with its takeaway and make it summarize what sits beneath it; a bare count ("three challenges") is not a takeaway. In every form, front-load the words that distinguish one section or step from the next.
-   - Treat the first screen (for a document, the content before the first section heading; for a deck, the opening slide) as its own layer: the reader who stops there must still leave with the right conclusion and know where each detail lives, and the reader who has not started must see something scannable — a few short lines and a compact visual if one earns its place, not a wall of dense prose — because the decision to read at all is made from what the first screen looks like.
-   - Demote, don't delete: cut what no reader needs (the purpose rule already licenses that), and move material only some readers need — full inventories, per-case tables, raw evidence, per-implementer steps — to an appendix, linked reference, or collapsed section the main path cites by name with its one-line conclusion; material the user pinned at a prominence stays there (the prominence rule). Stop at two depths within a document — the main path and the detail layer it cites, the first screen topping the main path rather than adding a third — because a surface whose sections are only pointers to further overviews makes the reader dig for everything.
-   - Budget emphasis in running prose: bold the few phrases a skimmer must catch — a decision, a deadline, a number that changes the conclusion; structural bolding (headings, table headers, defined terms) and emphasis the user authored sit outside this budget. When most lines carry bold, emphasis stops ranking anything and the page reads uniformly loud — the prose twin of spending an accent color on every chart series.
-   - Walls are not only a first-screen failure: break a screen-long slab of unbroken prose at its idea boundaries into short paragraphs, a list, or a table, and front-load each paragraph and list item with its distinguishing words — the takeaway's key terms, or its label in a parallel list — because scanning eyes catch the first words of a line and skip the rest.
-   - Layer a document set the way a document is layered: one overview file is the set's first screen — the shared conclusion plus a map of which file answers which question (in a small set an existing member such as the brief serves as it) — and each member file opens with its own takeaway plus its place in that map. Each file still keeps its own first-screen and depth budgets. A set without an overview makes the reader open every file to find anything.
-   - Keep peer items parallel, with the same fields in the same order, and sequence the items on one explicit logic — time, structure, or descending importance.
-   - Prefer lists for long sentences and tables for dense or relational data; where order, hierarchy, or flow carries the meaning better than prose, reach for a diagram instead of describing it in words. A table or diagram replaces the prose for that content — do not restate in sentences what the visual already shows; state its takeaway and move on. Keep table cells to the values the reader compares across rows — a short description column counts as one; a cell that grows into a paragraph belongs in prose or a demoted layer.
-   - State what every figure counts and its basis (period, population, definition); a bare number or percentage the reader cannot interpret is noise — aggregate raw counts into the categories that carry the insight (e.g. which items are in scope and their status), or cut them.
-   - Give a named entity the audience may not know — a tool, product, vendor, company, study, or internal codename — a plain one-line statement of what it is the first time it appears. When the name supports a judgment or recommendation, add the evidence that makes it relevant. Do not redefine familiar tools merely to satisfy a template; an unfamiliar name in a comparison table still needs its one-liner.
-   - Be able to state the artifact's organizing logic in one sentence, and place every section by it — content supporting the same claim belongs together, and a section no single logic connects is misplaced, not merely late, even when each piece reads fine alone. Within a section, the body answers exactly the question its takeaway raises in the reader's mind — usually why, how, which, or what next — and content answering no such question belongs elsewhere.
-   - When a section or agenda announces what follows ("three fronts", "two impacts"), make the enumeration match the body one-to-one in count, naming, and order, and re-check it after every restructure.
-   - Put one fact in one place and cross-reference instead of repeating; treat caveats the same — state each once, at the decision it affects, not re-hedged in every section.
-   - When you split a topic into parts, make them non-overlapping and collectively complete — flag any gap or leftover "other".
-   - For a multi-topic brief, the agenda is the first screen's map of where details live: open with what it covers, give each item its own section, and close with next steps per reader written as action items (with owner, date, and done criteria).
-4. Keep the prose plain.
+3. Shape the information before writing prose.
+   - Choose the lightest form that exposes the relationship the reader must perceive. Visual does not mean decorative image: position, grouping, alignment, whitespace, tables, and diagrams are all ways to make structure visible.
+
+     | Information the reader needs | Default form |
+     | --- | --- |
+     | One conclusion or a few facts | A sentence or a compact figure |
+     | Exact values or repeated fields across items | A table |
+     | Several options compared on the same fields | An aligned comparison table |
+     | Ranking on one measure | Bars sorted by value |
+     | Named events or milestones over time | A timeline |
+     | Numeric change over time | A line chart |
+     | Interaction over time | A sequence diagram |
+     | Branched process, decision path, or proven causal chain | A flowchart or node graph |
+     | Parent-child structure | A tree |
+     | Proof that something occurred | A real screenshot, record, or result |
+
+   - A visual earns its place only when it reduces the work of reconstructing a relationship from prose. Do not spend a chart on one or two numbers, turn lookup data into a diagram, or add imagery merely because people scan visually.
+   - A table or diagram replaces the prose for that relationship. Give it a takeaway and the context needed to interpret it; do not narrate every cell, node, or arrow again.
+   - Arrows, sequence, spatial grouping, size, and color all assert relationships. Use them only when the source proves the implied sequence, causation, grouping, magnitude, or status.
+   - If the artifact contains or needs a chart, diagram, screenshot, before/after pair, recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) before choosing or designing it.
+4. Build the visible reading path.
+   - Keep structure proportional to content. A short answer or notice that one or two paragraphs can carry gets no automatic title, audience declaration, background section, agenda, summary, or next-steps wrapper.
+   - Treat the first screen as the reader's entry point, not a template. For deciding or understanding, it exposes the conclusion, why it matters now, and only the context needed to interpret it; for doing, the trigger or prerequisite and first action; for lookup, the search terms or map. A reader who stops there should still know the point and where needed detail lives.
+   - Demote, don't delete: cut what no reader needs, and move material only some readers need — inventories, per-case tables, raw evidence, or implementer detail — to one named detail layer that the main path cites with its one-line conclusion. Keep prerequisites, commands, decision points, rollback, and done checks in the main path of a how-to. Stop at the main path plus one cited detail layer so the reader does not dig through overviews of overviews.
+   - Establish hierarchy through position, size, proximity, alignment, and whitespace before adding decoration. Keep peer items visually parallel, with the same fields in the same order, and sequence them on one logic — time, structure, or importance.
+   - Match headings to the job: claim-led for deciding and understanding, action- or outcome-led for doing, and searchable terms for lookup. In briefs and reports, lead each section and paragraph with its takeaway; in every form, front-load the words that distinguish one part from the next.
+   - Break a screen-long wall at its idea boundaries into short paragraphs, a list, a table, or an earned visual. Keep table cells to values the reader compares; a cell that grows into a paragraph belongs in prose or the detail layer.
+   - Budget emphasis: bold or accent only the few decisions, deadlines, states, or numbers a skimmer must catch. Structural emphasis and emphasis the user deliberately supplied sit outside this budget; preserve them unless the user agrees to change them. When most elements are emphasized, none of them rank.
+   - Layer a document set the same way: one overview carries the shared conclusion and maps each file to the question it answers; each member opens with its own takeaway and place in that map.
+   - State what every figure counts and its basis (period, population, definition). Aggregate raw counts into categories that carry the insight, or cut numbers that do not.
+   - Give an unfamiliar named entity a plain one-line identity on first appearance and the evidence that makes it relevant when it supports a judgment. Do not redefine tools the audience already knows.
+   - State the artifact's organizing logic in one sentence and place every section by it. Each section's body answers the question its heading or takeaway raises. Make announced counts match the body one-to-one, keep parts non-overlapping and collectively complete, and put each fact or caveat in one place with named cross-references.
+   - For a multi-topic brief, use the first screen as its map: name the topics, give each a matching section, and close with committed next actions per responsible role where the material supports them.
+5. Keep the prose plain.
    - Read [references/prose-style.md](references/prose-style.md) and apply it while drafting sentences: it carries the wording rules — active voice, one idea per sentence, padding and Europeanized-Chinese patterns cut as classes, meta-commentary swept, terms calibrated to the reader. Short is a limit on wording, not on substance.
-5. For committed plans and action items, include time and done criteria.
+6. For committed plans and action items, include time and done criteria.
    - Give every committed action item a single owner, a concrete verb-first action, and a due date.
    - Use an absolute date when committed; otherwise use a concrete week or phase.
    - Keep exploratory options, open decisions, and unknown owners visibly separate; mark them TBD instead of inventing commitments.
    - Never present future or aspirational state as current.
-6. Revise before done.
-   - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists: re-reading as the target reader and from adversarial viewpoints, a delete-only pass, sweeping reader-flagged defects as classes, and landing every change across mirrored artifacts.
+7. Test comprehension before done.
+   - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists. Test whether the first view can be paraphrased correctly, key facts can be found, a doing artifact can be executed safely, and every visual makes a relationship easier to understand; then run the factual, delete-only, dependency, and mirrored-artifact sweeps. These author-side checks reduce likely failures but do not prove that a human reader understood the artifact; for high-stakes material, test with a representative reader when feasible or state that human comprehension was not validated.
 
-## Visuals, decks, and HTML
+## Rendered visuals and interactive artifacts
 
-Before designing, choosing, or reviewing any chart, diagram, screenshot, before/after pair, screen recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) and apply it: it carries the rules those artifacts fail on — which form the content earns, real captured evidence, chart encoding, venue-screen projection, HTML rendering checks. A prose-only document does not need it; the decision of whether the content wants a visual at all is above, under Write for scanning. Proving a built page or deck actually renders correctly is the `frontend-verification` skill's job, not this one's.
+Content and form selection stay in this skill. Proving that a built page, deck, dashboard, or visual actually renders at its target size, viewport, venue, and authenticated state is the `frontend-verification` skill's job; if no rendering surface is available, report the artifact as visually unverified.
 
 ## Agent-facing instruction files
 

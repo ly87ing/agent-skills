@@ -157,6 +157,46 @@
       "id": 30,
       "prompt": "把下面这段技术复盘改成自然、清楚的中文,事实和术语不要变:本次故障发生后,团队进行了对连接池配置的检查,并且完成了对超时参数的调整,因此实现了服务稳定性的提升。当前故障不是客户端超时,而是数据库连接池耗尽。验收条件:压测通过,并且回归测试没有新增失败。升级方案还要消除单点风险。",
       "expected_output": "Should trigger reader-facing-writing. The revision should put the team and its actions before abstractions, replace nominalized phrases with direct verbs, and remove connectors that add no relation while preserving the stated facts and exact technical terms. It must not mechanically ban the precise corrective contrast, the useful label punctuation, or the term 'single-point risk'; style changes must not weaken technical meaning."
+    },
+    {
+      "id": 31,
+      "prompt": "把这条内部通知改得一眼就能看懂:周五18:00关闭旧登录入口,已登录用户不受影响;未切换到新入口的用户周一将无法登录。",
+      "expected_output": "Should trigger reader-facing-writing. The answer should produce one compact notice that leads with the Friday 18:00 closure and makes the affected and unaffected groups immediately distinguishable. It should not wrap this small amount of content in an audience declaration, background, agenda, multiple headings, summary, or generic next steps, and must not invent a migration method or owner."
+    },
+    {
+      "id": 32,
+      "prompt": "给评审把两个迁移方案整理得容易比较。A方案:迁移2周,停机2小时,回滚30分钟,年成本12万元。B方案:迁移5周,不停机,回滚10分钟,年成本18万元。没有给各指标权重。",
+      "expected_output": "Should trigger reader-facing-writing. Because the same exact fields are compared across two options, the result should use an aligned comparison table and a short takeaway that names the speed, availability, rollback, and cost tradeoff. It must not repeat every table value in prose or declare a winner when no decision weights were supplied."
+    },
+    {
+      "id": 33,
+      "prompt": "把下面的事故笔记整理给值班负责人:09:10结账不可用,09:24重启连接池后恢复,共影响14分钟。根因是连接池上限误设为20而不是200。配置修复已经评审但尚未部署,计划8月25日由Owner A部署。详细时间线还有12条操作记录。",
+      "expected_output": "Should trigger reader-facing-writing. The first view should expose the 14-minute checkout impact, confirmed configuration root cause, restored service, the confirmed fact that the reviewed fix remains undeployed, and Owner A's planned August 25 action without announcing that the document is for an on-call lead. The 12-step timeline belongs in a named detail layer; it should not push the current state and action below a long chronology. A recurrence risk may be labelled as an inference, but must not be presented as another confirmed incident fact."
+    },
+    {
+      "id": 34,
+      "prompt": "这页周报只有两个数字:本周收到47个工单,其中29个已关闭。没有趋势数据。考虑到人是视觉动物,帮我做得直观一些。",
+      "expected_output": "Should trigger reader-facing-writing. Two exact counts with no time series or distribution do not earn a chart or diagram. The result should use a concise sentence or two directly labelled figures, state the weekly basis, avoid implying a trend, and not add decorative imagery merely because the request mentions visual communication."
+    },
+    {
+      "id": 35,
+      "prompt": "把这份测试结论整理成一页评审摘要:在STAGING-2、2026年8月20日至22日、Chrome 140上执行了18个登录用例,全部通过;Safari和生产环境未验证。",
+      "expected_output": "Should trigger reader-facing-writing. The opening may omit audience, purpose, and process labels, but it must keep the evidence scope beside the conclusion: STAGING-2, August 20-22 2026, Chrome 140, and 18 of 18 login cases passed. It must also keep Safari and production explicitly unverified, rather than hiding those limits in an appendix or broadening the result to all browsers or environments."
+    },
+    {
+      "id": 36,
+      "prompt": "把这组项目进展做得直观一些。里程碑:8月1日设计完成、8月10日联调完成、8月20日上线。上线后的每日失败率:8月20日5%、8月21日3%、8月22日1%。",
+      "expected_output": "Should trigger reader-facing-writing when no dedicated data-visualization skill is available; where one is installed, routing the chart work there is valid. When reader-facing-writing handles the request, the named project milestones should use a timeline, while the daily numeric failure-rate series should use a line chart if a visual is warranted. The result must not treat a line chart and timeline as interchangeable, combine the events and percentages into one series, or imply that the milestone dates caused the measured decline."
+    },
+    {
+      "id": 37,
+      "prompt": "四个团队本月平均处理时长分别是A组9.2小时、B组5.1小时、C组7.4小时、D组3.0小时。请把从慢到快的排名做得一眼能看懂。",
+      "expected_output": "Should trigger reader-facing-writing when no dedicated data-visualization skill is available; where one is installed, routing the chart work there is valid. When reader-facing-writing handles the request, this ranking on one measure should use bars sorted from 9.2 to 3.0 hours with direct labels and a stated monthly basis. It should not use an alphabetic order, pie chart, multi-field comparison table, or decorative image."
+    },
+    {
+      "id": 38,
+      "prompt": "这份故障切换手册我自己通读了一遍没发现问题,可以在评审结论里写‘已证明值班同学一定能看懂并正确执行’吗?还没有请值班同学试跑。",
+      "expected_output": "Should trigger reader-facing-writing. The answer should reject the claim that an author-side reread proves human comprehension or correct execution. For this operational document, it should recommend an uncoached dry run by a representative on-call operator when feasible; until then, the review must state that human comprehension and execution were not validated, while still using author-side entry-point, findability, stop, recovery, and done-check reviews to reduce likely defects."
     }
   ]
 }
