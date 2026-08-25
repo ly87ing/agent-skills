@@ -71,7 +71,8 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Keep exploratory options, open decisions, and unknown owners visibly separate; mark them TBD instead of inventing commitments.
    - Never present future or aspirational state as current.
 7. Test comprehension before done.
-   - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists. Test whether the first view can be paraphrased correctly, key facts can be found, a doing artifact can be executed safely, and every visual makes a relationship easier to understand; then run the factual, delete-only, dependency, and mirrored-artifact sweeps. These author-side checks reduce likely failures but do not prove that a human reader understood the artifact; for high-stakes material, test with a representative reader when feasible or state that human comprehension was not validated.
+   - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists. Test whether the first view can be paraphrased correctly, one real fact can be found without scanning everything, and a doing artifact lets its operator identify when to start, what to do, when to stop, how to recover, and what proves completion; test whether every visual makes a relationship easier to understand, then run the factual, delete-only, dependency, and mirrored-artifact sweeps.
+   - Keep author-side checks and human validation as separate evidence. When asked whether comprehension or execution has been proved, state what remains unvalidated and include the five checks that can still reduce risk now — entry point, findability, stop, recovery, and done; for high-stakes material, recommend an uncoached test with a representative reader when feasible, or state that human comprehension was not validated.
 
 ## Rendered visuals and interactive artifacts
 
