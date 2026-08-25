@@ -72,7 +72,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - Never present future or aspirational state as current.
 7. Test comprehension before done.
    - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists. Test whether the first view can be paraphrased correctly, one real fact can be found without scanning everything, and a doing artifact lets its operator identify when to start, what to do, when to stop, how to recover, and what proves completion; test whether every visual makes a relationship easier to understand, then run the factual, delete-only, dependency, and mirrored-artifact sweeps.
-   - Keep author-side checks and human validation as separate evidence. When asked whether comprehension or execution has been proved, state what remains unvalidated and include the five checks that can still reduce risk now — entry point, findability, stop, recovery, and done; for high-stakes material, recommend an uncoached test with a representative reader when feasible, or state that human comprehension was not validated.
+   - Keep author-side checks and human validation as separate evidence. When asked whether comprehension or execution has been proved, answer in two parts: state what remains unvalidated and recommend an uncoached test with a representative reader when feasible; then name all five author-side checks that can still reduce risk now — entry point, findability, stop, recovery, and done. Do not omit the second part merely because the narrow question can be answered without it.
 
 ## Rendered visuals and interactive artifacts
 
