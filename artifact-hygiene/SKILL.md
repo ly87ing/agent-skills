@@ -12,6 +12,15 @@ description: Decide safe locations, redaction, and cleanup rules for generated f
 - **Workflow-consumed artifacts:** generated files that repository workflows already depend on, or outputs the user explicitly asks to standardize.
 - **Disposable run artifacts:** ad hoc debug scripts, copied reports, temporary screenshots, traces, videos, downloads, storage state, JSON/HTML dumps, and investigation notes serving only the current run.
 
+## Ownership Boundary
+
+This skill owns an artifact's placement, redaction, dependency packaging, cleanup, and
+handoff. It does not decide what a reader-facing artifact should say, model or lay out
+a technical diagram, or prove a rendered interface in a browser. When available, use
+`reader-facing-writing`, `technical-diagramming`, and `frontend-verification` for those
+decisions; they may run alongside this skill without becoming prerequisites for its
+artifact-lifecycle work.
+
 ## Placement Rules
 
 1. Put requested deliverables where their peers already live — the maintained knowledge-base/project path a reader would look for them. If there is no clear peer or path, ask the user where it belongs instead of defaulting to a temporary/scratchpad directory. Never treat a requested deliverable as disposable, and do not delete it on completion. A session-level "put temporary files in the scratchpad" instruction does not override this, because it governs disposable run artifacts, not requested deliverables. Once a deliverable lands in its maintained path, that file is the only copy: edit it in place rather than keeping a scratchpad duplicate to sync over, which drifts and invites edits to the wrong file.

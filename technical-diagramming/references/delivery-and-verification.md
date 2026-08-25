@@ -1,6 +1,11 @@
 # Delivery And Verification
 
-Use this reference for rendered SVG/HTML, comparison artifacts, or handoff.
+Use this reference for rendered SVG/HTML, comparison artifacts, or handoff. It owns
+the diagram-specific source-to-artifact contract, semantic checks, and visual reading.
+When `frontend-verification` is available, it owns browser and rendered-surface
+acceptance. When `artifact-hygiene` is available, it owns placement, redaction,
+dependency packaging, cleanup, and handoff. The fallback sections below apply only
+when those companion skills are unavailable.
 
 ## Source And Artifact Contract
 
@@ -13,10 +18,6 @@ Use this reference for rendered SVG/HTML, comparison artifacts, or handoff.
 - When source and artifact are separate files, compute SHA-256 and byte counts for
   both after acceptance. A receipt proves byte identity and completed checks, not
   factual correctness or visual quality.
-- Keep runtime dependencies self-contained for an offline handoff unless the user
-  explicitly chooses a network-dependent artifact. Escape authored strings and never
-  add telemetry, remote scripts, or active links that disclose repository or internal
-  topology without the audience and destination permitting them.
 
 ## Semantic Checks
 
@@ -36,10 +37,7 @@ Use this reference for rendered SVG/HTML, comparison artifacts, or handoff.
 ## Render Checks
 
 - Open the exact accepted artifact, not an earlier preview or cached render.
-- Check console errors, missing resources, broken interactions, keyboard and focus
-  behavior when interactive, text at 200% zoom, contrast, and page-level horizontal
-  overflow at a narrow viewport.
-- Check every intended desktop or presentation viewport for clipping, overlaps,
+- Open the diagram at every intended rendered size and check for clipping, overlaps,
   unreadable labels, ambiguous edge corridors, broken legends, and excessive empty
   space that hides the primary path.
 - Check light and dark themes when both are offered. Wait for fonts, images, and motion
@@ -48,6 +46,21 @@ Use this reference for rendered SVG/HTML, comparison artifacts, or handoff.
 - Read the render as the target reader: what the eye reaches first, whether the main
   question can be answered, and whether any line, color, position, or animation claims
   a relationship the evidence does not support.
+
+## Browser Acceptance Fallback
+
+Use this only when `frontend-verification` is unavailable. Check console errors,
+missing resources, broken interactions, keyboard and focus behavior, readable zoom,
+contrast, and narrow-viewport overflow. Record exactly which surfaces and states were
+opened; one screenshot does not cover the flow around it.
+
+## Handoff Fallback
+
+Use this only when `artifact-hygiene` is unavailable. Keep runtime dependencies
+self-contained for an offline handoff unless the user explicitly chooses a
+network-dependent artifact. Escape authored strings, keep sensitive topology out of
+the package unless its audience and destination permit it, and never add telemetry or
+remote scripts merely to deliver the diagram.
 
 ## Receipt
 

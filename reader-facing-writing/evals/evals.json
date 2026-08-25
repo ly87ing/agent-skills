@@ -20,7 +20,7 @@
     {
       "id": 4,
       "prompt": "Help me make a one-page interactive HTML dashboard that clearly conveys these metrics and trends, to send to the team.",
-      "expected_output": "Should trigger reader-facing-writing. The result should title each visual with its takeaway, encode values by position or length and keep charts honest (zero baselines), not rely on color alone (pair it with labels or shapes), meet contrast minimums (4.5:1 body, 3:1 large text and chart elements), stay readable at 200% zoom and at a 320px width without horizontal scrolling, decide the online/offline dependency first, and verify the rendered result before declaring it done."
+      "expected_output": "Should trigger reader-facing-writing. The result should title each visual with its takeaway, encode values by position or length and keep charts honest (zero baselines), and pair color with labels or shapes. It should state where the dashboard will run and whether it must work offline; when the companion skills are available, frontend-verification owns contrast, zoom, narrow-viewport, interaction, and console acceptance, while artifact-hygiene owns dependency packaging and clean handoff. Any companion check that did not run must remain explicitly unverified."
     },
     {
       "id": 5,
@@ -82,7 +82,7 @@
     },
     {
       "prompt": "这段 20 分钟的排查录屏，你能帮我直接裁剪一下放进分享材料吗？",
-      "expected_output": "Should trigger reader-facing-writing. The result should treat trimming as making the recording usable rather than merely shorter (cutting dead waiting time, speed-ramping the exploratory stretch while keeping the payoff at real time, cropping tool chrome and status bars), should check legibility at viewing size and propose a static or before/after capture as the primary visual with the recording demoted to optional supporting evidence if it is not legible, and should let sensitive content rather than duration decide the cut points, trusting extracted frames over timestamps.",
+      "expected_output": "Should trigger reader-facing-writing. The result should treat trimming as making the recording usable rather than merely shorter (cutting dead waiting time, speed-ramping the exploratory stretch while keeping the payoff at real time, cropping tool chrome and status bars), should check legibility at viewing size and propose a static or before/after capture as the primary visual with the recording demoted to optional supporting evidence if it is not legible. Sensitive spans are mandatory exclusions; when available, artifact-hygiene owns the full-span frame scan and redaction, with frames trusted over timestamps.",
       "id": 16
     },
     {

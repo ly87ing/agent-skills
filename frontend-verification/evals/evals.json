@@ -105,6 +105,11 @@
       "id": 21,
       "prompt": "Playwright 调试跑完留下了 trace、录像和一堆截图,这些文件该放到哪?要不要提交到仓库?",
       "expected_output": "Should NOT trigger frontend-verification. Despite the Playwright and screenshot vocabulary, the ask is where produced evidence files should live and whether they enter version control — placement and cleanup of generated artifacts, owned by artifact-hygiene. frontend-verification produces and reads browser evidence; it does not decide where the files go."
+    },
+    {
+      "id": 22,
+      "prompt": "从仓库代码和配置画一张部署拓扑图,把节点、边界、调用方向和同步异步关系建模清楚。",
+      "expected_output": "Should NOT trigger frontend-verification. The task is to model and author the technical diagram itself, with no built browser surface or UI verification decision; that work belongs to technical-diagramming."
     }
   ]
 }

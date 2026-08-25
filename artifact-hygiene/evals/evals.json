@@ -160,6 +160,11 @@
       "id": 32,
       "prompt": "我刚从内网门户下载了一个安装包和两份导出的 CSV,现在都堆在仓库根目录里。这些下载来的文件该放哪?",
       "expected_output": "Should trigger artifact-hygiene. The result should classify each download by its role rather than leave it in the repository root: an installer or export needed only for the current run is a disposable download that belongs in a temporary directory outside tracked paths and gets cleaned up when done, while a file the user asked for as a deliverable or that future runs will need again goes to a durable maintained location. Downloads must not keep accumulating in the working tree."
+    },
+    {
+      "id": 33,
+      "prompt": "根据这两个版本的组件清单画一张拓扑对比图,标出新增、删除、移动和改道,并验证每条连线的语义。",
+      "expected_output": "Should NOT trigger artifact-hygiene. The task is to model, author, and semantically validate a technical comparison diagram; placement, redaction, packaging, and cleanup are explicitly out of scope, so technical-diagramming owns it."
     }
   ]
 }

@@ -48,6 +48,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
    - A visual earns its place only when it reduces the work of reconstructing a relationship from prose. Do not spend a chart on one or two numbers, turn lookup data into a diagram, or add imagery merely because people scan visually.
    - A table or diagram replaces the prose for that relationship. Give it a takeaway and the context needed to interpret it; do not narrate every cell, node, or arrow again.
    - Arrows, sequence, spatial grouping, size, and color all assert relationships. Use them only when the source proves the implied sequence, causation, grouping, magnitude, or status.
+   - When a technical diagram is warranted and `technical-diagramming` is available, keep the reader question, reason for the diagram, takeaway, and surrounding material here; let that skill own the technical model, geometry, diagram artifact, and diagram-specific semantic checks.
    - If the artifact contains or needs a chart, diagram, screenshot, before/after pair, recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) before choosing or designing it.
 4. Build the visible reading path.
    - Keep structure proportional to content. A short answer or notice that one or two paragraphs can carry gets no automatic title, audience declaration, background section, agenda, summary, or next-steps wrapper.
@@ -74,7 +75,7 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 ## Rendered visuals and interactive artifacts
 
-Content and form selection stay in this skill. Proving that a built page, deck, dashboard, or visual actually renders at its target size, viewport, venue, and authenticated state is the `frontend-verification` skill's job; if no rendering surface is available, report the artifact as visually unverified.
+The reader question, need for the visual, takeaway, and surrounding content stay in this skill. When available, `technical-diagramming` owns a technical diagram's model, geometry, artifact, and semantic validation; `frontend-verification` owns browser and rendered-surface acceptance; and `artifact-hygiene` owns placement, redaction, dependency packaging, and handoff. If `technical-diagramming` is unavailable, use only the diagram fallback in [references/visuals-and-decks.md](references/visuals-and-decks.md). Do not absorb an unavailable companion's full workflow; report what remains unverified.
 
 ## Agent-facing instruction files
 

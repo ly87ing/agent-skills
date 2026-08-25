@@ -9,7 +9,9 @@ Build the smallest diagram that lets a reader recover the intended technical
 relationship without inventing topology, order, causality, runtime activity, or
 impact. This skill owns the diagram model and diagram artifact. It does not make a
 diagram necessary merely because a document could contain one, and it does not turn
-the diagram into evidence stronger than its sources.
+the diagram into evidence stronger than its sources. When the diagram sits in broader
+reader-facing material, accept the reader question, need, and surrounding argument from
+`reader-facing-writing` when available rather than redesigning that material here.
 
 ## Workflow
 
@@ -45,7 +47,12 @@ the diagram into evidence stronger than its sources.
      generated artifact after its source has been frozen.
 4. Validate and deliver.
    - Read [references/delivery-and-verification.md](references/delivery-and-verification.md)
-     before creating a standalone HTML/SVG deliverable, a comparison, or a handoff.
+     before creating a standalone HTML/SVG deliverable, a comparison, or a handoff. It
+     owns diagram-specific source, semantic, and render checks. When available, use
+     `frontend-verification` for browser, interaction, focus, zoom, contrast, overflow,
+     and responsive acceptance; use `artifact-hygiene` for placement, redaction,
+     dependency packaging, cleanup, and handoff. The reference carries only minimum
+     fallbacks for runtimes where those companion skills are absent.
    - Validate the source model, then the rendered artifact. Use a same-directory
      candidate and replace the last accepted artifact only after required checks pass.
    - For SVG, run [scripts/validate_svg.py](scripts/validate_svg.py) against the

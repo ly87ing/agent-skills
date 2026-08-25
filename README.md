@@ -29,6 +29,21 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 
 All six skills are self-contained and have no cross-skill prerequisites.
 
+Self-contained does not mean that adjacent skills should duplicate one another. When
+several of these skills are available for one task, compose them by phase and keep each
+decision with one owner:
+
+| Decision | Owner |
+| --- | --- |
+| Decide whether the reader needs a diagram, the reader question it must answer, its takeaway, and the surrounding material | `reader-facing-writing` |
+| Model the technical nodes, edges, boundaries, and states; choose the layout; author and semantically validate the diagram artifact | `technical-diagramming` |
+| Prove the built artifact in a browser: interactions, focus, zoom, contrast, overflow, responsive states, and console/runtime failures | `frontend-verification` |
+| Decide file placement, redaction, cleanup, runtime-dependency packaging, and clean handoff | `artifact-hygiene` |
+
+When the named owner is unavailable, the skill already in use may apply only its
+documented minimum fallback and must report the resulting verification limit. A
+fallback is not a second source of truth when the owner is present.
+
 ## Design Principles
 
 - Evidence first: do not reach conclusions by guessing; the verification method and result must be stated.

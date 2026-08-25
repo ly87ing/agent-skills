@@ -34,7 +34,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - For a deck or page that will be projected, verify at OS-level full screen at the venue's aspect ratio (16:9) — a browser window's inline "full screen" is not the venue's — stepping through every page for leftover margins, overflow, and broken layout; when the venue is dark, also check for glare-bright text that dazzles in a dark room.
    - When playable media sits inside a click-to-dismiss overlay, stop the media's own clicks from reaching the dismiss handler and pause playback on close; otherwise the first click on the controls dismisses the overlay, and a dismissed overlay keeps playing.
    - Where a container binds global keys or screen zones to navigation, decide explicitly which keys belong to focused media, then drive it: confirm that clicking content does not navigate, and that a focused player or embedded frame has not swallowed the keys the reader needs.
-   - Which visual a flow should carry, and whether the artifact may depend on the network where it will run, are content decisions rather than verification ones — they belong to the `reader-facing-writing` skill.
+   - This skill owns browser and rendered-surface acceptance, not adjacent authoring or delivery decisions. When available, `reader-facing-writing` owns why a visual is needed and the reader question it answers; `technical-diagramming` owns a technical diagram's model, geometry, artifact, and semantic checks; and `artifact-hygiene` owns file placement, redaction, runtime-dependency packaging, cleanup, and handoff.
 
 ## Captured Media As Evidence
 
