@@ -70,6 +70,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # claude -p pays CLI startup plus model latency per call; generous headroom
 # so cold starts never flake a run.
 JUDGE_TIMEOUT_SECONDS = 180
+AUTH_STATUS_TIMEOUT_SECONDS = 10
 CLAUDE_ISOLATION_ARGS = (
     "--safe-mode",
     "--disable-slash-commands",
@@ -94,6 +95,27 @@ Answer with exactly one skill name from the list above, or the word none. Output
 """
 
 
+def claude_auth_problem() -> str | None:
+    """Return a recovery message only when the CLI explicitly reports logged out."""
+    try:
+        result = subprocess.run(
+            ["claude", "auth", "status"],
+            capture_output=True,
+            text=True,
+            timeout=AUTH_STATUS_TIMEOUT_SECONDS,
+            stdin=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    try:
+        status = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return None
+    if status.get("loggedIn") is False:
+        return "`claude` CLI is not authenticated; run `claude auth login`"
+    return None
+
+
 def read_frontmatter(skill_md: Path) -> dict[str, str]:
     match = re.match(r"^---\n(.*?)\n---", skill_md.read_text(encoding="utf-8"), re.DOTALL)
     if not match:
@@ -107,8 +129,8 @@ def read_frontmatter(skill_md: Path) -> dict[str, str]:
 def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, str]:
     """Skills the agent can also choose from but this repo does not own.
 
-    The repo holds 5 skills; a real agent picks among everything installed. A
-    catalog of only our own skills cannot surface the collisions that matter
+    A real agent picks among every installed skill. A catalog of only the skills
+    maintained here cannot surface the collisions that matter
     most — safe-merge-review against a GitLab skill, frontend-verification
     against a runtime's built-in dataviz skill — so measuring without them
     reads optimistically.
@@ -242,6 +264,13 @@ def main() -> int:
         "our own skills alone are an optimistic catalog, since a real agent chooses among everything installed",
     )
     parser.add_argument(
+        "--require-catalog-skill",
+        action="append",
+        default=[],
+        metavar="NAME",
+        help="fail before judging unless NAME is present in the assembled catalog (repeatable)",
+    )
+    parser.add_argument(
         "--trigger-threshold",
         type=float,
         default=0.5,
@@ -262,6 +291,13 @@ def main() -> int:
     # neighbours, so a case can fail by losing to a skill this repo does not own.
     cases = load_cases(skills, args.skill, args.ids, args.limit)
     neighbours = load_neighbour_skills(args.catalog_dir, own=set(skills))
+    missing_required = sorted(set(args.require_catalog_skill) - set(skills) - set(neighbours))
+    if missing_required:
+        print(
+            "error: required catalog skill(s) missing: " + ", ".join(missing_required),
+            file=sys.stderr,
+        )
+        return 1
     if neighbours:
         print(f"catalog: {len(skills)} own + {len(neighbours)} neighbour skills", file=sys.stderr)
         for raw_dir in args.catalog_dir:
@@ -286,6 +322,10 @@ def main() -> int:
     catalog = "\n".join(f"- {name}: {description}" for name, description in skills.items())
     if not cases:
         print("error: no eval cases selected", file=sys.stderr)
+        return 1
+    auth_problem = claude_auth_problem()
+    if auth_problem:
+        print(f"error: {auth_problem}", file=sys.stderr)
         return 1
 
     runs = max(1, args.runs_per_query)

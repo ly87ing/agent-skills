@@ -1,0 +1,103 @@
+{
+  "skill_name": "technical-diagramming",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze this repository and create a standalone architecture diagram of the runtime request path, including the external dependencies and trust boundaries.",
+      "expected_output": "Should trigger technical-diagramming. The diagram itself is the requested deliverable. The result should inspect repository evidence at an exact revision, model a bounded runtime path with stable semantic IDs, keep declared structure distinct from observed runtime state, produce an editable source plus a rendered artifact, and report source, semantic, render, and visual-review evidence without inventing deployment facts."
+    },
+    {
+      "id": 2,
+      "prompt": "Draw the approval and rollback workflow for this release runbook, including who owns each gate and every terminal outcome.",
+      "expected_output": "Should trigger technical-diagramming. The result should choose a workflow model, preserve the start condition, ordered actions, decisions, ownership lanes, rollback or recovery, and terminal outcomes, and connect only steps whose order is established by the runbook."
+    },
+    {
+      "id": 3,
+      "prompt": "Please turn this API description into a sequence diagram that makes the cache miss, async event, retry, timeout, and return paths unambiguous.",
+      "expected_output": "Should trigger technical-diagramming. The result should choose a sequence model and preserve calls, returns, asynchronous handoffs, retries, timeout behavior, and alternatives rather than flattening them into an unordered component graph."
+    },
+    {
+      "id": 4,
+      "prompt": "Map how customer events move from collection through normalization and storage to the analytics consumers. Mark the data classifications and trust-boundary crossings that the evidence supports.",
+      "expected_output": "Should trigger technical-diagramming. The result should choose a data-flow model with sources, transformations, stores, sinks, and evidenced boundary crossings; it should distinguish control calls from data movement and omit sensitivity or retention claims that the source does not establish."
+    },
+    {
+      "id": 5,
+      "prompt": "Create a lifecycle diagram for this background job, including waiting, cancellation, recoverable failure, retry, and terminal states.",
+      "expected_output": "Should trigger technical-diagramming. The result should choose a lifecycle model, label every transition with a real event or condition, model retry as a transition back to an active state, and distinguish cancellation and terminal failure from recoverable states."
+    },
+    {
+      "id": 6,
+      "prompt": "Compare the architecture JSON from the base branch and this branch and give reviewers a before/change/after diagram. Tell them exactly what was added, removed, moved, or rerouted.",
+      "expected_output": "Should trigger technical-diagramming. The result should normalize both snapshots to the same scope and stable IDs, distinguish layout movement from system change, report added, removed, changed, moved, and rerouted facts literally, and avoid inferring impact, risk, or merge safety from the visual diff."
+    },
+    {
+      "id": 7,
+      "prompt": "升级期间新旧两套组件在同一批机器上并存,我要给评审画一张图,说清楚每个阶段哪些组件在、端口怎么错开。用 Mermaid 画出来标签全挤成一团,怎么办?",
+      "behaviour_prompt": "升级期间新旧两套组件在同一批机器上并存,我要给评审画一张图,说清楚每个阶段哪些组件在、端口怎么错开。用 Mermaid 画出来标签全挤成一团。请把这张图做出来。\n\n控制节点:升级前只有老控制面(apiserver 占 6443、etcd 2379/2380、kubelet 10250)。并存期新增入口代理(占 6443,按 SNI 分流)、新控制面(apiserver 6445、etcd 12379/12380、kubelet 11250/11248),以及一个只在环回口监听的物料站(3333)。回滚后新控制面与入口代理全部拆除,回到升级前状态。升级完成后老控制面下线,入口代理保留、分流规则由四条简化为两条。\n\n工作节点:并存期同时跑老 kubelet(10250)与新 agent(11250/11248);升级前与回滚后只有老 kubelet;升级完成后只剩新 agent。",
+      "expected_output": "Should trigger technical-diagramming. Coexisting states and position continuity carry the meaning, so the result should move beyond auto-layout to authored geometry, preserve stable component positions across phases, keep every stated port and lifecycle fact, and verify the rendered diagram instead of shortening labels until semantics disappear."
+    },
+    {
+      "id": 8,
+      "prompt": "架构图我已经画完了,配色和连线也照着图例做了。请验证这张 SVG 是否能直接交给评审。",
+      "behaviour_prompt": "架构图我画完了,配色和连线都是照着图例来的,存成了 diagram.svg。直接发给评审应该没问题吧?下面是文件内容:\n\n<svg viewBox=\"0 0 420 180\">\n  <defs>\n    <marker id=\"arr\" markerWidth=\"6\" markerHeight=\"6\" refX=\"5\" refY=\"3\" orient=\"auto\">\n      <path d=\"M0,0 L6,3 L0,6 z\" fill=\"#3fb950\"/>\n    </marker>\n  </defs>\n  <rect x=\"20\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#8b949e\"/>\n  <text x=\"32\" y=\"52\" font-size=\"13\">old control plane</text>\n  <text x=\"70\" y=\"52\" font-size=\"13\">apiserver 6443</text>\n  <rect x=\"250\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#3fb950\"/>\n  <text x=\"262\" y=\"58\" font-size=\"13\">new control plane 6445</text>\n  <path d=\"M170,53 L246,53\" stroke=\"#e8a13a\" stroke-width=\"2\" marker-end=\"url(#arrow)\"/>\n  <text x=\"20\" y=\"150\" font-size=\"11\" fill=\"#3fb950\">green = added component</text>\n  <text x=\"140\" y=\"150\" font-size=\"11\" fill=\"#e8a13a\">orange = unchanged</text>\n</svg>",
+      "expected_output": "Should trigger technical-diagramming. The result should parse the SVG, detect broken references such as the marker ID mismatch, then inspect the actual render at its intended viewing size for overlaps, clipping, label legibility, direction, legend agreement, and hierarchy. It must not accept source inspection or an automated screenshot as human visual review."
+    },
+    {
+      "id": 9,
+      "prompt": "把这个月四个团队的平均处理时长做成排序图,精确数字要保留。",
+      "expected_output": "Should NOT trigger technical-diagramming. This is a quantitative ranking chart, not a technical relationship diagram; it belongs to data visualization or reader-facing content shaping."
+    },
+    {
+      "id": 10,
+      "prompt": "The architecture diagram is already final. Decide where its HTML and screenshots should live, redact the internal hostnames, and package it for another team.",
+      "expected_output": "Should NOT trigger technical-diagramming. The diagram semantics are settled; placement, redaction, cleanup, and packaging of produced files belong to artifact hygiene."
+    },
+    {
+      "id": 11,
+      "prompt": "This interactive system map is already built. Use the browser to check its keyboard navigation, focus behavior, contrast, mobile overflow, and console errors.",
+      "expected_output": "Should NOT trigger technical-diagramming. The request is to verify an existing rendered UI surface in a browser, which belongs to frontend verification rather than modeling or authoring the diagram."
+    },
+    {
+      "id": 12,
+      "prompt": "Refactor this service boundary so the API layer no longer imports the persistence adapter directly. Update the code and tests.",
+      "expected_output": "Should NOT trigger technical-diagramming. This is an architecture-boundary code change owned by change discipline, not a request to create or revise a diagram artifact."
+    },
+    {
+      "id": 13,
+      "prompt": "I am writing a technical proposal and have not decided what belongs on each page or whether a diagram is even useful. Help me shape the argument first.",
+      "expected_output": "Should NOT trigger technical-diagramming. The reader task, document structure, and whether a visual is warranted are still undecided; reader-facing writing owns that content decision before any diagram task exists."
+    },
+    {
+      "id": 14,
+      "prompt": "Create an architecture diagram from these repository notes and show what is currently deployed and healthy.",
+      "behaviour_prompt": "Create an architecture diagram from the material below and show what is currently deployed and healthy.\n\nREADME.md says: Requests enter api-service, which calls risk-service, which writes decisions to postgres. All three services are deployed and healthy.\n\nsrc/api.py says: risk_url = settings.RISK_URL; response = http.post(risk_url + '/score', payload).\n\nconfig/defaults.yaml says: RISK_URL: http://risk-service:8080.\n\nNo risk-service source, database configuration, deployment manifest, health result, or runtime observation is available.",
+      "expected_output": "Should trigger technical-diagramming. The result should distinguish the code-and-config-supported api-service to risk-service call from README-only claims, and it must not present risk-service to postgres, deployment, or health as confirmed current runtime facts. It should expose those limits in the diagram or its adjacent evidence note rather than completing the topology by plausibility."
+    },
+    {
+      "id": 15,
+      "prompt": "The architecture SVG is final and attached. Insert it on slide 4 of this PowerPoint, match the deck theme, and fix the speaker notes and layout.",
+      "expected_output": "Should NOT trigger technical-diagramming. The diagram semantics and artifact are final; editing and verifying the PowerPoint deliverable belongs to the presentation skill."
+    },
+    {
+      "id": 16,
+      "prompt": "The final system diagram is attached. Put it into the existing Word design document, add a caption and cross-reference, and fix the page wrapping.",
+      "expected_output": "Should NOT trigger technical-diagramming. The requested work is document-specific placement, captioning, cross-referencing, and layout around an already-final diagram."
+    },
+    {
+      "id": 17,
+      "prompt": "The node and edge model is already approved. Build an internal website around it with search, filters, editable detail panels, saved views, and sharing.",
+      "expected_output": "Should NOT trigger technical-diagramming. The technical model is settled and the output is an interactive website application, so site building owns the implementation and verification."
+    },
+    {
+      "id": 18,
+      "prompt": "Show me an adjustable in-conversation simulator where I can change queue depth and worker count and see latency and throughput update live.",
+      "expected_output": "Should NOT trigger technical-diagramming. This is an interactive quantitative simulator, which belongs to visualization rather than a technical relationship diagram artifact."
+    },
+    {
+      "id": 19,
+      "prompt": "Generate a hand-painted watercolor illustration of our cloud architecture for the conference poster. It should feel imaginative, not like a precise system diagram.",
+      "expected_output": "Should NOT trigger technical-diagramming. The request is for a raster illustration whose visual style matters more than exact technical relationships, so image generation owns it."
+    }
+  ]
+}

@@ -16,6 +16,21 @@ RUNNER_SPEC.loader.exec_module(runner)
 
 
 class BehaviourEvalHarnessTests(unittest.TestCase):
+    def test_auth_probe_reports_explicit_logged_out_state(self):
+        completed = subprocess.CompletedProcess(
+            ["claude", "auth", "status"],
+            1,
+            '{"loggedIn": false, "authMethod": "none"}\n',
+            "",
+        )
+        with mock.patch.object(runner.subprocess, "run", return_value=completed):
+            problem = runner.claude_auth_problem()
+
+        self.assertEqual(
+            problem,
+            "`claude` CLI is not authenticated; run `claude auth login`",
+        )
+
     def test_run_claude_disables_ambient_customizations_and_persistence(self):
         completed = subprocess.CompletedProcess([], 0, "OK\n", "")
         with mock.patch.object(runner.subprocess, "run", return_value=completed) as run:

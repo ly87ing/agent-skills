@@ -13,6 +13,7 @@ MAINTAINED_SKILLS = {
     "frontend-verification",
     "reader-facing-writing",
     "safe-merge-review",
+    "technical-diagramming",
 }
 RULE_DERIVED_SKILLS = {
     "artifact-hygiene",
@@ -174,7 +175,7 @@ class SkillContractTests(unittest.TestCase):
         # user types anything — they are the resident cost of the catalog, the way a
         # shared rule core is the resident cost of the rule layer. A per-description
         # cap already exists above (1024, the platform limit), but nothing watched the
-        # sum, and five descriptions each written up against that cap add up to more
+        # sum, and six descriptions each written up against that cap add up to more
         # than twice the entire shared rule core.
         #
         # The cap is set just above today's total. It is not a target to fill: a

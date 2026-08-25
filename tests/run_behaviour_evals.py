@@ -95,6 +95,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 ANSWER_TIMEOUT_SECONDS = 300
 GRADE_TIMEOUT_SECONDS = 180
+AUTH_STATUS_TIMEOUT_SECONDS = 10
 
 NEGATIVE_EXPECTATION = re.compile(r"^\s*should\s+not\b", re.IGNORECASE)
 
@@ -132,6 +133,27 @@ CLAUDE_ISOLATION_ARGS = (
     "--no-session-persistence",
     "--strict-mcp-config",
 )
+
+
+def claude_auth_problem() -> str | None:
+    """Return a recovery message only when the CLI explicitly reports logged out."""
+    try:
+        result = subprocess.run(
+            ["claude", "auth", "status"],
+            capture_output=True,
+            text=True,
+            timeout=AUTH_STATUS_TIMEOUT_SECONDS,
+            stdin=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    try:
+        status = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return None
+    if status.get("loggedIn") is False:
+        return "`claude` CLI is not authenticated; run `claude auth login`"
+    return None
 
 def run_claude(
     prompt: str,
@@ -343,6 +365,10 @@ def main() -> int:
     cases = load_cases(args.skill, args.ids)
     if not cases:
         print("error: no positive eval cases selected", file=sys.stderr)
+        return 1
+    auth_problem = claude_auth_problem()
+    if auth_problem:
+        print(f"error: {auth_problem}", file=sys.stderr)
         return 1
 
     body = skill_body(args.skill)

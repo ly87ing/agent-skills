@@ -17,6 +17,34 @@ RUNNER_SPEC.loader.exec_module(runner)
 
 
 class TriggerEvalHarnessTests(unittest.TestCase):
+    def test_auth_probe_reports_explicit_logged_out_state(self):
+        completed = subprocess.CompletedProcess(
+            ["claude", "auth", "status"],
+            1,
+            '{"loggedIn": false, "authMethod": "none"}\n',
+            "",
+        )
+        with mock.patch.object(runner.subprocess, "run", return_value=completed) as run:
+            problem = runner.claude_auth_problem()
+
+        self.assertEqual(
+            problem,
+            "`claude` CLI is not authenticated; run `claude auth login`",
+        )
+        self.assertIs(run.call_args.kwargs["stdin"], subprocess.DEVNULL)
+
+    def test_auth_probe_defers_to_normal_execution_for_unknown_cli_output(self):
+        completed = subprocess.CompletedProcess(
+            ["claude", "auth", "status"],
+            1,
+            "",
+            "unknown command: auth",
+        )
+        with mock.patch.object(runner.subprocess, "run", return_value=completed):
+            problem = runner.claude_auth_problem()
+
+        self.assertIsNone(problem)
+
     def test_judge_runs_in_fresh_empty_directory_without_ambient_context(self):
         calls: list[tuple[list[str], Path, object]] = []
 
@@ -88,6 +116,25 @@ class CatalogDisclosureTests(unittest.TestCase):
         self.assertIn("neighbour skills", err)
         self.assertIn("Claude Code", err)
         self.assertNotIn("no --catalog-dir", err)
+
+    def test_required_catalog_skill_prevents_an_incomplete_run(self):
+        fixtures = Path(__file__).with_name("fixtures") / "builtin-skills"
+
+        code, err = self._run_main(
+            [
+                "--skill",
+                "reader-facing-writing",
+                "--ids",
+                "99999",
+                "--catalog-dir",
+                str(fixtures),
+                "--require-catalog-skill",
+                "visualize",
+            ]
+        )
+
+        self.assertEqual(code, 1)
+        self.assertIn("required catalog skill(s) missing: visualize", err)
 
 
 if __name__ == "__main__":
