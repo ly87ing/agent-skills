@@ -28,6 +28,7 @@ description: Validate frontend outcomes, browser automation, UI flows, accessibi
    - DevTools and session browsers diagnose and execute tasks; durable user-visible bugs need the smallest relevant Playwright or project-native check unless the user asked only for ad hoc investigation.
 5. Verify interactive HTML before done.
    - Check the thresholds a rendered page has to clear: type still readable at 200% zoom, contrast of at least 4.5:1 for body text and 3:1 for large text and chart elements, no horizontal scrolling at a 320px width, adequate hit areas, and accessible modal/focus behavior.
+   - For exploratory master-detail interfaces, drive a repeated inspect-return-inspect flow and verify that opening detail does not discard task-relevant exploration state or leave keyboard focus stranded.
    - Load the rendered output; check console errors, key elements, and interactions; and capture a screenshot.
    - When re-verifying a local file you just edited, hard-reload with the cache disabled; otherwise a stale cache shows the previous version and you verify the edit you did not make.
    - For anything rendered into a fixed frame (slides, cards, fixed-aspect canvases), check every instance for overflow and clipping at the target size — content that fits while drafting silently overflows the frame, and the clipped part is invisible to its author.

@@ -98,6 +98,12 @@
       "id": 19,
       "prompt": "Generate a hand-painted watercolor illustration of our cloud architecture for the conference poster. It should feel imaginative, not like a precise system diagram.",
       "expected_output": "Should NOT trigger technical-diagramming. The request is for a raster illustration whose visual style matters more than exact technical relationships, so image generation owns it."
+    },
+    {
+      "id": 20,
+      "prompt": "把一套跨多个子系统的业务架构做成可供评审阅读和探索的完整说明：既要一眼看到全局边界与主链路，也要能沿依赖查看具体子系统，不能把全部节点和说明挤进一张自动布局图。",
+      "behaviour_prompt": "请为评审制作一份可交互的业务架构说明。已确认的系统边界包括渠道层、接入层、交易域、履约域、数据域和外部合作方；主链路为 Web Portal → API Gateway → Order Service → Fulfillment Service，Order Service 还会异步发布事件到 Message Bus，再由 Analytics Pipeline 消费。评审既需要先理解六个边界和两条主链路，也需要按子系统查看职责、依赖与证据来源。请决定内容层次、图的语义模型和交互呈现方式，并说明如何验证成品。",
+      "expected_output": "Should trigger technical-diagramming. The result should model the confirmed boundaries, directions, and asynchronous handoff without inventing topology, while using reader-facing-writing when available to preserve the reviewer's overview-to-detail reading path. It should separate a legible global overview, dependency exploration, and subsystem detail instead of forcing every fact into one dense auto-layout graph, choose geometry from semantic needs rather than a fixed node threshold or preferred library, and use frontend-verification for the built interactive surface when available."
     }
   ]
 }

@@ -110,6 +110,12 @@
       "id": 22,
       "prompt": "从仓库代码和配置画一张部署拓扑图,把节点、边界、调用方向和同步异步关系建模清楚。",
       "expected_output": "Should NOT trigger frontend-verification. The task is to model and author the technical diagram itself, with no built browser surface or UI verification decision; that work belongs to technical-diagramming."
+    },
+    {
+      "id": 23,
+      "prompt": "这份交互式架构探索页已经做好了：主视图可以缩放、筛选和选择节点，右侧抽屉展示节点详情。请验证连续查看多个节点时不会丢掉刚才的探索位置，也不会把键盘焦点留在已经关闭的抽屉里。",
+      "behaviour_prompt": "请验收一份已经构建完成的交互式架构探索页。主视图支持平移和缩放，路径筛选器可只显示 payment 链路，下方关系矩阵可以独立滚动；点击节点会在右侧打开详情抽屉，Escape 或关闭按钮会返回主视图。请设计并执行能够支持交付结论的浏览器验收流程，重点覆盖用户先调整视图、筛选并滚动矩阵，再查看 API Gateway 详情、返回、继续查看 Message Bus 详情的真实使用路径。",
+      "expected_output": "Should trigger frontend-verification. The result should drive a repeated inspect-return-inspect path rather than accept one opened drawer or a static screenshot. It should verify that task-relevant zoom, pan, filter, matrix scroll, and selection context survive opening and closing detail as appropriate, and that focus enters the detail surface and returns to a meaningful control instead of remaining in a closed drawer. It should report which states were exercised and avoid treating a single scroll-position check as proof of the whole exploration flow."
     }
   ]
 }

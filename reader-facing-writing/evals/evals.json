@@ -195,6 +195,12 @@
       "id": 38,
       "prompt": "这份故障切换手册我自己通读了一遍没发现问题,可以在评审结论里写‘已证明值班同学一定能看懂并正确执行’吗?还没有请值班同学试跑。",
       "expected_output": "Should trigger reader-facing-writing. The answer should reject the claim that an author-side reread proves human comprehension or correct execution. For this operational document, it should recommend an uncoached dry run by a representative on-call operator when feasible; until then, the review must state that human comprehension and execution were not validated, while still using author-side entry-point, findability, stop, recovery, and done-check reviews to reduce likely defects."
+    },
+    {
+      "id": 39,
+      "prompt": "根据组件登记表和一份同步过来的概览稿写业务架构报告。两边的系统数量对不上，概览稿还写了登记表里没有证据的性能提升和自动容灾能力；请先把事实口径核准再组织成文。",
+      "behaviour_prompt": "请整理一份给架构评审阅读的业务架构报告。主记录的组件登记表列出 6 个已交付组件：Web Portal、API Gateway、Order Service、Fulfillment Service、Message Bus、Analytics Pipeline；另有 Fraud Scoring 标记为 proposed。同步概览稿写着“现有 7 个核心系统已全部上线，端到端时延下降 40%，并已实现全自动跨区容灾”，但没有给出测量记录、运行证据或其他来源。请核准数量、成熟度和能力口径，再给出报告的开篇结论与内容结构。",
+      "expected_output": "Should trigger reader-facing-writing. The result should recompute the delivered count from the primary registry, keep the proposed Fraud Scoring item distinct, and treat the synchronized overview as a secondary claim rather than copying its total. It should reject or explicitly mark the unsupported 40% latency and automatic cross-region failover claims as unverified, distinguish recorded facts, derived counts, and unknown runtime evidence, and organize the report around the verified reader-facing conclusion instead of filling gaps by plausibility."
     }
   ]
 }
