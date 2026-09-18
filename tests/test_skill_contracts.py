@@ -23,7 +23,6 @@ RULE_DERIVED_SKILLS = {
 }
 RETIRED_SKILLS = {
     "legacy-component-skinning",
-    "legacy-component-skinning",
 }
 # `agents/` carries exactly one file, and it is the only one a runtime reads.
 # `agents/openai.yaml` is Codex's real convention (its own bundled skills ship
