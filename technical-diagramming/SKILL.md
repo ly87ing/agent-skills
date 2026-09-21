@@ -35,9 +35,11 @@ reader-facing material, accept the reader question, need, and surrounding argume
      the selected model and when choosing automatic or authored geometry.
 3. Author an editable source of truth.
    - Prefer the project's existing diagram format and renderer when one is maintained.
-     For a simple portable graph, Mermaid may be sufficient. Use explicit SVG/HTML
-     geometry when position, coexisting states, nested boundaries, or several edge
-     classes carry meaning that auto-layout cannot preserve.
+     For a simple portable graph in Markdown that the host renders natively, Mermaid
+     may be sufficient. Use explicit SVG/HTML geometry when position, coexisting
+     states, nested boundaries, or several edge classes carry meaning that auto-layout
+     cannot preserve, and for any HTML page or deck deliverable, where a pasted
+     Mermaid render reads as auto-layout quality next to authored geometry.
    - Make one primary reading path obvious. Attach exceptions and supporting detail
      to the nearest relevant element instead of turning every fact into another node
      or edge.
