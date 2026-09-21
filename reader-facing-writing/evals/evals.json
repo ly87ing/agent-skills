@@ -9,13 +9,14 @@
     {
       "id": 2,
       "prompt": "Help me write a decision brief for my boss on whether to take on this project.",
-      "expected_output": "Should trigger reader-facing-writing. The result should first determine the decision the reader needs to make, put the key points up front, organize it in a scannable structure, use plain wording and consistent terminology, and review it from the target reader's perspective."
+      "expected_output": "Should trigger reader-facing-writing. The result should first determine the decision the reader needs to make, lead with the recommendation or the decision framing, and fit on one page (roughly 400 words or fewer) without an audience declaration, background section, or summary wrapper. The options should be compared on the same fields in an aligned table (start date, staffing, margin, overrun risk) rather than narrated, the source figures (180k, 22%, 5%, 30%, October 6, October 20, Friday) should be kept verbatim, and the brief should state what it asks of the boss by Friday without inventing facts the notes do not carry.",
+      "behaviour_prompt": "Help me write a decision brief for my boss on whether to take on this project. What I know: the client is a regional logistics company; the project is a 4-month rebuild of their dispatch tool; fixed price 180k; they want a start on October 6; our two backend engineers who know the domain are on another contract until October 20; the last fixed-price project with a similar scope overran by 30%; the client has said they will go to another vendor if we cannot start in October; margin at the quoted price is 22% if we hit the estimate and about 5% if we overrun like last time. My boss decides by Friday."
     },
     {
       "id": 3,
       "prompt": "Turn this iteration's to-do items into an action-plan document for the team, with an owner, a date, and a done-criterion for each item.",
       "behaviour_prompt": "Turn this iteration's to-do items into an action-plan document for the team.\n\nThe items, as they came out of planning: refactor the token-refresh path in the login module; switch analytics reporting from synchronous to asynchronous; add pagination tests for the order list; evaluate a replacement log-collection pipeline; fix avatar upload failing on iOS. Ren is on the login and analytics work, Sam has the order list, and nobody has picked up the last two yet. We ship at the end of the month.",
-      "expected_output": "Should trigger reader-facing-writing. The result should give each action item a single owner and a verb-first action, plus a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion, and must not state a future/desired state as the current state."
+      "expected_output": "Should trigger reader-facing-writing. The result should give each action item a single owner and a verb-first action, plus a time (an absolute date if already committed, otherwise a specific week/phase) and a completion criterion."
     },
     {
       "id": 4,
@@ -45,7 +46,8 @@
     {
       "id": 9,
       "prompt": "Make a slide deck introducing what Anthropic and Claude do, for our division directors and R&D team who mostly haven't used it. They keep saying they can't follow the current draft.",
-      "expected_output": "Should trigger reader-facing-writing. Because the audience is new to the subject, the deck must open by establishing what Anthropic/Claude actually is in the plainest terms before any implications or takeaways — a fresh audience cannot absorb what it means for them until they know what it is. It should be built for a room (large type, content filling the screen, jump navigation), carry only necessary content with redundancy cut so it flows front-to-back, use motion only where it aids comprehension (progressive reveal / process build) rather than as decoration, and be verified as understandable to someone who has not seen it before."
+      "expected_output": "Should trigger reader-facing-writing. Because the audience is new to the subject, the deck must open by establishing what Anthropic and Claude actually are in the plainest terms before any implications, benchmarks, or integration detail — a fresh audience cannot absorb what it means for them until they know what it is. Model IDs, pricing tiers, MCP, and the Agent SDK should be cut or demoted from the main slides, each remaining slide should carry one claim as its headline, and the outline should not restate the same point on several slides.",
+      "behaviour_prompt": "Make a slide deck introducing what Anthropic and Claude do, for our division directors and R&D team who mostly have not used any AI assistant. Here is the current draft outline, which people said was hard to follow:\n\n1. Why AI matters for R&D now\n2. Claude model family: Fable 5.1, Opus 5, Sonnet 5, Haiku 4.5, with context window sizes and pricing tiers\n3. Agentic workflows and tool use\n4. MCP integration and the Agent SDK\n5. Benchmarks: SWE-bench and other coding results\n6. Safety: constitutional AI, responsible scaling policy\n7. How our R&D team could use it\n8. Q&A\n\nPlease restructure it into a deck outline with one claim per slide and what goes on each slide."
     },
     {
       "id": 10,
@@ -61,7 +63,8 @@
     {
       "id": 12,
       "prompt": "把这份排查记录整理成一页纸的复盘报告,领导要看,重点讲清楚根因和后续动作。",
-      "expected_output": "Should trigger reader-facing-writing from Chinese-language phrasing. The result should fix the reader (leadership) and the decision, lead with the takeaway (root cause and follow-up actions), keep source facts intact while compressing, and give follow-up items owners and dates."
+      "expected_output": "Should trigger reader-facing-writing from Chinese-language phrasing. The result should fit on one page, open with the impact and the root cause (the upgrade silently changed the default thread count from 16 to 4, and the change ticket did not record it) rather than with a background or audience section, keep the source figures verbatim (36 minutes, about 1,200 failed exports, 23 complaints, the timestamps), present the follow-up actions with their owners and dates in a table or parallel list, keep the undecided compensation question visibly open instead of inventing a decision, and put the minute-by-minute timeline in a table or a detail layer rather than as the opening narrative.",
+      "behaviour_prompt": "把下面这份排查记录整理成一页纸的复盘报告,领导要看,重点讲清楚根因和后续动作。\n\n排查记录:9月12日 10:05 监控告警,订单导出接口错误率升到 40%。10:12 值班同学发现导出任务全部堆在队列里。10:20 查到导出服务上周五升级后,默认线程数从 16 改成了 4。10:35 把线程数临时改回 16,10:41 错误率回到 0。影响时间 36 分钟,期间约 1,200 次导出失败,客服收到 23 个投诉。升级变更单里没有写线程数的改动。后续:配置项要加进变更检查清单(负责人 张三,9月20日前);导出队列积压要加告警(负责人 李四,9月30日前);是否给受影响客户补偿还没定。"
     },
     {
       "id": 13,
@@ -201,6 +204,36 @@
       "prompt": "根据组件登记表和一份同步过来的概览稿写业务架构报告。两边的系统数量对不上，概览稿还写了登记表里没有证据的性能提升和自动容灾能力；请先把事实口径核准再组织成文。",
       "behaviour_prompt": "请整理一份给架构评审阅读的业务架构报告。主记录的组件登记表列出 6 个已交付组件：Web Portal、API Gateway、Order Service、Fulfillment Service、Message Bus、Analytics Pipeline；另有 Fraud Scoring 标记为 proposed。同步概览稿写着“现有 7 个核心系统已全部上线，端到端时延下降 40%，并已实现全自动跨区容灾”，但没有给出测量记录、运行证据或其他来源。请核准数量、成熟度和能力口径，再给出报告的开篇结论与内容结构。",
       "expected_output": "Should trigger reader-facing-writing. The result should recompute the delivered count from the primary registry, keep the proposed Fraud Scoring item distinct, and treat the synchronized overview as a secondary claim rather than copying its total. It should reject or explicitly mark the unsupported 40% latency and automatic cross-region failover claims as unverified, distinguish recorded facts, derived counts, and unknown runtime evidence, and organize the report around the verified reader-facing conclusion instead of filling gaps by plausibility."
+    },
+    {
+      "id": 40,
+      "prompt": "帮我给评审写一份设计文档,讲清楚我们把同步的图片处理改成异步队列的方案。",
+      "behaviour_prompt": "帮我给评审写一份设计文档,讲清楚我们把同步的图片处理改成异步队列的方案。已知:现在上传接口在请求内同步做缩略图和水印,平均 2.8 秒,p99 9 秒,高峰期上传网关超时;方案是上传接口只落原图并写一条消息到队列,由 3 个 worker 消费做处理,处理完更新图片状态,前端轮询状态;备选是把处理放到上传服务里的后台线程(不加队列),放弃的原因是服务重启会丢任务;非目标:不改前端的上传 UI,不做视频;风险:队列积压时用户看到的处理中状态会变长,计划加积压告警;灰度按租户放量。",
+      "expected_output": "Should trigger reader-facing-writing. The result should be a short design doc, roughly one to three pages, ordered as context and scope, goals and non-goals, the design, alternatives, risks, and rollout, with a diagram of the new flow (upload, queue, workers, status update, polling) placed before the detailed design rather than describing the flow only in prose. It should keep the source figures verbatim (2.8 seconds, p99 9 seconds, 3 workers), record the rejected background-thread alternative with its stated reason (task loss on restart), state the non-goals and the backlog risk with its mitigation, and not pad with sections the material cannot fill, pasted code, or a summary that repeats the design."
+    },
+    {
+      "id": 41,
+      "prompt": "把这份迭代计划整理成行动清单发给团队，有几项还没人认领，日期也没定。",
+      "behaviour_prompt": "Turn this iteration's to-do items into an action-plan document for the team.\n\nThe items, as they came out of planning: refactor the token-refresh path in the login module; switch analytics reporting from synchronous to asynchronous; add pagination tests for the order list; evaluate a replacement log-collection pipeline; fix avatar upload failing on iOS. Ren is on the login and analytics work, Sam has the order list, and nobody has picked up the last two yet. We ship at the end of the month.\n\nNote from planning: nobody has claimed the log-collection evaluation or the avatar upload fix yet, and no date was set for them.",
+      "expected_output": "Should trigger reader-facing-writing. The result should keep the unclaimed items visibly open with the owner and date marked TBD rather than assigning a plausible person or date, keep exploratory or undecided items separate from committed ones, and must not present a desired future state (for example async reporting being live) as already true."
+    },
+    {
+      "id": 42,
+      "prompt": "这个 deck 要在大会议室里投影讲，后排也要看清，帮我看看版式和动画怎么定。",
+      "behaviour_prompt": "这个 deck 要在大会议室里投影讲,后排也要看清。现在的稿子是 16 页,每页一个标题加 6-8 条要点,字号 18,页面四周留了很宽的白边,每页都有飞入动画,幻灯片之间只能顺序翻页。请告诉我版式、字号、动画和导航应该怎么改,不用重写内容。",
+      "expected_output": "Should trigger reader-facing-writing. The result should size the deck for a room — large type, content filling the screen with minimal empty margins — replace the bullet lists with one claim per slide as the headline and the visual that proves it beneath, add jump navigation or anchored sections a presenter can move between rather than only sequential paging, and restrict motion to a progressive reveal or process build that aids comprehension, removing decorative fly-in animation."
+    },
+    {
+      "id": 43,
+      "prompt": "把这份复盘改简练点，领导只看一页，现在读起来全是套话。",
+      "behaviour_prompt": "把下面这份复盘改简练点,领导只看一页,现在读起来全是套话,事实和数字不要改。\n\n「本文档面向公司管理层,旨在对 9 月 3 日发生的支付回调故障进行全面复盘与总结。\n\n一、背景\n随着业务的持续发展,支付系统的稳定性对公司整体运营的重要性日益凸显。9 月 3 日 15:20,监控系统发出告警,支付回调接口错误率上升至 35%,对用户体验造成了一定程度的影响。\n\n二、处理过程\n值班同学在收到告警后第一时间进行了响应,经过深入细致的排查,于 15:47 定位到问题原因在于回调服务当日发布的版本中,对签名校验逻辑进行了调整,导致部分商户的回调请求被拒绝。团队迅速采取了回滚操作,于 15:52 完成回滚,错误率恢复正常。本次故障共计影响 32 分钟,期间约 4,600 笔回调失败,涉及商户 18 家。\n\n三、根因分析\n经过分析,本次故障的根本原因是签名校验逻辑变更未覆盖旧版签名格式,同时该变更未经过灰度验证即全量发布。\n\n四、后续改进措施\n为避免类似问题再次发生,团队将从以下几个方面进行改进:1. 回调服务的发布必须经过灰度(负责人:王五,9 月 15 日前完成);2. 为签名校验补充旧格式的自动化用例(负责人:赵六,9 月 20 日前完成);3. 是否对受影响商户进行补偿,待商务侧确认。\n\n五、总结\n通过本次故障的复盘,团队深刻认识到发布流程规范的重要性,将持续提升系统稳定性,为业务发展保驾护航。」",
+      "expected_output": "Should trigger reader-facing-writing. The result should fit on one page and open with the impact and the root cause (the signature-check change did not cover the old format and was released without a canary), drop the audience declaration, the growth-narrative background, and the closing pledge paragraph, keep the source figures verbatim (15:20, 15:47, 15:52, 32 minutes, about 4,600 failed callbacks, 18 merchants), present the two follow-up actions with their owners and dates in a table or parallel list, keep the merchant-compensation question visibly open, and write Chinese sentences with a concrete subject and direct verb instead of the source's ornamental four-character phrases about diligent investigation and safeguarding the business."
+    },
+    {
+      "id": 44,
+      "prompt": "给我们这个内部命令行工具写个 README，现在只有一段功能介绍，同事装了都不知道怎么用。",
+      "behaviour_prompt": "给我们这个内部命令行工具写个 README,现在只有一段功能介绍,同事装了都不知道怎么用。已知:工具名 logpull,用途是从堡垒机拉取指定服务的日志到本地;安装方式 pip install logpull --index-url <内部源>;最常用命令 logpull fetch --service order-api --since 2h,拉取后文件存到 ./logs/<service>/;需要先设置环境变量 LOGPULL_TOKEN;支持的其他子命令有 list(列出可拉取的服务)和 tail(实时跟随);常见报错 401 表示 token 过期。请写出 README 正文。",
+      "expected_output": "Should trigger reader-facing-writing. The README should open with one line saying what logpull does, give an install and first-run path that works as pasted (set LOGPULL_TOKEN, install from the internal index, run the fetch example), show one minimal example with where the output lands, and keep list, tail, and the 401 error as short entries or a table rather than a feature narrative. It should not add an architecture section, a mission statement, a changelog, or sections the material cannot fill, and should not invent options or behavior beyond the facts given."
     }
   ]
 }

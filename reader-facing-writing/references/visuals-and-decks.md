@@ -16,6 +16,25 @@ semantic checks; this skill owns why the reader needs the diagram, the question 
 and the page around it. Where it is unavailable, the diagram rules below are the minimum
 fallback rather than an unowned gap.
 
+## Medium Capability
+
+Choose the visual form the target medium can actually render, and give every moving form a
+static fallback the reader can use when motion is blocked, printed, or unwanted.
+
+| Medium | Renders | Does not render | Use motion for |
+| --- | --- | --- | --- |
+| Markdown on a code host (README, wiki, MR) | Static images, SVG, animated GIF, collapsible details, Mermaid where the host renders it; a host-uploaded video linked bare on its own line plays inline on GitHub and GitLab | HTML video tags and iframes (sanitized); elsewhere link a thumbnail to hosted video | A silent 2-4 step interaction that must play inline |
+| HTML page or interactive document | All of the above, plus video with controls, step-by-step reveal, scroll-driven panels, click-to-open evidence, runnable examples | Nothing, but every layer adds page weight and a verification surface | A multi-step flow the reader paces themselves |
+| Deck presented live | Static figures, per-slide builds, embedded video | Nothing the presenter cannot start and stop | Revealing one layer of a figure at a time |
+| PDF, print, chat paste | Static only | Any motion | Nothing; ship the static frame |
+
+- In an HTML page, author the diagram geometry (fixed viewBox, colors through variables so both themes work, states as groups switched by one attribute) rather than pasting a Mermaid render, whose auto-layout, default fonts, and clipped CJK labels read as an afterthought; `SKILL.md` holds the per-medium rule.
+- One state or one relationship is a static image or diagram, whatever the medium. Motion is for a process whose sequence is itself the content; do not animate to decorate a page that can carry motion.
+- An inline GIF for a code host stays short and light: 5-15 seconds, 10-15 fps, 600-800 px wide, under about 5 MB, first and last frames matching so the loop does not jump. Record terminal demos from a scripted source (a tape or cast file kept in the repository) so the clip can be regenerated when the product changes.
+- Narration, more than 15-20 seconds, or scrubbing means video with controls and captions, not a GIF; on a code host, link it from a thumbnail.
+- An animation that starts automatically, runs longer than 5 seconds, and sits beside other content must be pausable, stoppable, or hideable (WCAG 2.2.2). A looping GIF meets all three and a README offers no pause control, so wrap it in a collapsible details block so it plays only when opened, make it play once, or link it as video with controls; a static screenshot beside it is a fallback for readers who block motion, not compliance.
+- Motion serves feedback, hierarchy, spatial relationship, or state change, never ornament; keep it short and let the reader stop it.
+
 ## Designing And Verifying Visuals
 
 - For material that will be presented or demonstrated rather than read alone, show before telling: replace prose that asserts a claim with the artifact that demonstrates it — a screenshot, a diagram, a recording, a real case — and never state a belief or conclusion as a bare line of text when an instance would let the reader reach it themselves. Prefer a capture of the real thing over a drawing of it.
@@ -27,8 +46,8 @@ fallback rather than an unowned gap.
 - Treat sensitive content as a mandatory exclusion, not an editing preference. When available, let `artifact-hygiene` own the full-span frame scan and redaction; use its result to keep every occurrence out of the reader-facing cut. Trust frames over timestamps, since a UI renders streamed content earlier than the log or transcript says it completed.
 - Make content legibility the bar; keep decorative styling secondary, and use color only when it encodes meaning (category, severity, diff, or the one element the takeaway names), not as ornament.
 - When color carries meaning, pair it with a label, shape, or pattern so it reads without color.
-- Match the visual to its information density: never spend a large diagram on a few facts — one or two numbers carry best as a sentence or a single large figure, precise values the reader will look up as a table, and a chart earns its place only when the message is the shape of the data (trend, comparison, part-to-whole, distribution, correlation), not exact values.
-- In the fallback path, match the diagram type to the content: sequence diagram for interaction over time, flowchart or node graph for process and causal chains, a tree for hierarchy — and reserve mind maps for exploratory overviews, not formal structure.
+- Match the visual to its information density. Structure, flow, sequence, hierarchy, comparison, and change over time get a figure by default (the form table in `SKILL.md`); the exceptions are the sparse cases: never spend a large diagram on a few facts — one or two numbers carry best as a sentence or a single large figure, precise values the reader will look up as a table, and a chart earns its place only when the message is the shape of the data (trend, comparison, part-to-whole, distribution, correlation), not exact values.
+- In the fallback path, match the diagram type to the content: sequence diagram for interaction over time, flowchart or node graph for process and causal chains, a tree for hierarchy.
 - Encode values by position or length before angle, area, or color; avoid pie, 3D, and dual-axis charts.
 - Pick the chart by the relationship the claim states — numeric change over time → line; comparison or ranking on one measure → bars sorted by value, not alphabet; part-to-whole → stacked bar; distribution → histogram or box plot; correlation → scatter — and when many series would cross into spaghetti, split them into small multiples on one shared scale. A chronology of named events or milestones is a timeline rather than a line chart, and several options compared on repeated fields belong in an aligned table rather than a bar chart.
 - Erase chart furniture that carries no data (default gridlines, heavy borders, backgrounds, redundant labels) before styling what remains, and aim attention the way the color rule above does: mute context series to gray and spend one accent color on the element the takeaway title names.

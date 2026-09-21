@@ -5,84 +5,107 @@ description: Write or revise reader-facing documents, plans, reports, proposals,
 
 # Reader-facing Writing
 
+A reader-facing artifact has one job, a page budget, and a figure wherever the content has a shape. First drafts run two to three times too long because they answer every question instead of the reader's; the skeletons below set the size, and the closing pass deletes down to it.
+
 ## Workflow
 
-1. Set the reader's task before drafting.
-   - Before drafting, determine what the reader already knows, whether they need to decide, do, find, or understand something, what outcome the material should enable, and when or where they will read it.
-   - Use those choices to govern depth, terminology, form, and omission. Do not automatically label the audience, purpose, or writing process in the artifact; the visible opening starts with what the reader came for, while required formal metadata stays where its convention expects it. Keep any scope that changes how a claim or its evidence must be interpreted — environment, period, population, definition, or excluded cases — visible beside that claim instead of hiding it as writing metadata.
-   - Give each artifact one main job and split by job, not topic count. A decision brief that grows a reference inventory, or a how-to that grows design rationale, first demotes the second job to a note and becomes a separate linked artifact only when that layer can stand alone.
-   - Fit the main path to the reading occasion: minutes of linear reading for a brief, one direct hit for a lookup, an executable path for an operator. For several occasions, optimize for the most frequent and demote the rest rather than stretching every reading path.
-   - Scope content to what the reader owns and must act on; name a boundary around mechanics owned by another layer instead of exposing internals the reader cannot change.
-   - Calibrate the opening to familiarity. Lead a familiar audience with what the material means for them; first establish what an unfamiliar subject is for a new audience, then explain its implications.
-   - For a large subjective rewrite with no target tone, structure, or ordering, show a compact outline or 2-3 concrete options before executing. Proceed directly for small edits or explicit directions.
-   - In a persuasive brief to domain experts, state facts, capabilities, and evidence without instructing them how to do work they own. A doing or teaching artifact should instruct its operator directly. Address a mixed audience as one room, and state the case on its own terms rather than against a named competitor.
-   - Preserve a structure, framework, or correction list the user supplied across every revision. Treat requested prominence as a delivery contract: a section, page, or demo is not satisfied by a passing mention, footnote, or presenter note. If either choice conflicts with the artifact's job, propose the change instead of silently overriding it.
-   - Match scope and length to verifiable material: research accessible public gaps, ask only for user-owned facts, or narrow the deliverable; never fill a quota with repetition, promoted inference, or invented examples.
-2. Preserve source truth.
-   - Keep the source framework when condensing; reword a layer, do not delete it.
-   - Use source wording and figures for uncertain terms, numbers, names, owners, and dates.
-   - Keep direct observation, source self-report, inference, and unknowns distinct; never turn a screenshot, result, or second-hand account into an action or firsthand experience the source did not establish.
-   - Mark unknown values as TBD or cut them; do not invent to look complete. An internal uncertainty marker belongs in a working draft — before an artifact reaches an audience that will only view it, verify the value or remove the line.
-   - Never assert a capability, maturity, or track record of your own side that you inferred from artifacts or plausibility — source every first-person claim from the user or a primary record, and default to the conservative reading: an internal pilot is not a product, one good result is not a routine one, and a practice with no recorded start is not "for years". These are the hardest claims for a reader to check and the most expensive to get wrong, because the room usually knows.
-   - When one list, table, or section mixes what is delivered with what is planned, tag each item's maturity inline (shipped / in progress / proposed) — an aspiration sitting beside a shipped item is silently promoted to done by the company it keeps.
-   - State each claim at the scope its evidence supports, and avoid universal quantifiers ("all", "everyone", "nobody", "never") unless they are literally true — a knowledgeable reader falsifies an absolute with one counterexample and discards the surrounding argument with it.
-   - When reporting an improvement, give the local gain and the end-to-end gain it actually produces, and explain why they differ — a step-level speedup presented as the system-level outcome sets an expectation the system cannot meet.
-   - Preserving source truth is not adopting the source's framing: when the source was written for a different audience or kind of organization, keep its verified facts but re-fit its stance, scope, and examples to what is true for your reader.
-   - A number only supports a claim if it measures that claim over a matching period and population — a baseline gathered before the change you are crediting cannot show that change's effect. Cut such data or reframe the claim, and never add figures just to look rigorous.
-3. Shape the information before writing prose.
-   - Choose the lightest form that exposes the relationship the reader must perceive. Visual does not mean decorative image: position, grouping, alignment, whitespace, tables, and diagrams are all ways to make structure visible.
+1. Fix the reader and the job. Decide who reads, what they already know, and whether they must decide, do, look up, or understand. One artifact, one job; a second job becomes a note or a linked artifact. Do not label the audience, purpose, or writing process in the artifact: no "for the on-call lead" in a title, no background section about the document itself (context about the system is content and stays); the opening starts with what the reader came for. Preserve a structure, framework, or correction list the user supplied, and treat requested prominence as a delivery contract, not a footnote. For a large subjective rewrite with no target tone, structure, or ordering, show a compact outline or 2-3 options before executing.
+2. Pick the skeleton and its budget from the table below. The budget is a ceiling for the main path; everything the main path does not need goes to one named detail layer (appendix, linked page, click-to-open), never to a second overview.
+3. Draft each section as one screen: a claim-led heading, the figure or table that carries the relationship, at most five sentences that argue from it, and a link to detail. Choose the figure with the form table, and its rendering by the target medium: Markdown on a code host renders static images, Mermaid, and GIF; an HTML page or deck can also carry video, step-by-step reveal, and click-to-open evidence, with a static fallback for each. Read [references/visuals-and-decks.md](references/visuals-and-decks.md) when the artifact carries a chart, diagram, screenshot, before/after pair, recording, GIF, deck, or HTML page.
+4. Preserve source truth. Keep the source framework when condensing; use source wording for numbers, names, owners, and dates; keep observation, self-report, inference, and unknowns distinct, and mark unknowns TBD or cut them (a TBD is resolved or removed before a view-only audience sees it). When shipped and planned items share a list, tag maturity inline. Keep the scope that qualifies a claim (environment, period, population, excluded cases) beside it. Never assert a capability or track record of your own side you only inferred, and never fill a length quota with invented detail. Read [references/shaping-checklist.md](references/shaping-checklist.md) when sources conflict, mix delivered with planned, or were written for a different audience.
+5. Write plain sentences with [references/prose-style.md](references/prose-style.md): active voice, one idea per sentence, no announcements, no meta-commentary, terms calibrated to the reader.
+6. Delete to budget with [references/revision-pass.md](references/revision-pass.md): drop every sentence whose removal loses no fact and every visual whose removal makes no relationship harder to see, then run the entry-point, findability, and doing-path checks. The delete pass never removes prerequisites, commands, decision points, rollback, or done checks from a how-to, and leaves bold only on the few decisions, dates, or numbers a skimmer must catch. Report what stays unverified; an author reread never proves a human understood it.
 
-     | Information the reader needs | Default form |
-     | --- | --- |
-     | One conclusion or a few facts | A sentence or a compact figure |
-     | Exact values or repeated fields across items | A table |
-     | Several options compared on the same fields | An aligned comparison table |
-     | Ranking on one measure | Bars sorted by value |
-     | Named events or milestones over time | A timeline |
-     | Numeric change over time | A line chart |
-     | Interaction over time | A sequence diagram |
-     | Branched process, decision path, or proven causal chain | A flowchart or node graph |
-     | Parent-child structure | A tree |
-     | Proof that something occurred | A real screenshot, record, or result |
+## Skeletons and budgets
 
-   - A visual earns its place only when it reduces the work of reconstructing a relationship from prose. Do not spend a chart on one or two numbers, turn lookup data into a diagram, or add imagery merely because people scan visually.
-   - A table or diagram replaces the prose for that relationship. Give it a takeaway and the context needed to interpret it; do not narrate every cell, node, or arrow again.
-   - Arrows, sequence, spatial grouping, size, and color all assert relationships. Use them only when the source proves the implied sequence, causation, grouping, magnitude, or status.
-   - When a technical diagram is warranted and `technical-diagramming` is available, keep the reader question, reason for the diagram, takeaway, and surrounding material here; let that skill own the technical model, geometry, diagram artifact, and diagram-specific semantic checks.
-   - If the artifact contains or needs a chart, diagram, screenshot, before/after pair, recording, deck, dashboard, or HTML page, read [references/visuals-and-decks.md](references/visuals-and-decks.md) before choosing or designing it.
-4. Build the visible reading path.
-   - Keep structure proportional to content. A short answer or notice that one or two paragraphs can carry gets no automatic title, audience declaration, background section, agenda, summary, or next-steps wrapper.
-   - Treat the first screen as the reader's entry point, not a template. For deciding or understanding, it exposes the conclusion, why it matters now, and only the context needed to interpret it; for doing, the trigger or prerequisite and first action; for lookup, the search terms or map. A reader who stops there should still know the point and where needed detail lives.
-   - Demote, don't delete: cut what no reader needs, and move material only some readers need — inventories, per-case tables, raw evidence, or implementer detail — to one named detail layer that the main path cites with its one-line conclusion. Keep prerequisites, commands, decision points, rollback, and done checks in the main path of a how-to. Stop at the main path plus one cited detail layer so the reader does not dig through overviews of overviews.
-   - Establish hierarchy through position, size, proximity, alignment, and whitespace before adding decoration. Keep peer items visually parallel, with the same fields in the same order, and sequence them on one logic — time, structure, or importance.
-   - Match headings to the job: claim-led for deciding and understanding, action- or outcome-led for doing, and searchable terms for lookup. In briefs and reports, lead each section and paragraph with its takeaway; in every form, front-load the words that distinguish one part from the next.
-   - Break a screen-long wall at its idea boundaries into short paragraphs, a list, a table, or an earned visual. Keep table cells to values the reader compares; a cell that grows into a paragraph belongs in prose or the detail layer.
-   - Budget emphasis: bold or accent only the few decisions, deadlines, states, or numbers a skimmer must catch. Structural emphasis and emphasis the user deliberately supplied sit outside this budget; preserve them unless the user agrees to change them. When most elements are emphasized, none of them rank.
-   - Layer a document set the same way: one overview carries the shared conclusion and maps each file to the question it answers; each member opens with its own takeaway and place in that map.
-   - State what every figure counts and its basis (period, population, definition). Aggregate raw counts into categories that carry the insight, or cut numbers that do not.
-   - Give an unfamiliar named entity a plain one-line identity on first appearance and the evidence that makes it relevant when it supports a judgment. Do not redefine tools the audience already knows.
-   - State the artifact's organizing logic in one sentence and place every section by it. Each section's body answers the question its heading or takeaway raises. Make announced counts match the body one-to-one, keep parts non-overlapping and collectively complete, and put each fact or caveat in one place with named cross-references.
-   - For a multi-topic brief, use the first screen as its map: name the topics, give each a matching section, and close with committed next actions per responsible role where the material supports them.
-5. Keep the prose plain.
-   - Read [references/prose-style.md](references/prose-style.md) and apply it while drafting sentences: it carries the wording rules — active voice, one idea per sentence, padding and Europeanized-Chinese patterns cut as classes, meta-commentary swept, terms calibrated to the reader. Short is a limit on wording, not on substance.
-6. For committed plans and action items, include time and done criteria.
-   - Give every committed action item a single owner, a concrete verb-first action, and a due date.
-   - Use an absolute date when committed; otherwise use a concrete week or phase.
-   - Keep exploratory options, open decisions, and unknown owners visibly separate; mark them TBD instead of inventing commitments.
-   - Never present future or aspirational state as current.
-7. Test comprehension before done.
-   - Read [references/revision-pass.md](references/revision-pass.md) and run it once a full draft exists. Test whether the first view can be paraphrased correctly, one real fact can be found without scanning everything, and a doing artifact lets its operator identify when to start, what to do, when to stop, how to recover, and what proves completion; test whether every visual makes a relationship easier to understand, then run the factual, delete-only, dependency, and mirrored-artifact sweeps.
-   - Keep author-side checks and human validation as separate evidence. When asked whether comprehension or execution has been proved, answer in two parts: state what remains unvalidated and recommend an uncoached test with a representative reader when feasible; then name all five author-side checks that can still reduce risk now — entry point, findability, stop, recovery, and done. Do not omit the second part merely because the narrow question can be answered without it.
+Pick by the reader's job. Sections are in order; a section the material cannot fill is dropped, not padded. One page means about 400-500 words of Markdown or one screen without scrolling.
 
-## Rendered visuals and interactive artifacts
+| Artifact | Skeleton (in order) | Main-path ceiling | Default figure |
+| --- | --- | --- | --- |
+| Decision brief | Recommendation and why now; options on the same fields; what is asked of the reader | 1 page | Comparison table |
+| Incident review | Impact in one line; root cause and contributing factors; what was done; what remains, with owner and date; timeline in the detail layer | 1 page | Timeline table |
+| Design doc / RFC | Context and scope; goals and non-goals; design; alternatives and their trade-offs; cross-cutting concerns; rollout; open questions | 3 pages; 1 page for an incremental change | Context diagram when the change touches more than one component; a sequence diagram per flow that crosses a boundary |
+| How-to / runbook | Trigger; prerequisites; numbered steps, each with its check; stop, rollback, and whom to escalate to; done criterion | 12 steps; split beyond that | Screenshot of the decisive state, or a state diagram |
+| Action plan / checklist | One item per line: verb-first action, single owner, absolute date or concrete phase, done criterion; items parallel and in one order (time, structure, or importance); open items marked TBD, never invented | One screen | Table |
+| Status report | Takeaway; blockers and risks; each number with what it counts and its basis; what changes for the reader; next actions with owner and date | 1 page | None; a table when several metrics recur, sorted bars only for a ranking |
+| Multi-topic brief or meeting pre-read | Agenda naming each topic; one section per topic; next actions per responsible role | 1 screen per topic | One figure per topic where the topic has a shape |
+| README | What it is in one line; quick start that works as pasted; one minimal example; links to the deeper docs | 1 screen before the first link | Screenshot or GIF of the result, only when the result is visual |
+| Release notes | What changed for the user, grouped by impact, breaking changes and required upgrade actions first; internal refactors omitted | 1 line per change | None |
+| Meeting notes | Decisions made; actions with owner and date; open questions; no transcript | 1 screen | Table |
+| Notice | The change, who is affected and who is not, when | One paragraph | None |
+| Reference / lookup, API reference | Searchable headings; signature or field, parameter table, one example, errors; no narrative | No prose beyond a lead line | Table |
+| Agent instruction file (AGENTS.md, CLAUDE.md) | Commands, paths, boundaries, hard rules | Delete test on every line | None |
 
-The reader question, need for the visual, takeaway, and surrounding content stay in this skill. When available, `technical-diagramming` owns a technical diagram's model, geometry, artifact, and semantic validation; `frontend-verification` owns browser and rendered-surface acceptance; and `artifact-hygiene` owns placement, redaction, dependency packaging, and handoff. If `technical-diagramming` is unavailable, use only the diagram fallback in [references/visuals-and-decks.md](references/visuals-and-decks.md). Do not absorb an unavailable companion's full workflow; report what remains unverified.
+A deck follows the same skeleton as its subject, one claim per slide as the headline with the proving visual beneath it; a new audience gets one slide on what the subject is before any implication.
+
+## Form by content shape
+
+The figure exists to make the content easier to understand, so the content decides. If one plain sentence carries the point, the sentence wins and no figure is added; a figure that restates a sentence is the same redundancy in a second medium. Default to a figure when the content is a structure, a flow, a sequence, a hierarchy, a comparison on the same fields, or change over time, because those shapes cost the reader more to rebuild from prose than to read from a picture. Keep to a sentence when the content is one conclusion or one or two numbers, and to a table when the reader will look values up.
+
+| Information the reader needs | Form |
+| --- | --- |
+| One conclusion or a few facts | A sentence or a single large figure |
+| Exact values or repeated fields across items | A table |
+| Several options compared on the same fields | An aligned comparison table |
+| Ranking on one measure | Bars sorted by value, labelled directly |
+| Named events or milestones over time | A timeline |
+| Numeric change over time | A line chart |
+| Interaction over time between parties | A sequence diagram |
+| Branched process, decision path, proven causal chain | A flowchart |
+| Parent-child structure | A tree, never a mind map |
+| Part of a whole | A stacked bar |
+| Distribution of many values | A histogram |
+| Components and their boundaries | A context or architecture diagram |
+| Proof that something occurred | The real screenshot, record, or result |
+
+- Title every figure with its takeaway and state its basis. Under it, write only what the figure cannot carry: the conclusion, the mechanism behind one arrow, or a caveat. A sentence that retells the arrows, rows, or steps in order is deleted, even when it feels like a courtesy to the reader.
+- An arrow, a step number, or an operator is a factual claim of sequence, causation, or arithmetic. Connect only items whose data proves that relationship; keep independent metrics separate and labelled as not comparable.
+- Draw the diagram in the form its medium renders best: Mermaid or the project's diagram format in Markdown on a code host, where the source lives beside the content; authored SVG or HTML geometry in an HTML page; native shapes in a deck. A Mermaid render pasted into an HTML page or a slide is auto-layout quality in a medium that can carry authored geometry. Keep one diagram to one question at one altitude and at most 15 nodes; split rather than crowd. Companion skills, when available, own the rest: `technical-diagramming` the technical model, geometry, and validation of a diagram; `frontend-verification` browser and rendered-surface acceptance; `artifact-hygiene` placement, redaction, packaging, and handoff. This skill owns whether the reader needs the visual, its question, and its takeaway. If a companion is unavailable, use only the fallback in [references/visuals-and-decks.md](references/visuals-and-decks.md) and report what stays unverified.
+- Two or three counts with no series, distribution, or comparison stay as a sentence or as large directly labelled figures with their basis, even when the request asks to make them visual; a proportion bar or card layout for two numbers is a chart the data has not earned, and building it as HTML is the same chart at a higher cost.
+- A numbered procedure is already a sequence: do not add a flowchart that restates its steps. Give a how-to a figure only for a branch the steps cannot show in order, or a screenshot of the state the operator must recognize.
+
+## Examples
+
+**Incident review.** The source: search returned timeouts from 14:02 to 14:31; a cache TTL had been deployed as 0 instead of 300; rolling back the config restored service; the permanent fix is merged but not released; Owner B releases it on September 3.
+
+Before, scaffolding around 40 words of fact:
+
+> This document is intended for the on-call lead and summarizes the incident that occurred this afternoon. Background: at 14:02 the search service began returning timeouts. The team investigated and, after a period of analysis, identified that the cache configuration was incorrect. A rollback was performed at 14:31, after which service was restored. Root cause analysis showed the TTL was 0 instead of 300. Next steps: the permanent fix has been merged and will be released. Summary: the incident lasted 29 minutes and the root cause has been identified and will be addressed.
+
+After:
+
+> **Search was down 29 minutes (14:02-14:31); the permanent fix is merged but not released.**
+>
+> Root cause: cache TTL deployed as 0 instead of 300. Rolling back the config restored service.
+>
+> | Item | Owner | Date |
+> | --- | --- | --- |
+> | Release the TTL fix | Owner B | Sep 3 |
+
+**Call chain for reviewers.** The source describes an upload service that calls a scan service synchronously, scan calls a metadata service, and metadata writes to a queue; when scan is slow, each upload worker stays blocked, and the worker pool empties.
+
+Before: the four hops and the failure written as one paragraph, which every reviewer reads twice.
+
+After: a sequence diagram with a one-line takeaway and the one sentence the diagram cannot carry.
+
+> **A slow scan blocks an upload worker for the whole call, so a scan slowdown empties the worker pool.**
+>
+> ```mermaid
+> sequenceDiagram
+>   Client->>Upload: file
+>   Upload->>Scan: scan (sync, worker blocked)
+>   Scan->>Metadata: lookup
+>   Metadata->>Queue: enqueue
+>   Scan-->>Upload: result (slow)
+>   Note over Upload: 32 workers, all waiting on Scan
+> ```
+>
+> Scan's latency is inherited by every caller because the upload-to-scan call is synchronous; making that call asynchronous is the change under review.
+
+**Notice.** Two numbers and a date do not need a title, a background section, or next steps:
+
+> Old login closes Friday 18:00. Signed-in users are unaffected. Anyone not moved to the new login by then cannot sign in on Monday.
 
 ## Agent-facing instruction files
 
-When the reader is an agent that will act on the file (AGENTS.md, CLAUDE.md, or a rules/domain doc), optimize for density and executable content, not narrative.
-
-- Keep only what the agent acts on: commands, paths, boundaries (what may and may not change), and hard rules stated as their executable part.
-- Cut identity, ownership, vision, org-process asides, and slogans — an agent does not act on "owner: X team" or "define once, applies to everyone".
-- Apply a delete test to every line: if removing it would not change what the agent does, remove it.
-- Title the file with the repository name, not a marketing phrase.
+When the reader is an agent that acts on the file (AGENTS.md, CLAUDE.md, a rules doc), keep only commands, paths, boundaries (what may and may not change), and hard rules stated as their executable part; cut mission, ownership, vision, process asides, and slogans. Delete every line whose removal would not change what the agent does, and title the file with the repository name.
