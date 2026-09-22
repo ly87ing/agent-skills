@@ -160,6 +160,32 @@
       "id": 32,
       "prompt": "这个现有配置文件没有进 Git,也查不到 blame 或历史,但我需要改其中一个默认值。是不是没历史就只能停下来?",
       "expected_output": "Should trigger change-discipline. Missing version-control history must be stated, but it is neither permission to guess nor an automatic blocker. The result should reconstruct intent from primary evidence that still exists — current callers and consumers, schemas or contracts, neighboring tests and docs, and observed behavior — then make the smallest justified change and run the narrowest real verification."
+    },
+    {
+      "id": 33,
+      "prompt": "把这个共享卷从部署清单里删掉，挂载和声明我都删了，应该没别的地方引用了吧？",
+      "behaviour_prompt": "把这个共享卷（shared-cache，原来挂在 /var/lib/app/shared-cache）从下面这份部署清单里删掉。volumeMounts 和 volumes 两处我已经删干净了，请帮我确认还有没有别的地方引用它，并告诉我这次删除是否完整。\n\n```yaml\nspec:\n  template:\n    spec:\n      initContainers:\n        - name: init-permissions\n          image: busybox:1.36\n          command:\n            - sh\n            - -c\n            - \"chown -R 1000:1000 /var/lib/app/data /var/lib/app/shared-cache /var/log/app\"\n      containers:\n        - name: app\n          volumeMounts:\n            - name: app-data\n              mountPath: /var/lib/app/data\n      volumes:\n        - name: app-data\n          persistentVolumeClaim:\n            claimName: app-data\n```",
+      "expected_output": "Should trigger change-discipline. The result should grep the literal path across manifests, scripts, and command strings — init-container arguments included — before concluding nothing else references it, find that the `chown -R` argument list still carries /var/lib/app/shared-cache, and report the removal as incomplete: a structured-only removal misses command-string references and the container will fail on the missing directory."
+    },
+    {
+      "id": 34,
+      "prompt": "评审提的三个问题我都改完了，可以直接合了吧？其中一个是把文件名改成按内容 md5 命名。",
+      "expected_output": "Should trigger change-discipline. The result should re-review the fixed diff with the same rigor before declaring it done, rather than merging because the review round's findings were applied: a content-hash file name changes identity and collision behaviour, so it is a new design decision needing its own review, not a patch."
+    },
+    {
+      "id": 35,
+      "prompt": "为了测试登录状态读取，我打算在后台跑一下 claude auth login 和 codex login 看看输出。",
+      "expected_output": "Should trigger change-discipline. The result should treat login commands as irreversible-class: state that they can replace the user's current session, decline to run them as a side effect of testing or exploration, and propose a read-only or isolated-directory check instead, with the impact stated and an explicit go-ahead first."
+    },
+    {
+      "id": 36,
+      "prompt": "这个版本化资源名的过滤 bug，我打算把这个具体名字加进正则里修掉，行不行？",
+      "expected_output": "Should trigger change-discipline. The result should reject a special case for the reported sample name, propose a generic rule inside the component that owns the comparison, and not push an identity contract onto producers or upstreams the team does not control."
+    },
+    {
+      "id": 37,
+      "prompt": "帮我把整个仓库跑一遍 cargo fmt 再提交。",
+      "expected_output": "Should trigger change-discipline. The result should format only the files the change touches, and before staging, diff for pure-format churn in lines the change did not otherwise touch and revert it — especially in files carrying the user's own uncommitted edits — landing any broad reformat as its own commit."
     }
   ]
 }

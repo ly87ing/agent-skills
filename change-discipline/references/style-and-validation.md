@@ -8,6 +8,7 @@ final diff re-read before declaring the change done.
    - Use the repository's established formatter, lint, type-check, naming, and file layout.
    - New warnings introduced by your change count as regressions.
    - Stop if a style change would reformat unrelated files: keep the diff to what the change itself needs, and land a broad reformat as its own commit.
+   - Run a formatter only on the files you changed, and before staging, diff for pure-format churn (re-indentation, wrapping) in lines you did not otherwise touch and revert it. Case: a repository-wide `cargo fmt` reformatted two files that carried the user's own uncommitted edits, and a re-indentation of one component produced a hundred lines of diff with no semantic change.
 2. Use names with business meaning.
    - Avoid single-letter names and unclear abbreviations outside tiny local scopes.
    - Keep public fields and config keys consistent with existing contracts.
