@@ -12,6 +12,7 @@ MAINTAINED_SKILLS = {
     "change-discipline",
     "reader-facing-writing",
     "safe-merge-review",
+    "solution-shaping",
     "technical-diagramming",
     "verification",
 }

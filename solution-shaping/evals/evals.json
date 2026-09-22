@@ -1,0 +1,57 @@
+{
+  "skill_name": "solution-shaping",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "manager 更新到最新代码后，分析如果把它改造为非 servlet 容器，有哪些方案，应该如何改造，如何确认改造的正确性。",
+      "expected_output": "Should trigger solution-shaping. The result should open with a constraints table and ask for the ones it lacks (runtime version pinned, deployment model), inventory live versus dead capabilities before choosing an architecture, compare the options on the same fields, name the deployment model each argument assumes, mark the blast-radius rows, grade its claims as observed, inferred, or unverified, and close with the decision and a first step; acceptance criteria are handed to verification rather than invented here."
+    },
+    {
+      "id": 2,
+      "prompt": "零基思考，这几个服务应该怎么架构才合理，以目标合理为基点，不要被现状牵着走。",
+      "behaviour_prompt": "零基思考,这几个服务应该怎么架构才合理,以目标合理为基点,不要被现状牵着走。已知情况:服务 A 管主数据(企业、用户、设备);服务 B 负责客户端配置下发;服务 C 负责客户端版本查询、灰度策略和卡片数据,读的是 A 的库。现状是 C 会反向调用 A 发通知,B 每次要跨服务调 C 拿卡片数据再合成配置。前面讨论里已经确定的约束有四条:一是客户按整个部署包升级,而且可能跳过中间版本直接升到最终版;二是每个站点每个服务基本都是单副本;三是 A 和 C 用同一套 ORM 和同一个库账号,B 用另一套;四是这个版本不允许改数据库表结构。要决定的是 C 该独立保留、并入 B 还是并入 A。请直接给出你的架构方案。",
+      "expected_output": "Should trigger solution-shaping. The answer should restate all four constraints in one table before proposing, state the target in one sentence with the deployment model named (bundled upgrades with skipped versions, single replica), derive the path from the table rather than from the current layout, avoid any step that requires an intermediate version to have run, avoid dual writes or table moves, treat the shared ORM and account of A and C as a domain signal, and use each argument in one direction only."
+    },
+    {
+      "id": 3,
+      "prompt": "我们是分区云部署，客户可能跳过中间版本直接升到最终版，这个约束加进去后方案要怎么调整？",
+      "expected_output": "Should trigger solution-shaping. The result should add the constraint to the table and re-derive the scheme from it rather than patch the previous version: migration logic lives in the final version and is idempotent and marker-guarded, upgrade scripts are cumulative and additive, the rollback unit is the whole bundle, and any step that assumed an intermediate version ran is removed."
+    },
+    {
+      "id": 4,
+      "prompt": "整体审核一下这个改造方案是否完整、还有哪些遗漏。",
+      "behaviour_prompt": "整体审核一下这个改造方案是否完整,还有哪些遗漏。方案如下:把服务 X 的版本查询能力迁到服务 Y,把上传能力迁到服务 Z;代码改动包括在 Y 里新增查询接口和缓存,在 Z 里新增分片上传和失败取消,删除 X 的部署;数据表不动,两边直接读 X 原来的表;测试计划是单元测试加一次联调。请指出遗漏。",
+      "expected_output": "Should trigger solution-shaping. The answer should run the completeness check and the blast-radius rows and report the scheme as incomplete, naming at least the gateway routes and path prefixes that must move, the environment-varying configuration keys and where they live, the shared volume or storage X used, monitoring and inspection jobs that name X, multi-replica consistency of the new cache, the upgrade and rollback path, and the actions other teams must take; it should not pad the scheme to look complete."
+    },
+    {
+      "id": 5,
+      "prompt": "对比 A 工具和我们这个项目，看看哪些该借鉴、应该怎么改。",
+      "expected_output": "Should trigger solution-shaping. The result should produce a prioritized gap list, keep A's capabilities that were not verified distinct from this project's verified behaviour, name the constraints the project must keep, and close with the decision and the first step rather than a wholesale copy."
+    },
+    {
+      "id": 6,
+      "prompt": "先确认哪些模块已经没人用了可以清理掉，再谈怎么改。",
+      "expected_output": "Should trigger solution-shaping. The result should build the live-dead inventory first, with evidence per item and a same-period baseline for every item marked dead, mark the rest unknown with who can answer, and only then move to the change."
+    },
+    {
+      "id": 7,
+      "prompt": "把这个共享接口的默认超时从 10 秒改成 30 秒。",
+      "expected_output": "Should NOT trigger solution-shaping. This is an edit to existing code with the direction already decided; change-discipline owns it."
+    },
+    {
+      "id": 8,
+      "prompt": "5.2dev 已经部署，开始验证这次改造。",
+      "expected_output": "Should NOT trigger solution-shaping. The scheme is built and deployed; proving it works is verification's job."
+    },
+    {
+      "id": 9,
+      "prompt": "把这份方案写成给评审会看的设计文档。",
+      "expected_output": "Should NOT trigger solution-shaping as the owner. The scheme is settled and the ask is the document; reader-facing-writing owns the design-doc skeleton. solution-shaping applies only if the scheme itself is still open."
+    },
+    {
+      "id": 10,
+      "prompt": "帮我写个快速排序。",
+      "expected_output": "Should NOT trigger solution-shaping. A self-contained coding exercise with no scheme to shape."
+    }
+  ]
+}

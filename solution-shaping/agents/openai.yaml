@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solution Shaping"
+  short_description: "Shape a complete scheme before building or editing"
+  default_prompt: "Use $solution-shaping to shape the scheme for this change before anything is built."
