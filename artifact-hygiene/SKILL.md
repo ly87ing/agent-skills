@@ -10,6 +10,7 @@ description: Decide safe locations, redaction, and cleanup rules for generated f
 - **Requested deliverables:** files the user explicitly asked you to produce as the end product — a deck, document, export, or report they intend to keep and use. Classified by *why they exist*, not their file format: an HTML deck you were told to "make" is a deliverable, not a "dump."
 - **Project assets:** maintained source code, shared helpers, stable fixtures, maintained config, approved snapshots, and durable docs.
 - **Workflow-consumed artifacts:** generated files that repository workflows already depend on, or outputs the user explicitly asks to standardize.
+- **Handed-over evidence:** a test upload, a probe file, or a screenshot the user or a downstream consumer will look at to confirm a result. It stays until that confirmation arrives; cleaning it up early turns the evidence into a false alarm on their side.
 - **Disposable run artifacts:** ad hoc debug scripts, copied reports, temporary screenshots, traces, videos, downloads, storage state, JSON/HTML dumps, and investigation notes serving only the current run.
 
 ## Ownership Boundary
@@ -28,7 +29,7 @@ artifact-lifecycle work.
 3. Put workflow-consumed artifacts in the project's existing gitignored output path.
 4. Put disposable artifacts in `mktemp -d`, `$TMPDIR`, or `/tmp` unless a working-tree path is required.
 5. When you cannot immediately tell whether an artifact is disposable or worth keeping, apply the reuse test: would a future run, a teammate, or a fresh machine need it again (a config, an automation/bootstrap script, a reusable fixture)? If yes it is a project asset (rule 2); if it only serves the current run it is disposable (rule 4). If it is still genuinely ambiguous, ask the user; if you cannot ask (a non-interactive or CI run), fall back to treating it as disposable rather than writing it into the working tree.
-6. Delete temporary project-local artifacts before completion unless the user asks to keep them.
+6. Delete temporary project-local artifacts before completion unless the user asks to keep them; handed-over evidence waits for the consumer's confirmation first.
 
 ## Playwright Defaults
 
@@ -43,6 +44,7 @@ artifact-lifecycle work.
 - Keep the unredacted original out of version control, and never tell the reader to copy a whole asset directory that also holds unredacted originals — name the redacted files to take.
 - A redaction or secret-scanning gate that reads only text formats is blind to what is baked into images, video, and other binaries. Either scan rendered frames and pixels too, or state plainly that the gate does not cover them — reporting a clean pass over content it never inspected is worse than running no gate at all.
 - Keep plaintext credentials out of live command output and logs, not just out of files: `cat`-ing an inventory or config that embeds passwords prints them into the session transcript, so mask secrets before printing (`***`) and read specific keys instead of dumping the file. After a temporary privilege elevation (an admin token, a high-privilege key), restore the everyday low-privilege credential as soon as the privileged step is done and remind the user to revoke the temporary one — never leave the elevated credential as the new default.
+- A user's password is one-shot input, never persisted: take it interactively, exchange it for the long-lived token or session the workflow needs, write only that, and confirm the password left no file, history, or log behind. Case: a login helper stored the account password in a dotenv file for a future re-login; the token it had already obtained was valid for months, so the password served one rare event at the cost of a permanent plaintext secret.
 
 ## Shareable Deliverables
 

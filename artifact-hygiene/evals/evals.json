@@ -165,6 +165,16 @@
       "id": 33,
       "prompt": "根据这两个版本的组件清单画一张拓扑对比图,标出新增、删除、移动和改道,并验证每条连线的语义。",
       "expected_output": "Should NOT trigger artifact-hygiene. The task is to model, author, and semantically validate a technical comparison diagram; placement, redaction, packaging, and cleanup are explicitly out of scope, so technical-diagramming owns it."
+    },
+    {
+      "id": 34,
+      "prompt": "验证已经通过了，这次为了取证上传到环境里的测试文件和截图现在可以清理掉吗？用户那边还没看过。",
+      "expected_output": "Should trigger artifact-hygiene. The uploaded file and screenshots are handed-over evidence, not disposable run artifacts: they stay until the user or downstream consumer confirms through their own path, and cleanup happens after that confirmation. Whether the result is proven is verification's question; when to clean up the evidence is this skill's."
+    },
+    {
+      "id": 35,
+      "prompt": "为了以后凭证过期能自动续，把用户的 ONES 账号密码写到 .env 里吧？",
+      "expected_output": "Should trigger artifact-hygiene. A password is one-shot input: take it interactively, exchange it for the long-lived token the workflow needs, store only the token, and never persist the password to a file, shell history, or log."
     }
   ]
 }

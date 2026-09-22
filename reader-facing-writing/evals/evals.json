@@ -234,6 +234,17 @@
       "prompt": "给我们这个内部命令行工具写个 README，现在只有一段功能介绍，同事装了都不知道怎么用。",
       "behaviour_prompt": "给我们这个内部命令行工具写个 README,现在只有一段功能介绍,同事装了都不知道怎么用。已知:工具名 logpull,用途是从堡垒机拉取指定服务的日志到本地;安装方式 pip install logpull --index-url <内部源>;最常用命令 logpull fetch --service order-api --since 2h,拉取后文件存到 ./logs/<service>/;需要先设置环境变量 LOGPULL_TOKEN;支持的其他子命令有 list(列出可拉取的服务)和 tail(实时跟随);常见报错 401 表示 token 过期。请写出 README 正文。",
       "expected_output": "Should trigger reader-facing-writing. The README should open with one line saying what logpull does, give an install and first-run path that works as pasted (set LOGPULL_TOKEN, install from the internal index, run the fetch example), show one minimal example with where the output lands, and keep list, tail, and the 401 error as short entries or a table rather than a feature narrative. It should not add an architecture section, a mission statement, a changelog, or sections the material cannot fill, and should not invent options or behavior beyond the facts given."
+    },
+    {
+      "id": 45,
+      "prompt": "这个需求描述是给 QA 团队看的，帮我改成他们能直接写用例的样子，但改了什么也要看得出来。",
+      "behaviour_prompt": "这个需求描述是给 QA 团队看的,帮我改成他们能直接写用例的样子,但改了什么也要看得出来。现在的描述是研发写的:\"本次通过 MR !31、!33、!34 完成 VersionManageResource 下线,删除了 /api/update 接口(确认无调用方);ThirdPartyAppService 改为先 HEAD 探测再分片上传,失败走 cancel;新增 RateLimiter 对三方下载限流 20 次/分钟/租户;经四轮评审修复 9 个问题,其中 initContainer chown 路径与 md5 命名两处为高危。\" 请给出改写后的正文。",
+      "expected_output": "Should trigger reader-facing-writing. The rewrite should follow the change-handoff skeleton: open with a table of what changed that includes the removed /api/update endpoint as a deletion and the new 20-per-minute rate limit as a behaviour change, add a design section a tester can derive cases from (probe-before-upload, cancel on failure), give a prioritized test-focus list (repeat and interrupted uploads, a burst over the limit, the removed endpoint), state at least one not-a-defect item, and keep merge-request numbers, class names, and review-round history out of the main path. One page, details in an appendix."
+    },
+    {
+      "id": 46,
+      "prompt": "把这份实测报告压成一张矩阵表放进方案，数字直接搬过去就行。",
+      "expected_output": "Should trigger reader-facing-writing. Each number keeps its qualifier — environment, sample versus delivery, period, population — beside it in the table rather than being dropped during compression, so a figure measured on a sampled development environment cannot be read as the product's delivery shape."
     }
   ]
 }
