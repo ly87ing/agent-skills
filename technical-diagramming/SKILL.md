@@ -51,7 +51,7 @@ reader-facing material, accept the reader question, need, and surrounding argume
    - Read [references/delivery-and-verification.md](references/delivery-and-verification.md)
      before creating a standalone HTML/SVG deliverable, a comparison, or a handoff. It
      owns diagram-specific source, semantic, and render checks. When available, use
-     `frontend-verification` for browser, interaction, focus, zoom, contrast, overflow,
+     `verification` for browser, interaction, focus, zoom, contrast, overflow,
      and responsive acceptance; use `artifact-hygiene` for placement, redaction,
      dependency packaging, cleanup, and handoff. The reference carries only minimum
      fallbacks for runtimes where those companion skills are absent.

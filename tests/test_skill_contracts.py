@@ -10,18 +10,19 @@ ROOT = Path(__file__).resolve().parents[1]
 MAINTAINED_SKILLS = {
     "artifact-hygiene",
     "change-discipline",
-    "frontend-verification",
     "reader-facing-writing",
     "safe-merge-review",
     "technical-diagramming",
+    "verification",
 }
 RULE_DERIVED_SKILLS = {
     "artifact-hygiene",
     "change-discipline",
-    "frontend-verification",
     "reader-facing-writing",
+    "verification",
 }
 RETIRED_SKILLS = {
+    "frontend-verification",
     "legacy-component-skinning",
 }
 # `agents/` carries exactly one file, and it is the only one a runtime reads.
@@ -184,10 +185,17 @@ class SkillContractTests(unittest.TestCase):
         # being missed, and the same edit should be judged on trigger evals, not on
         # having room left. Raising this number requires naming, here, which skill's
         # triggering it bought.
+        #
+        # Raised 5200 -> 5800 on 2026-09-21. The catalog now covers the full delivery
+        # cycle — design, change, verification, delivery — and that is what bought the
+        # increase: merging the UI skill into `verification` and adding the
+        # design-phase skill add one stage's worth of resident cost. The budget is the
+        # sum of what each stage needs in order to trigger, not a number to squeeze
+        # under; a stage that cannot be reached costs more than its description does.
         total = 0
         for skill_dir in skill_dirs():
             total += len(read_frontmatter(skill_dir).get("description", ""))
-        self.assertLessEqual(total, 5200, f"resident description budget exceeded: {total}B")
+        self.assertLessEqual(total, 5800, f"resident description budget exceeded: {total}B")
 
     def test_rule_derived_skills_exist_and_retired_skinning_skills_are_absent(self):
         current = {path.name for path in skill_dirs()}
@@ -216,7 +224,7 @@ class SkillContractTests(unittest.TestCase):
                     "directories just to host disposable outputs."
                 ),
             ],
-            "frontend-verification": [
+            "verification": [
                 "Choose the browser tool by intent",
                 "Use Playwright for reproducible assertions, regression coverage",
                 "Use Chrome DevTools for one-off visual inspection",

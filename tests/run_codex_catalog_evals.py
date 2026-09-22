@@ -23,7 +23,7 @@ print.
 Usage:
   python3 tests/run_codex_catalog_evals.py --case artifact-hygiene:19
   python3 tests/run_codex_catalog_evals.py \\
-    --case frontend-verification:19 --case reader-facing-writing:38 \\
+    --case verification:19 --case reader-facing-writing:38 \\
     --show-responses
 
 Exit code: 0 when every selected routing expectation passes, 1 otherwise.

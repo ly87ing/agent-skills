@@ -1,0 +1,158 @@
+{
+  "skill_name": "verification",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me write a reproducible browser test for CI that verifies the checkout page's empty-cart behavior — driving the page and asserting an empty cart cannot be submitted.",
+      "expected_output": "Should trigger verification. The result should first define the UI surface and the user-visible success criteria, then choose Playwright for reproducible assertions and regression coverage to match the intent, rather than only doing a one-off manual look."
+    },
+    {
+      "id": 2,
+      "prompt": "This page's initial render feels a bit janky. Help me take a one-off look at the layout shift and Core Web Vitals; no need to write tests.",
+      "expected_output": "Should trigger verification. The result should choose Chrome DevTools for a one-off visual/layout diagnosis, performance trace, and Core Web Vitals, making clear this is an ad hoc investigation and not treating it as persistent regression coverage."
+    },
+    {
+      "id": 3,
+      "prompt": "Help me use the browser to log into the admin panel, go to the order detail page, and screenshot the status as evidence. Note that I already have a logged-in session.",
+      "expected_output": "Should trigger verification. The result should use a session-aware browser and deliberately preserve the authenticated context, not assume a fresh isolated browser comes with cookies/profile/permissions; if the browser cannot start or attach, it should report the tool failure first before considering a fallback."
+    },
+    {
+      "id": 4,
+      "prompt": "I built an interactive HTML dashboard to send to the team. Help me confirm it works properly.",
+      "expected_output": "Should trigger verification. The result should load the rendered artifact, check for console errors, key elements and interactions, scalable text, hit areas, and modal/focus accessibility, and capture a canonical screenshot; it should also match the online/offline dependency strategy to the runtime environment."
+    },
+    {
+      "id": 5,
+      "prompt": "Help me design the directory layout, CI sharding, and fixture-composition strategy for our large automated test suite — just the suite's structure and parallelization, not any individual test's behavior.",
+      "expected_output": "Should NOT trigger verification; organizing a large test suite's directory layout, CI sharding, and fixture composition is test-suite architecture, not a browser-evidence or verification-strategy task. It involves no UI surface to verify or browser evidence to capture, and belongs to the project's native test/build conventions or general change/architecture discipline."
+    },
+    {
+      "id": 6,
+      "prompt": "Help me optimize the performance of this backend-only SQL aggregation query; there are no frontend changes at all.",
+      "expected_output": "Should NOT trigger verification; this is a pure backend/data-layer change that does not involve UI, the browser, or any renderable artifact."
+    },
+    {
+      "id": 7,
+      "prompt": "Help me write a plain-text weekly project report on this iteration's progress.",
+      "expected_output": "Should NOT trigger verification; this is reader-facing plain-text writing with no UI or HTML deliverable that needs verification in a browser."
+    },
+    {
+      "id": 8,
+      "prompt": "This page is behind a login with an image captcha. Help me drive the browser to solve the captcha and log in so I can screenshot the result as evidence.",
+      "expected_output": "Should trigger verification. Before hand-rolling captcha-solving or the login flow in the browser tool, the result should first search the project for an existing tested login/verification harness or helper (zero-touch auth entry, slider/image-captcha solver, MFA/TOTP) and reuse it, hand-driving the browser only when no such helper exists; it should preserve the authenticated context deliberately and stop per the stop condition if it begins hand-implementing a login or captcha flow while the project already ships one."
+    },
+    {
+      "id": 9,
+      "prompt": "I need to confirm this marketing landing page renders correctly across mobile, tablet, and desktop breakpoints. Help me verify the responsive layout.",
+      "expected_output": "Should trigger verification. The result should define the target viewports/breakpoints and per-viewport user-visible success criteria as the UI surface, then choose the browser tool by intent — Chrome DevTools device emulation for a one-off visual and layout-shift look at each breakpoint, or Playwright with explicit viewport sizes for reproducible, CI-stable responsive assertions — and capture a canonical screenshot per breakpoint rather than a single desktop-only view. If the responsive layout is a durable user-visible surface it should back the check with the smallest relevant Playwright test per references/playwright-essentials.md, not treat the ad hoc look as regression coverage."
+    },
+    {
+      "id": 10,
+      "prompt": "样式改完了,帮我在浏览器里把下单流程从头到尾点一遍,确认页面没有坏。",
+      "expected_output": "Should trigger verification from Chinese-language phrasing. The result should define user-visible success criteria for the checkout flow, drive it in a real browser, and capture evidence of the final state rather than declaring success from code changes alone."
+    },
+    {
+      "id": 11,
+      "prompt": "You opened the browser to the vendor's chat tool but then stopped — I already logged you in for you. Please actually run the conversation and record it into the demo, don't just describe what it would look like.",
+      "expected_output": "Should trigger verification. Because the user has removed the blocker by completing the login, the result should carry the real interaction through to completion in the live tool and capture the evidence — the actual run, screenshots, or a recording — rather than stalling or substituting a written description for the demo. It should reuse the authenticated session the user provided instead of assuming a fresh browser has it, and report a tool failure first only if the browser genuinely cannot proceed."
+    },
+    {
+      "id": 12,
+      "prompt": "明天全员会要用大屏投这个 HTML 欢迎页,帮我检查一下全屏效果,确认每一页都不走形。现场大屏是深色的。",
+      "expected_output": "Should trigger verification. Verification must happen at OS-level full screen at the venue's 16:9 aspect ratio (a browser window's inline full screen is not the venue's), stepping through every page for leftover margins, overflow, and broken layout, and checking for glare-bright text against the dark venue."
+    },
+    {
+      "id": 13,
+      "prompt": "年中总结的 deck 明天要投屏,现场是 16:9 深色大屏。帮我定每一页讲什么、哪些内容该砍掉,先把内容取舍定下来。",
+      "expected_output": "Should NOT trigger verification. Despite sharing the projection vocabulary (16:9, dark venue, deck), the request is a content decision — what each page says and what to cut — which belongs to reader-facing-writing. verification owns proving a built artifact renders correctly, not choosing what goes on it."
+    },
+    {
+      "id": 14,
+      "prompt": "把这个登录页 Playwright 用例里的 locator 换成更稳的写法,纯改测试代码,不用跑也不用截图。",
+      "expected_output": "Should NOT trigger verification. This is writing/debugging Playwright test code with no UI evidence to capture and no verification-strategy decision to make — the skill's own stop condition excludes it. The locator guidance lives in references/playwright-essentials.md, which the agent reaches only when a verification decision is actually in play."
+    },
+    {
+      "id": 15,
+      "prompt": "刚才用浏览器提交那张工单,提到一半连接断了,页面也没了。我直接从头再走一遍流程重新提一次吧?",
+      "expected_output": "Should trigger verification. The result should treat the interrupted mutating flow as possibly already committed server-side: re-query the ticket by id and resume from it rather than restarting the flow, which risks a duplicate submission."
+    },
+    {
+      "id": 16,
+      "prompt": "点了保存之后整个页面变成白屏了,是不是保存失败了?你帮我看一眼再重试一次。",
+      "expected_output": "Should trigger verification. The result should refuse to read the save's success or failure off a blank render — that is a load failure, not a result — and re-verify the outcome from an independent record before retrying."
+    },
+    {
+      "id": 17,
+      "prompt": "刚截的这张图上首屏卡片是空的、配图也没显示出来,是不是这页布局炸了?你按截图改一下吧。",
+      "expected_output": "Should trigger verification. The result should treat a defect visible only in an early capture as a possible phantom: settle entrance/scroll animations and wait for image decoding, re-capture, and confirm the defect is real before editing the page against a false screenshot."
+    },
+    {
+      "id": 18,
+      "prompt": "这个弹层里嵌了段视频,一点播放控件整个弹层就被关掉了;而且焦点落在视频上以后,左右方向键就不翻页了。帮我确认下是不是这样,再定怎么改。",
+      "expected_output": "Should trigger verification. The result should stop the media's own clicks from reaching the click-to-dismiss handler and pause playback on close, then decide explicitly which keys belong to focused media and drive the page to confirm clicking content does not navigate and the player has not swallowed the navigation keys."
+    },
+    {
+      "id": 19,
+      "prompt": "我们的 Playwright UI 回归连着自家后端跑时偶尔不稳定。是不是把所有 frontend-backend 请求都 mock 掉,然后把绿灯当成完整回归证据?",
+      "expected_output": "Should trigger verification. The result should choose mocking from the test's claim rather than ownership alone: a fully mocked test can prove the UI response to controlled states but cannot prove frontend-backend integration. Keep at least one real integration path, allow targeted owned-API mocks for UI-only edge states when a separate contract or integration check covers the boundary, and label the evidence at the scope it actually proves."
+    },
+    {
+      "id": 20,
+      "prompt": "我在浏览器里本来登录着运营后台,刚才那个标签页被一个扩展抢走又关掉了。帮我把登录态拿回来接着截图取证,别让我重新登录一遍。",
+      "expected_output": "Should trigger verification. The result should recover the lost authenticated session without discarding its cookies: open a new tab in the same browser profile so the login carries over, rather than relaunching a fresh or isolated context that discards the auth or making the user log in again; any relaunch that could touch account state needs the user's confirmation first."
+    },
+    {
+      "id": 21,
+      "prompt": "Playwright 调试跑完留下了 trace、录像和一堆截图,这些文件该放到哪?要不要提交到仓库?",
+      "expected_output": "Should NOT trigger verification. Despite the Playwright and screenshot vocabulary, the ask is where produced evidence files should live and whether they enter version control — placement and cleanup of generated artifacts, owned by artifact-hygiene. verification produces and reads browser evidence; it does not decide where the files go."
+    },
+    {
+      "id": 22,
+      "prompt": "从仓库代码和配置画一张部署拓扑图,把节点、边界、调用方向和同步异步关系建模清楚。",
+      "expected_output": "Should NOT trigger verification. The task is to model and author the technical diagram itself, with no built browser surface or UI verification decision; that work belongs to technical-diagramming."
+    },
+    {
+      "id": 23,
+      "prompt": "这份交互式架构探索页已经做好了：主视图可以缩放、筛选和选择节点，右侧抽屉展示节点详情。请验证连续查看多个节点时不会丢掉刚才的探索位置，也不会把键盘焦点留在已经关闭的抽屉里。",
+      "behaviour_prompt": "请验收一份已经构建完成的交互式架构探索页。主视图支持平移和缩放，路径筛选器可只显示 payment 链路，下方关系矩阵可以独立滚动；点击节点会在右侧打开详情抽屉，Escape 或关闭按钮会返回主视图。请设计并执行能够支持交付结论的浏览器验收流程，重点覆盖用户先调整视图、筛选并滚动矩阵，再查看 API Gateway 详情、返回、继续查看 Message Bus 详情的真实使用路径。",
+      "expected_output": "Should trigger verification. The result should drive a repeated inspect-return-inspect path rather than accept one opened drawer or a static screenshot. It should verify that task-relevant zoom, pan, filter, matrix scroll, and selection context survive opening and closing detail as appropriate, and that focus enters the detail surface and returns to a meaningful control instead of remaining in a closed drawer. It should report which states were exercised and avoid treating a single scroll-position check as proof of the whole exploration flow."
+    },
+    {
+      "id": 24,
+      "prompt": "5.2dev 环境已经部署了这次改动，开始验证。",
+      "behaviour_prompt": "版本决策服务这次改动做了两件事：从配置里删掉了 8 个已废弃的 key，并且给版本文件缺失的平台加了指数退避重试。改动已经部署到 5.2dev 环境，Pod 状态是 Running，我也确认过部署包里那 8 个 key 都不在了。请说明你接下来会怎么验证这次改动确实正确，以及最终会怎么向我汇报验证结论。",
+      "expected_output": "Should trigger verification. The result should lock the environment and confirm the deployed build actually carries the commit, then refuse to stop at existence or deployment checks: pull the highest-frequency request shapes from the access log, exercise the changed path with them on the new build and on the pre-change build, diff the outputs, rule out data differences between the two sides before attributing a difference to code, include the failure branch (a platform whose version file is missing must now back off and retry), and report the rung actually reached. A Running pod plus eight absent config keys is a deployment check, not verification, and the result should say so instead of calling the change verified."
+    },
+    {
+      "id": 25,
+      "prompt": "这个修复只部署在 qa 环境，请在 qa 环境验证。qa 现在健康检查不通，另一个 5.6 的站点是通的。",
+      "behaviour_prompt": "这个修复只部署在 qa 环境，需要在 qa 环境上验证，并把验证结果回写到缺陷单里。现在 qa 环境的健康检查不通、页面打不开；另外有一个 5.6 的站点是通的，功能页面看起来也一样。请说明你会怎么处理，以及你最终会把什么结论写回缺陷单。",
+      "expected_output": "Should trigger verification. The named environment is the only acceptable one, so the result should refuse the substitute: report the unreachable QA environment as a blocker and stop, decline to use the reachable 5.6 site as evidence, discard rather than upload or write back anything measured elsewhere, and say what would unblock the check (the QA health check restored, or access and credentials for it)."
+    },
+    {
+      "id": 26,
+      "prompt": "帮我确认所有变更是否都已经推送到远端并且在软路由上生效了。",
+      "expected_output": "Should trigger verification. The result should prove the pushed rung by running a fetch first and showing local HEAD, the tracking branch, and the remote at one SHA with a clean working tree, enumerating every nested sub-repo line by line rather than trusting a clean status at the hub root; and prove the applied rung by reading the live configuration back from the device itself, not from a push exit code, a version string, or a loaded log line."
+    },
+    {
+      "id": 27,
+      "prompt": "实现代理说测试都跑过了，截图也传了，可以验收提交了吗？",
+      "expected_output": "Should trigger verification. A worker's status line, its screenshot, and a passing exit code are claims, not acceptance, so the result should re-run the decisive check itself, read the diff, and drive the surface before answering. Acceptance is judged by whether the end user can use the result: it builds, it is packaged or downloadable where the user expects it, and the usage note exists."
+    },
+    {
+      "id": 28,
+      "prompt": "先分析一下这个 bug 的根因，别改代码。",
+      "expected_output": "Should NOT trigger verification. Root-cause analysis with no change made and no claim to prove has no evidence to collect and no rung to reach; establishing why the current behavior exists is change-discipline's diagnosis gate. verification proves that a change already made works, it does not decide what is wrong."
+    },
+    {
+      "id": 29,
+      "prompt": "把 feature 分支合进当前分支，确认没漏东西、能不能推。",
+      "expected_output": "Should NOT trigger verification as the owner. Proving a merge is complete and correct is safe-merge-review's path — diff modeling, hotspot-overlap review, completeness proof, and the push decision. verification may be consulted for the pushed rung alone, but it does not own merge correctness."
+    },
+    {
+      "id": 30,
+      "prompt": "改造方案里要不要把这个服务拆出来？给我个建议。",
+      "expected_output": "Should NOT trigger verification. This is a design decision with nothing built yet, so there is no environment to lock, no build to check, and no claim whose evidence could be judged."
+    }
+  ]
+}

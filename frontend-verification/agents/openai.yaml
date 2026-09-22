@@ -1,4 +1,0 @@
-interface:
-  display_name: "Frontend Verification"
-  short_description: "Validate UI, browser, and HTML changes"
-  default_prompt: "Use $frontend-verification to verify this UI or browser-facing change."

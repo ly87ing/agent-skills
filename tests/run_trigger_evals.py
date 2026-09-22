@@ -131,7 +131,7 @@ def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, s
 
     A real agent picks among every installed skill. A catalog of only the skills
     maintained here cannot surface the collisions that matter
-    most — safe-merge-review against a GitLab skill, frontend-verification
+    most — safe-merge-review against a GitLab skill, verification
     against a runtime's built-in dataviz skill — so measuring without them
     reads optimistically.
     """

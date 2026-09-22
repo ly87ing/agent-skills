@@ -2,7 +2,7 @@
 
 Use this reference for rendered SVG/HTML, comparison artifacts, or handoff. It owns
 the diagram-specific source-to-artifact contract, semantic checks, and visual reading.
-When `frontend-verification` is available, it owns browser and rendered-surface
+When `verification` is available, it owns browser and rendered-surface
 acceptance. When `artifact-hygiene` is available, it owns placement, redaction,
 dependency packaging, cleanup, and handoff. The fallback sections below apply only
 when those companion skills are unavailable.
@@ -49,7 +49,7 @@ when those companion skills are unavailable.
 
 ## Browser Acceptance Fallback
 
-Use this only when `frontend-verification` is unavailable. Check console errors,
+Use this only when `verification` is unavailable. Check console errors,
 missing resources, broken interactions, keyboard and focus behavior, readable zoom,
 contrast, and narrow-viewport overflow. Record exactly which surfaces and states were
 opened; one screenshot does not cover the flow around it.

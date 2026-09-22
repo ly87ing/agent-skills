@@ -21,7 +21,7 @@
     {
       "id": 4,
       "prompt": "Help me make a one-page interactive HTML dashboard that clearly conveys these metrics and trends, to send to the team.",
-      "expected_output": "Should trigger reader-facing-writing. The result should title each visual with its takeaway, encode values by position or length and keep charts honest (zero baselines), and pair color with labels or shapes. It should state where the dashboard will run and whether it must work offline; when the companion skills are available, frontend-verification owns contrast, zoom, narrow-viewport, interaction, and console acceptance, while artifact-hygiene owns dependency packaging and clean handoff. Any companion check that did not run must remain explicitly unverified."
+      "expected_output": "Should trigger reader-facing-writing. The result should title each visual with its takeaway, encode values by position or length and keep charts honest (zero baselines), and pair color with labels or shapes. It should state where the dashboard will run and whether it must work offline; when the companion skills are available, verification owns contrast, zoom, narrow-viewport, interaction, and console acceptance, while artifact-hygiene owns dependency packaging and clean handoff. Any companion check that did not run must remain explicitly unverified."
     },
     {
       "id": 5,
@@ -106,17 +106,17 @@
     {
       "id": 20,
       "prompt": "这个 dashboard 的 HTML 我已经写完了,帮我在浏览器里全屏过一遍,看看每页有没有溢出和串版。",
-      "expected_output": "Should NOT trigger reader-facing-writing. The content is already written; the ask is to prove the built artifact renders correctly at the target size — browser verification, which belongs to frontend-verification. reader-facing-writing owns deciding what the artifact says, not running the render check."
+      "expected_output": "Should NOT trigger reader-facing-writing. The content is already written; the ask is to prove the built artifact renders correctly at the target size — browser evidence, owned by the verification skill. reader-facing-writing owns deciding what the artifact says, not running the render check."
     },
     {
       "id": 21,
       "prompt": "我刚改了本地这个 HTML,浏览器里刷新看还是旧的样子,怎么确认我看到的是真的新版本?",
-      "expected_output": "Should NOT trigger reader-facing-writing. A stale-cache re-verification problem is a browser mechanic owned by frontend-verification (hard-reload with the cache disabled), not a decision about what the artifact says. The clause itself lives in both skills on purpose — each is loaded independently and each path ends in a browser check — so this case tests the routing of the symptom question, not where the clause is written."
+      "expected_output": "Should NOT trigger reader-facing-writing. A stale-cache re-verification problem is a browser mechanic owned by verification (hard-reload with the cache disabled), not a decision about what the artifact says. The clause itself lives in both skills on purpose — each is loaded independently and each path ends in a browser check — so this case tests the routing of the symptom question, not where the clause is written."
     },
     {
       "id": 22,
       "prompt": "这个 dashboard 页面在手机上打开会横向滚动,帮我看看是哪的问题。",
-      "expected_output": "Should NOT trigger reader-facing-writing. Diagnosing why a built page overflows at a given viewport is browser-side verification and layout diagnosis, owned by frontend-verification. reader-facing-writing decides what the page says and how it is structured for a reader, not why an existing render breaks."
+      "expected_output": "Should NOT trigger reader-facing-writing. Diagnosing why a built page overflows at a given viewport is browser-side evidence and layout diagnosis, owned by the verification skill. reader-facing-writing decides what the page says and how it is structured for a reader, not why an existing render breaks."
     },
     {
       "id": 23,

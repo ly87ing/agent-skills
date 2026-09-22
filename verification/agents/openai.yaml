@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verification"
+  short_description: "Prove a change works at the rung you claim, UI included"
+  default_prompt: "Use $verification to prove this change works in the target environment."
