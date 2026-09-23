@@ -14,11 +14,11 @@ tools, and session persistence disabled. The catalog and request in the judge
 prompt are therefore the only task-specific context.
 
 Usage:
-  python3 tests/run_trigger_evals.py                        # all skills
-  python3 tests/run_trigger_evals.py --skill safe-merge-review --ids 12 13
-  python3 tests/run_trigger_evals.py --model sonnet --jobs 4
-  python3 tests/run_trigger_evals.py --limit 2              # 2 cases per skill
-  python3 tests/run_trigger_evals.py --runs-per-query 3     # decide by rate, not one sample
+  python3 tools/evals/run_trigger_evals.py                        # all skills
+  python3 tools/evals/run_trigger_evals.py --skill safe-merge-review --ids 12 13
+  python3 tools/evals/run_trigger_evals.py --model sonnet --jobs 4
+  python3 tools/evals/run_trigger_evals.py --limit 2              # 2 cases per skill
+  python3 tools/evals/run_trigger_evals.py --runs-per-query 3     # decide by rate, not one sample
 
 A single run per case cannot tell a real failure from noise: borderline cases
 flip between runs. Judge a case more than once (`--runs-per-query 3`) and it
@@ -65,7 +65,7 @@ import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 # claude -p pays CLI startup plus model latency per call; generous headroom
 # so cold starts never flake a run.
@@ -314,7 +314,7 @@ def main() -> int:
             "have no directory to read, so they are absent unless you supply them. Results "
             "from this catalog read optimistically and CANNOT establish a boundary: a green "
             "here may only mean the competing skill was missing. Pass "
-            "--catalog-dir tests/fixtures/builtin-skills (plus your runtime's own skill dirs) "
+            "--catalog-dir tools/evals/fixtures/builtin-skills (plus your runtime's own skill dirs) "
             "for any result you intend to act on.",
             file=sys.stderr,
         )

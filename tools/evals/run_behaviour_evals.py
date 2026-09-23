@@ -72,9 +72,9 @@ so referenced guidance can load on demand. This harness does not execute bundled
 scripts; deterministic script behavior belongs in the per-skill unit suites.
 
 Usage:
-  python3 tests/run_behaviour_evals.py --skill change-discipline --ids 23 24 25
-  python3 tests/run_behaviour_evals.py --skill safe-merge-review --runs-per-case 3
-  python3 tests/run_behaviour_evals.py --skill safe-merge-review --baseline-root /tmp/previous-catalog
+  python3 tools/evals/run_behaviour_evals.py --skill change-discipline --ids 23 24 25
+  python3 tools/evals/run_behaviour_evals.py --skill safe-merge-review --runs-per-case 3
+  python3 tools/evals/run_behaviour_evals.py --skill safe-merge-review --baseline-root /tmp/previous-catalog
 
 Cost: 4 model calls per case per run (two answers, then one grade each). Start narrow.
 Exit code: 0 when every selected case shows positive lift, 1 otherwise.
@@ -91,7 +91,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 ANSWER_TIMEOUT_SECONDS = 300
 GRADE_TIMEOUT_SECONDS = 180

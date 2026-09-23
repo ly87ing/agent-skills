@@ -12,8 +12,8 @@ a skill anyone loads.
 
 Use it alongside the runtimes whose built-ins *are* on disk:
 
-    python3 tests/run_trigger_evals.py \
-      --catalog-dir tests/fixtures/builtin-skills \
+    python3 tools/evals/run_trigger_evals.py \
+      --catalog-dir tools/evals/fixtures/builtin-skills \
       --catalog-dir ~/.codex/skills/.system \
       --model sonnet --runs-per-query 9
 

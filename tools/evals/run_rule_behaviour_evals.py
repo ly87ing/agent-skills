@@ -61,9 +61,9 @@ a line on the cheapest model: a haiku judge has manufactured failures that a lar
 judge does not reproduce.
 
 Usage:
-  python3 tests/run_rule_behaviour_evals.py --rule publish-consent
-  python3 tests/run_rule_behaviour_evals.py --rule surgical-edits --runs-per-case 3
-  python3 tests/run_rule_behaviour_evals.py --all --model sonnet
+  python3 tools/evals/run_rule_behaviour_evals.py --rule publish-consent
+  python3 tools/evals/run_rule_behaviour_evals.py --rule surgical-edits --runs-per-case 3
+  python3 tools/evals/run_rule_behaviour_evals.py --all --model sonnet
 
 Cost: 4 model calls per case per run — both arms answer, and each answer is graded.
 The arms run with `--strict-mcp-config`, so a call costs seconds rather than the
@@ -83,7 +83,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 CORE = ROOT / "rules" / "core.md"
 EVALS = ROOT / "rules" / "evals" / "core.json"
 # The maintained skill catalog is this repository itself: every top-level directory

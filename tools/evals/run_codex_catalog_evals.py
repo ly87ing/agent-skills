@@ -21,8 +21,8 @@ self-contained evals whose inputs and possible ambient-runtime findings are safe
 print.
 
 Usage:
-  python3 tests/run_codex_catalog_evals.py --case artifact-hygiene:19
-  python3 tests/run_codex_catalog_evals.py \\
+  python3 tools/evals/run_codex_catalog_evals.py --case artifact-hygiene:19
+  python3 tools/evals/run_codex_catalog_evals.py \\
     --case verification:19 --case reader-facing-writing:38 \\
     --show-responses
 
@@ -43,10 +43,10 @@ import tempfile
 from pathlib import Path
 
 
-TESTS_DIR = Path(__file__).resolve().parent
-ROOT = TESTS_DIR.parent
-if str(TESTS_DIR) not in sys.path:
-    sys.path.insert(0, str(TESTS_DIR))
+EVALS_DIR = Path(__file__).resolve().parent
+ROOT = EVALS_DIR.parents[1]
+if str(EVALS_DIR) not in sys.path:
+    sys.path.insert(0, str(EVALS_DIR))
 
 import run_trigger_evals as trigger  # noqa: E402
 

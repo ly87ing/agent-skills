@@ -9,7 +9,8 @@ from pathlib import Path
 from unittest import mock
 
 
-RUNNER_PATH = Path(__file__).with_name("run_trigger_evals.py")
+EVALS_DIR = Path(__file__).resolve().parents[1] / "tools" / "evals"
+RUNNER_PATH = EVALS_DIR / "run_trigger_evals.py"
 RUNNER_SPEC = importlib.util.spec_from_file_location("run_trigger_evals", RUNNER_PATH)
 assert RUNNER_SPEC is not None and RUNNER_SPEC.loader is not None
 runner = importlib.util.module_from_spec(RUNNER_SPEC)
@@ -105,7 +106,7 @@ class CatalogDisclosureTests(unittest.TestCase):
         self.assertIn("CANNOT establish a boundary", err)
 
     def test_supplied_catalog_reports_its_capture_version_so_staleness_is_visible(self):
-        fixtures = Path(__file__).with_name("fixtures") / "builtin-skills"
+        fixtures = EVALS_DIR / "fixtures" / "builtin-skills"
         self.assertTrue((fixtures / "CAPTURED").exists(), "fixture must state what it was captured from")
 
         code, err = self._run_main(
@@ -118,7 +119,7 @@ class CatalogDisclosureTests(unittest.TestCase):
         self.assertNotIn("no --catalog-dir", err)
 
     def test_required_catalog_skill_prevents_an_incomplete_run(self):
-        fixtures = Path(__file__).with_name("fixtures") / "builtin-skills"
+        fixtures = EVALS_DIR / "fixtures" / "builtin-skills"
 
         code, err = self._run_main(
             [

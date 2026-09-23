@@ -365,8 +365,8 @@ class SkillContractTests(unittest.TestCase):
         # by nobody it was written for. Whether a given host strips HTML comments
         # is not a licence to add them: hosts differ, the same file ships to all of
         # them, and any of them may show the comment when the file is opened with a
-        # read tool. Notes about a skill belong in this repository's README, which
-        # no runtime loads. Code fences are exempt: a `#` there is sample code.
+        # read tool. Notes about a skill belong in this repository's README or docs/,
+        # which no runtime loads. Code fences are exempt: a `#` there is sample code.
         for skill_dir in skill_dirs():
             paths = [skill_dir / "SKILL.md", *sorted((skill_dir / "references").glob("*.md"))]
             for path in paths:
@@ -410,6 +410,7 @@ class SkillContractTests(unittest.TestCase):
         readme = ROOT / "README.md"
         if readme.exists():
             targets.append(readme)
+        targets.extend(sorted((ROOT / "docs").glob("*.md")))
 
         for path in targets:
             text = path.read_text(encoding="utf-8")
@@ -440,7 +441,7 @@ class SkillContractTests(unittest.TestCase):
                 line_no = text[: match.start()].count("\n") + 1
                 raise AssertionError(
                     f"{path.relative_to(ROOT)}:{line_no} contains non-English character "
-                    f"{match.group(0)!r}; skill content and README must be all English"
+                    f"{match.group(0)!r}; skill content, README, and docs must be all English"
                 )
 
 

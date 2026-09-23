@@ -53,7 +53,7 @@ the test pass. The same test checks that every eval anchor matches exactly one l
 
 ## Measuring a line
 
-`python3 tests/run_rule_behaviour_evals.py --rule <id>` runs each case twice — with `core.md` as it
+`python3 tools/evals/run_rule_behaviour_evals.py --rule <id>` runs each case twice — with `core.md` as it
 stands and with the line under test removed — and grades both answers; the difference is the only
 figure that justifies the line. It calls the model, so run it deliberately, not in CI.
 

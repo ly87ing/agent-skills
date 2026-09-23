@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 
-RUNNER_PATH = Path(__file__).with_name("run_codex_catalog_evals.py")
+RUNNER_PATH = Path(__file__).resolve().parents[1] / "tools" / "evals" / "run_codex_catalog_evals.py"
 RUNNER_SPEC = importlib.util.spec_from_file_location("run_codex_catalog_evals", RUNNER_PATH)
 assert RUNNER_SPEC is not None and RUNNER_SPEC.loader is not None
 runner = importlib.util.module_from_spec(RUNNER_SPEC)
