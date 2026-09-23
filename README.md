@@ -95,16 +95,20 @@ agent-skills/
 │   ├── agents/openai.yaml
 │   ├── evals/
 │   └── references/
-└── technical-diagramming/
-    ├── SKILL.md
-    ├── agents/openai.yaml
-    ├── evals/
-    ├── references/
-    ├── scripts/
-    └── tests/
+├── technical-diagramming/
+│   ├── SKILL.md
+│   ├── agents/openai.yaml
+│   ├── evals/
+│   ├── references/
+│   ├── scripts/
+│   └── tests/
+└── rules/
+    ├── core.md                         # always-on rules for CLAUDE.md / AGENTS.md
+    ├── README.md                       # what may go in core.md, budget, measuring
+    └── evals/core.json
 ```
 
-The top-level skill directories are the single source of truth, and the only content layer this repository maintains publicly.
+The top-level skill directories are the single source of truth for the skills. `rules/` holds the always-on rule layer that the skills are designed against: `core.md` carries only universal invariants and no skill names, and [`rules/README.md`](./rules/README.md) records what may go in it. Agent Manager reads `rules/*.md` from this repository as rule templates.
 
 Each canonical skill directory should be as self-contained as possible, typically including:
 
@@ -119,10 +123,11 @@ All seven current skills already ship with `evals/evals.json`, aligning with Ant
 
 Verification commands:
 
-- `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite
+- `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite, and the rule budget and anchor checks
 - `npx skills-ref validate ./<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
 - `python3 tests/run_trigger_evals.py --catalog-dir tests/fixtures/builtin-skills --catalog-dir ~/.codex/skills --catalog-dir ~/.codex/skills/.system --model sonnet` — judge each eval's triggering decision against a live model via `claude -p`; every call uses a fresh empty directory with ambient Claude customizations, skills, MCP servers, tools, and session persistence disabled (repeat with `--model opus` to cover the multi-model checklist). These three directories are the minimum baseline: the fixture stands in for Claude Code's built-ins, the user directory carries installed personal skills, and `.system` carries Codex's bundled skills. A plugin-enabled Agent also needs one repeated `--catalog-dir <active-plugin-version>/skills` for every active plugin; do not scan the whole plugin cache, because it contains inactive and stale versions. Add `--require-catalog-skill <name>` for each likely competitor so a missing directory fails before judging. Without the matching current catalog the result is optimistic and cannot establish a boundary. Prefer `--model sonnet` over the cheaper default for any result you intend to act on; the default judge manufactures failures, as the first reading rule below records twice.
 - `python3 tests/run_codex_catalog_evals.py --case artifact-hygiene:19 --case verification:19 --show-responses` — observe the real Codex runtime instead of simulating a single skill choice. It first proves the selected maintained packages match the installed copies, then runs each request serially in a fresh read-only directory and records every `SKILL.md` Codex actually loads from its active catalog, including multi-skill composition. A route pass is not a behavior pass: `--show-responses` prints the expected behavior and final answer for manual review, and the runner deliberately does not replace that review with fixed-phrase matching. Use substantive, self-contained cases that benefit from a workflow; a simple one-step request may be answered correctly without loading a skill and is poor evidence for implicit activation. Because the active runtime can consult ambient context, print transcripts only when the eval inputs and possible ambient findings are safe to display.
+- `python3 tests/run_rule_behaviour_evals.py --rule <id>` — measure whether a line of `rules/core.md` changes what the model does, against `core.md` with that line removed; see `rules/README.md` for the isolation it needs.
 - `python3 tests/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same request run without it. For an existing-skill edit, pass an unpacked pre-edit catalog with `--baseline-root <path>` so the comparison arm uses the previous skill instead of no skill. Every answer and grading call gets a fresh temporary directory, disables ambient Claude customizations and session persistence, and receives no eval answers; a skill arm gets only a runtime copy of `SKILL.md`, `references/`, `scripts/`, and `assets/`, with read-only tools available for on-demand loading. It costs 4 model calls per case per run, so start narrow. A case whose `prompt` names material it does not carry still cannot be measured — both arms fail identically. Give such a case a `behaviour_prompt` restating the request with the material inlined; only this runner reads it, so `prompt` stays realistic for trigger evaluation. For manual transcript review, `--show-responses` prints both answers to stdout; use it only with eval inputs safe to display.
 
 Five rules for reading trigger-eval results, all learned the expensive way:
