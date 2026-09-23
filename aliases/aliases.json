@@ -1,0 +1,11 @@
+{
+  "_comment": "Terminal shortcuts that Agent Manager recommends. {timezone} and {lang} are filled from the two fields below before the value is shown. No permission-skipping flags here; users add those per alias in Agent Manager.",
+  "timezone": "America/Los_Angeles",
+  "lang": "en_US.UTF-8",
+  "aliases": {
+    "claude": "TZ=\"{timezone}\" LANG=\"{lang}\" LC_ALL=\"{lang}\" claude",
+    "codex": "TZ=\"{timezone}\" LANG=\"{lang}\" LC_ALL=\"{lang}\" codex",
+    "grok": "TZ=\"{timezone}\" LANG=\"{lang}\" LC_ALL=\"{lang}\" grok",
+    "chrome": "open --env TZ=\"{timezone}\" --env LANG=\"{lang}\" --env LC_ALL=\"{lang}\" -n -a \"Google Chrome\" --args --lang=en-US"
+  }
+}
