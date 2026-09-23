@@ -86,9 +86,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CORE = ROOT / "rules" / "core.md"
 EVALS = ROOT / "rules" / "evals" / "core.json"
-# The maintained skill catalog is this repository itself: every top-level directory
+# The maintained skill catalog is this repository's skills/: every directory there
 # carrying a SKILL.md is a skill.
-SKILLS = ROOT
+SKILLS = ROOT / "skills"
 
 ANSWER_TIMEOUT_SECONDS = 300
 GRADE_TIMEOUT_SECONDS = 180

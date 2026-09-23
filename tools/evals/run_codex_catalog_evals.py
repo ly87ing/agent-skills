@@ -45,6 +45,7 @@ from pathlib import Path
 
 EVALS_DIR = Path(__file__).resolve().parent
 ROOT = EVALS_DIR.parents[1]
+SKILLS = ROOT / "skills"
 if str(EVALS_DIR) not in sys.path:
     sys.path.insert(0, str(EVALS_DIR))
 
@@ -99,7 +100,7 @@ def matching_installed_skill(
     skill: str,
     installed_roots: list[Path],
 ) -> tuple[Path | None, list[Path]]:
-    source_inventory = runtime_inventory(ROOT / skill)
+    source_inventory = runtime_inventory(SKILLS / skill)
     candidates = [root.expanduser() / skill for root in installed_roots]
     for candidate in candidates:
         if runtime_inventory(candidate) == source_inventory:
@@ -325,7 +326,7 @@ def main() -> int:
         )
         if args.show_responses:
             payload = json.loads(
-                (ROOT / case["skill"] / "evals" / "evals.json").read_text(encoding="utf-8")
+                (SKILLS / case["skill"] / "evals" / "evals.json").read_text(encoding="utf-8")
             )
             expected = next(
                 item["expected_output"] for item in payload["evals"] if item["id"] == case["id"]

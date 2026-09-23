@@ -66,6 +66,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+SKILLS = ROOT / "skills"
 
 # claude -p pays CLI startup plus model latency per call; generous headroom
 # so cold starts never flake a run.
@@ -154,7 +155,7 @@ def load_neighbour_skills(catalog_dirs: list[str], own: set[str]) -> dict[str, s
 
 def load_skills() -> dict[str, str]:
     skills: dict[str, str] = {}
-    for skill_dir in sorted(ROOT.iterdir()):
+    for skill_dir in sorted(SKILLS.iterdir()):
         skill_md = skill_dir / "SKILL.md"
         if not skill_dir.is_dir() or not skill_md.exists():
             continue
@@ -168,7 +169,7 @@ def load_cases(skills: dict[str, str], only_skills: list[str], ids: list[int], l
     for name in skills:
         if only_skills and name not in only_skills:
             continue
-        payload = json.loads((ROOT / name / "evals" / "evals.json").read_text(encoding="utf-8"))
+        payload = json.loads((SKILLS / name / "evals" / "evals.json").read_text(encoding="utf-8"))
         selected = [case for case in payload["evals"] if not ids or case["id"] in ids]
         if limit is not None:
             selected = selected[:limit]

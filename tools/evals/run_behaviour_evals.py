@@ -92,6 +92,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+SKILLS = ROOT / "skills"
 
 ANSWER_TIMEOUT_SECONDS = 300
 GRADE_TIMEOUT_SECONDS = 180
@@ -198,14 +199,14 @@ def wilson_interval(passes: int, total: int, z: float = 1.96) -> tuple[float, fl
 
 
 def load_cases(skill: str, ids: list[int]) -> list[dict]:
-    payload = json.loads((ROOT / skill / "evals" / "evals.json").read_text(encoding="utf-8"))
+    payload = json.loads((SKILLS / skill / "evals" / "evals.json").read_text(encoding="utf-8"))
     cases = [case for case in payload["evals"] if not ids or case["id"] in ids]
     # A negative case asserts the skill should not load at all, so there is no
     # behaviour of this skill to measure — trigger evals already cover those.
     return [case for case in cases if not NEGATIVE_EXPECTATION.match(case["expected_output"])]
 
 
-def skill_body(skill: str, source_root: Path = ROOT) -> str:
+def skill_body(skill: str, source_root: Path = SKILLS) -> str:
     text = (source_root / skill / "SKILL.md").read_text(encoding="utf-8")
     return re.sub(r"^---\n.*?\n---\n", "", text, count=1, flags=re.DOTALL).strip()
 
@@ -213,7 +214,7 @@ def skill_body(skill: str, source_root: Path = ROOT) -> str:
 def materialize_runtime_skill(
     skill: str,
     destination: Path,
-    source_root: Path = ROOT,
+    source_root: Path = SKILLS,
 ) -> Path:
     """Copy only files a real skill may expose after activation."""
     source = source_root / skill
@@ -350,7 +351,7 @@ def main() -> int:
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", args.skill):
         print(f"error: invalid skill name: {args.skill}", file=sys.stderr)
         return 1
-    if not (ROOT / args.skill / "SKILL.md").is_file():
+    if not (SKILLS / args.skill / "SKILL.md").is_file():
         print(f"error: no such skill: {args.skill}", file=sys.stderr)
         return 1
 

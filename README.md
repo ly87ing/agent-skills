@@ -22,13 +22,13 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 
 | Skill | Description |
 | --- | --- |
-| [safe-merge-review](./safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
-| [change-discipline](./change-discipline/SKILL.md) | Disciplined changes to existing code: one pre-change hard gate (establish why current behavior exists, symptom-is-not-spec, blast radius, smallest verification) plus two facets — boundary/architecture review and code style/contract/naming/validation/comment constraints; ships with triggering evals. |
-| [solution-shaping](./solution-shaping/SKILL.md) | Shapes a scheme before anything is built: constraints table, live-dead inventory, target state with its deployment model, blast-radius checklist, evidence-graded claims, and an implementer brief with acceptance criteria; ships with triggering and behavioural evals. |
-| [verification](./verification/SKILL.md) | Proves a change works at the rung it claims — target lock, delivery ladder (tests, pushed, deployed, verified, accepted), real-input old-new comparison, consumer path, delegated-work acceptance — with browser and rendered-surface evidence as its UI facet; ships with triggering and behavioural evals. |
-| [artifact-hygiene](./artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
-| [reader-facing-writing](./reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents around per-artifact skeletons with page budgets, a form-by-content-shape table, per-medium figure rules, and before/after examples; ships with triggering and behavioural evals. |
-| [technical-diagramming](./technical-diagramming/SKILL.md) | Builds and verifies evidence-grounded architecture, deployment, workflow, sequence, data-flow, lifecycle, and topology-comparison diagrams; ships with triggering and behavioral evals plus deterministic SVG checks. |
+| [safe-merge-review](./skills/safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
+| [change-discipline](./skills/change-discipline/SKILL.md) | Disciplined changes to existing code: one pre-change hard gate (establish why current behavior exists, symptom-is-not-spec, blast radius, smallest verification) plus two facets — boundary/architecture review and code style/contract/naming/validation/comment constraints; ships with triggering evals. |
+| [solution-shaping](./skills/solution-shaping/SKILL.md) | Shapes a scheme before anything is built: constraints table, live-dead inventory, target state with its deployment model, blast-radius checklist, evidence-graded claims, and an implementer brief with acceptance criteria; ships with triggering and behavioural evals. |
+| [verification](./skills/verification/SKILL.md) | Proves a change works at the rung it claims — target lock, delivery ladder (tests, pushed, deployed, verified, accepted), real-input old-new comparison, consumer path, delegated-work acceptance — with browser and rendered-surface evidence as its UI facet; ships with triggering and behavioural evals. |
+| [artifact-hygiene](./skills/artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
+| [reader-facing-writing](./skills/reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents around per-artifact skeletons with page budgets, a form-by-content-shape table, per-medium figure rules, and before/after examples; ships with triggering and behavioural evals. |
+| [technical-diagramming](./skills/technical-diagramming/SKILL.md) | Builds and verifies evidence-grounded architecture, deployment, workflow, sequence, data-flow, lifecycle, and topology-comparison diagrams; ships with triggering and behavioral evals plus deterministic SVG checks. |
 
 All seven skills are self-contained and have no cross-skill prerequisites.
 
@@ -52,13 +52,14 @@ fallback is not a second source of truth when the owner is present.
 
 ```text
 agent-skills/
-├── <skill>/                            # one directory per skill, see the catalog above
-│   ├── SKILL.md                        # runtime-neutral source
-│   ├── agents/openai.yaml              # Codex/OpenAI UI metadata
-│   ├── evals/evals.json                # triggering and behavioural cases
-│   ├── references/
-│   ├── scripts/
-│   └── tests/
+├── skills/
+│   └── <skill>/                        # one directory per skill, see the catalog above
+│       ├── SKILL.md                    # runtime-neutral source
+│       ├── agents/openai.yaml          # Codex/OpenAI UI metadata
+│       ├── evals/evals.json            # triggering and behavioural cases
+│       ├── references/
+│       ├── scripts/
+│       └── tests/
 ├── rules/
 │   ├── core.md                         # always-on rules for CLAUDE.md / AGENTS.md
 │   ├── README.md                       # what may go in core.md, budget, measuring
@@ -73,14 +74,14 @@ agent-skills/
 └── tests/                              # offline gate: contracts, unit suites, runner harness tests
 ```
 
-The top-level skill directories are the single source of truth for the skills. `rules/` holds the always-on rule layer that the skills are designed against: `core.md` carries only universal invariants and no skill names, and [`rules/README.md`](./rules/README.md) records what may go in it. Agent Manager reads `rules/*.md` from this repository as rule templates, and `aliases/*.json` as recommended terminal shortcuts (see [`aliases/README.md`](./aliases/README.md)).
+The directories under `skills/` are the single source of truth for the skills. `rules/` holds the always-on rule layer that the skills are designed against: `core.md` carries only universal invariants and no skill names, and [`rules/README.md`](./rules/README.md) records what may go in it. Agent Manager reads `rules/*.md` from this repository as rule templates, and `aliases/*.json` as recommended terminal shortcuts (see [`aliases/README.md`](./aliases/README.md)).
 
 How a skill package is laid out, designed, and contributed is in [docs/authoring.md](./docs/authoring.md); how skills and rules are measured, and what the measurements found, is in [docs/evaluation.md](./docs/evaluation.md).
 
 ## Verification
 
 - `python3 -m unittest discover -s tests` — structure/contract gate plus every per-skill unit suite, the rule budget and anchor checks, and the alias shape checks
-- `npx skills-ref validate ./<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
+- `npx skills-ref validate ./skills/<skill>` — the Agent Skills reference validator, run per skill; optional because it needs the network, while the suite above stays offline and stdlib-only
 
 The model-backed runners in `tools/evals/` are described in [docs/evaluation.md](./docs/evaluation.md#runners).
 
@@ -90,7 +91,7 @@ You don't need to adopt any fixed installer; this repository emphasizes the port
 
 Common usage:
 
-1. Pick the skill directory you need.
+1. Pick the skill directory you need under `skills/`.
 2. Copy that directory into your agent skills path, or bring it into your own repo as a subdirectory / submodule.
 3. Make sure the runtime can discover `SKILL.md`.
 4. Let the agent invoke it via the skill's natural-language trigger conditions, reading `references/` or running `scripts/` on demand as needed.

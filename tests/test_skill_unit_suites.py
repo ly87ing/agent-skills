@@ -25,7 +25,7 @@ class PerSkillUnitSuiteTests(unittest.TestCase):
     def test_every_per_skill_suite_passes(self):
         suite_dirs = sorted(
             path / "tests"
-            for path in ROOT.iterdir()
+            for path in (ROOT / "skills").iterdir()
             if path.is_dir() and (path / "SKILL.md").exists() and (path / "tests").is_dir()
         )
         self.assertTrue(

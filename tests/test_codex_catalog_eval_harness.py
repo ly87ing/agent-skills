@@ -54,7 +54,7 @@ class CodexCatalogEvalHarnessTests(unittest.TestCase):
             installed.mkdir(parents=True)
             (source / "SKILL.md").write_text("current", encoding="utf-8")
             (installed / "SKILL.md").write_text("stale", encoding="utf-8")
-            with mock.patch.object(runner, "ROOT", root / "source"):
+            with mock.patch.object(runner, "SKILLS", root / "source"):
                 matched, _ = runner.matching_installed_skill(
                     "demo-skill",
                     [root / "installed"],

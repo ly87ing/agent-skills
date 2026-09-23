@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SKILLS = ROOT / "skills"
 MAINTAINED_SKILLS = {
     "artifact-hygiene",
     "change-discipline",
@@ -53,7 +54,7 @@ CJK_PATTERN = re.compile(r"[\u3000-\u303f\u3040-\u30ff\u4e00-\u9fff\uff00-\uffef
 def skill_dirs() -> list[Path]:
     return sorted(
         path
-        for path in ROOT.iterdir()
+        for path in SKILLS.iterdir()
         if path.is_dir() and (path / "SKILL.md").exists()
     )
 
@@ -75,6 +76,10 @@ class SkillContractTests(unittest.TestCase):
         current = {path.name for path in skill_dirs()}
 
         self.assertEqual(current, MAINTAINED_SKILLS)
+        # Skills live only under skills/: a package dropped at the top level would
+        # escape every check here and every consumer that reads skills/.
+        stray = sorted(path.name for path in ROOT.iterdir() if (path / "SKILL.md").exists())
+        self.assertEqual(stray, [], "skill packages belong under skills/")
 
     def test_all_skills_have_open_standard_frontmatter(self):
         for skill_dir in skill_dirs():
@@ -204,6 +209,7 @@ class SkillContractTests(unittest.TestCase):
         self.assertTrue(RULE_DERIVED_SKILLS.issubset(current))
         self.assertTrue(current.isdisjoint(RETIRED_SKILLS))
         for skill_name in RETIRED_SKILLS:
+            self.assertFalse((SKILLS / skill_name).exists(), skill_name)
             self.assertFalse((ROOT / skill_name).exists(), skill_name)
 
     def test_rule_derived_skills_preserve_agent_manager_rule_intent(self):
@@ -245,7 +251,7 @@ class SkillContractTests(unittest.TestCase):
         # loaded on demand and the old scope would forbid the split rather than
         # protect the intent.
         for skill_name, phrases in expected_phrases.items():
-            skill_dir = ROOT / skill_name
+            skill_dir = SKILLS / skill_name
             text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
             references_dir = skill_dir / "references"
             if references_dir.exists():
