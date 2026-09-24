@@ -60,6 +60,23 @@ The first behaviour measurements for the skills that had none, and checks on the
 
 Trigger, the same day, sonnet, N=3, with the built-in fixture re-captured on Claude Code 2.1.281: `wecom-docs-editing` 9/9 on its first live measurement; `solution-shaping` #11 (three candidate fixes compared) and #12, and `change-discipline` #36 (one fix proposed directly), all 3/3, so the two skills split the fix-scope ground cleanly.
 
+## Always-On Rule Delete Tests, 2026-09-24
+
+The first recorded runs of `run_rule_behaviour_evals.py` since it moved here, after its isolation fix (`5146e12`: every call now runs in a fresh empty directory with no saved sessions; before it, an arm could read the other arm's transcript from the throwaway HOME, and those numbers are not comparable). Sonnet, three runs per case, six per arm; `with` and `without` carry this repository's skill catalog, `bare` is the `without` arm run with `--no-skills`. A line leaves only when it shows no lift and a skill in `skills/` carries the same behaviour in its `SKILL.md`, per `rules/README.md`.
+
+| Line | With | Without | Bare | Cover in `skills/` | Outcome |
+| --- | --- | --- | --- | --- | --- |
+| Inspect the affected code and nearby tests before behaviour-changing edits | 0/6 | 0/6 | 1/6 | `change-discipline` hard gate: grep every caller, run the neighbouring tests | Deleted |
+| Never weaken tests to make code pass | 6/6 | 6/6 | 6/6 | `change-discipline` hard gate: never loosen a check to clear a symptom; a stale expectation is updated with the commit that voided it | Deleted |
+| Run the smallest relevant verification after every change | 1/6 | 1/6 | 0/6 | Partial: `change-discipline` defers to `verification`, which loads when asked to verify | Kept |
+| Say when verification was skipped or did not exercise the change | 6/6 | 6/6 | 5/6 | Partial: `verification` states what stays unverified, once it loads | Kept |
+| Verify load-bearing conclusions against primary sources | 6/6 | 5/6 | 6/6 | Partial: `change-discipline` covers a reported diagnosis; nothing covers a search summary | Kept |
+
+- The inspect line scored 0/6 even when present. Its first case named the 14 callers in the prompt and every arm passed; without that hint the `with` arm mentioned callers or tests in 4/6 answers and `without` in 3/6, and the answers read gave that reminder after handing over the edit rather than before, which the expectation rightly fails. The deleted lines' cases went with them; the prompts are in `51a5452`, and `change-discipline` #2, #16 and #22 cover the same ground from the skill side.
+- The verification line cannot be measured by this runner: `claude -p` has no permission to execute commands, so an arm that tries to run a check is blocked and fails the grade. The `with` arm tried in 5/6 answers, `without` in 2/6, `bare` in 4/6 — a hint, not a result.
+- A prompt that names a file the empty directory lacks makes every arm ask for the path and measures nothing; inline the material.
+- Codex is not measured here, which is why partial cover is not enough: its current model prompt says not to add or run tests unless asked, and a line leaves only when a skill installed on both runtimes carries it.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:

@@ -32,6 +32,12 @@ universal invariants, and nothing else that a skill or memory could carry instea
 - **The delete test decides.** A line earns its slot only if removing it makes the agent go wrong.
   The test has two moving subjects — which runtime and model, and as of when — so a past pass
   expires; re-measure rather than trust an old result.
+- **Only this repository's skills count as cover.** A line whose behaviour is still wanted leaves
+  only when a skill in `skills/` carries the same behaviour in its `SKILL.md` body and the delete
+  test shows no lift with the catalog present. A runtime's shipped prompt and skills maintained
+  elsewhere do not count: they change without this repository knowing, and they disagree (Codex's
+  current model prompt says not to run tests unless asked). A line with no lift but only partial
+  cover stays.
 - **No skill routing lines.** They were removed on 2026-09-21: descriptions already sit in both
   runtimes' system prompts and trigger on their own (measured in isolated HOMEs without the lines,
   then re-checked on real Claude Code and Codex runtimes; see the main README). A routing line is a
