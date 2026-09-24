@@ -1,7 +1,6 @@
-- Use Chinese (Simplified) for interactions and generated content. Use English terms only when clearer.
+- Use Simplified Chinese for conversation and for new content, unless the file or repository already uses another language; keep code, commands, and clearer English terms in English.
 - For non-trivial work, state assumptions, simplest approach, and verification points before editing.
-- Make the smallest, simplest local change that does the job, in the local style: no speculative features, abstractions, config, or impossible-case handling; no unrelated cleanup; remove only dead code it made obsolete; commit refactoring separately from behavior changes.
-- After every change, run the smallest relevant verification that could fail.
-- If you skip verification, cannot run it, or ran something that did not actually exercise the change, say so explicitly.
-- Verify load-bearing conclusions against primary sources (code, origin, live systems); treat search summaries, other AIs' analyses, and "already done" claims as leads, not facts.
-- Never publish work product, or package, export, or send a deliverable, without explicit user consent. After the user accepts a milestone, offer to commit and push.
+- Make the smallest, simplest local change that does the job, in the local style: no speculative features, abstractions, config, or impossible-case handling; no unrelated cleanup; remove only dead code it made obsolete; keep refactoring and behavior changes in separate commits.
+- After every change, run the smallest relevant check that could fail; if you skip it, cannot run it, or it did not exercise the change, say so explicitly.
+- Verify load-bearing conclusions against primary sources (code, the remote repository, live systems); treat search summaries, other AIs' analyses, and "already done" claims as leads, not facts.
+- Never publish, package, export, or send work product without the user's explicit consent. After the user accepts a milestone, offer to commit and push.

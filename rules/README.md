@@ -27,8 +27,10 @@ keeps the old paths, so read it with `git log 001ae92^2 -- src/shared/core.md` r
 Every line is paid for in every turn of every session, so it holds only two kinds of content:
 universal invariants, and nothing else that a skill or memory could carry instead.
 
-- **Invariant or procedure.** A fact that must hold in every turn stays; a workflow, checklist or
-  when-X-do-Y habit goes to the skill that owns it, or to memory.
+- **Every task, or only some.** A fact or habit that holds for every task stays: the reply
+  language, stating assumptions before non-trivial work, checking every change, asking before
+  publishing. A workflow, checklist, or habit that applies only to some kind of task goes to the
+  skill that owns it, or to memory.
 - **The delete test decides.** A line earns its slot only if removing it makes the agent go wrong.
   The test has two moving subjects — which runtime and model, and as of when — so a past pass
   expires; re-measure rather than trust an old result.
