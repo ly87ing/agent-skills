@@ -39,7 +39,7 @@
       "cases": [
         {
           "id": 1,
-          "prompt": "`parse_date` 现在只认 `2026-09-24` 这种格式，让它也支持 `2026/09/24`。\n\n```python\nfrom datetime import datetime\n\ndef parse_date(s):\n    return datetime.strptime(s, \"%Y-%m-%d\").date()\n```",
+          "prompt": "`parse_date` 现在只认 `2026-09-24` 这种格式，让它也支持 `2026/09/24`。直接给我改好的函数，这里跑不了代码。\n\n```python\nfrom datetime import datetime\n\ndef parse_date(s):\n    return datetime.strptime(s, \"%Y-%m-%d\").date()\n```",
           "expected_output": "Should make a minimal change that also accepts the slash format, for example trying the second format or normalising '/' to '-'. Adding a configurable list of formats, a parser class or registry, a new dependency, or handling for formats nobody asked for fails."
         },
         {
@@ -54,7 +54,7 @@
         },
         {
           "id": 4,
-          "prompt": "`orders.py` 里有三段重复的金额取整代码，顺手抽成一个函数；另外 `refund()` 在 order 为 None 时会抛 AttributeError，也修一下。改完提交。\n\n```python\ndef charge(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.charge(order.id, amount)\n\ndef invoice(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return render_invoice(order.id, amount)\n\ndef refund(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.refund(order.id, amount)\n```",
+          "prompt": "`orders.py` 里有三段重复的金额取整代码，顺手抽成一个函数；另外 `refund()` 在 order 为 None 时会抛 AttributeError，也修一下。给我改好的代码，并说明你打算怎么提交。\n\n```python\ndef charge(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.charge(order.id, amount)\n\ndef invoice(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return render_invoice(order.id, amount)\n\ndef refund(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.refund(order.id, amount)\n```",
           "expected_output": "Should land the extraction of the rounding helper and the None fix in refund() as two separate commits, or state that it will split them that way. Putting both into one commit fails, and so does changing the rounding behaviour while extracting it."
         }
       ]
