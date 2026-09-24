@@ -71,13 +71,14 @@ discarded when the browser closes.
    refuses unless the active tab is TAB and the Name Box shows exactly that anchor,
    because the selection can drift (see the pitfalls in ui-recipes); then it focuses
    the grid itself and pastes. If it returns `sheetChecked: false`, the tab could not be
-   read: confirm it from a screenshot before going on. One paste
-   is one undoable user action that syncs to collaborators like typing does; never
-   write through the page's internal data model.
+   read: confirm it from a screenshot before going on. One paste is one undoable user
+   action that syncs to collaborators like typing does; never write through the
+   page's internal data model.
 4. **Verify.** Evaluate `verify --input BLOCK --anchor A1 --sheet TAB` with the same
    file, anchor, and tab. Require `ok: true`: the right tab, every cell equal, every link
-   present, nothing spilled past the block. Report any diff as found; the sheet may reformat number-like text (leading
-   zeros, dates), and whether to keep that is the user's call, not a silent retry.
+   present, nothing spilled past the block. Report any diff as found; the sheet may
+   reformat number-like text (leading zeros, dates), and whether to keep that is the
+   user's call, not a silent retry.
 5. **Format on request.** Prefer colored dropdown options for columns with a fixed
    vocabulary: they color every value and reject typos that would make a text rule miss.
    Use conditional formatting for open text or formula rules, then a filter and a frozen
@@ -87,8 +88,7 @@ discarded when the browser closes.
    works: count from the source data how many cells in the apply range it should color,
    then require `ok: true` from `cf-matches --range K2:K77 --sheet TAB --expect N`. A
    rule that colors fewer or more cells than that is a failed rule to fix, not a
-   finished one.
-   Click paths, labels, and the palette are in
+   finished one. Click paths, labels, and the palette are in
    [references/ui-recipes.md](references/ui-recipes.md).
 6. **Report.** State the tab and range written, cells compared, the diff count, links
    checked, each formatting change with its read-back (for a conditional format, the
