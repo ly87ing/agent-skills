@@ -35,7 +35,7 @@ Pick by the reader's job. Sections are in order; a section the material cannot f
 | Change handoff note (for QA, ops, or the next owner) | What changed, deletions included, one line each, named by the behaviour and not by merge request, class, or review round; what the user can perceive; how it is designed, so a tester can derive cases; what to test, in priority order; what is not a defect; what must be prepared; what the developer has verified; who still has to confirm what; what to watch at rollout; developer contact | 1 page; details as a linked appendix | Table of changes; a diagram only for a flow the tester cannot infer |
 | Notice | The change, who is affected and who is not, when | One paragraph | None |
 | Reference / lookup, API reference | Searchable headings; signature or field, parameter table, one example, errors; no narrative | No prose beyond a lead line | Table |
-| Agent instruction file (AGENTS.md, CLAUDE.md) | Commands, paths, boundaries, hard rules | Delete test on every line | None |
+| Agent instruction file (AGENTS.md, CLAUDE.md, a rules doc) | Commands, paths, boundaries (what may and may not change), and hard rules stated as their executable part; no mission, ownership, vision, process asides, or slogans; titled with the repository name | Every line whose removal would not change what the agent does is deleted | None |
 
 A deck follows the same skeleton as its subject, one claim per slide as the headline with the proving visual beneath it; a new audience gets one slide on what the subject is before any implication.
 
@@ -116,7 +116,3 @@ After: a sequence diagram with a one-line takeaway and the one sentence the diag
 **Notice.** Two numbers and a date do not need a title, a background section, or next steps:
 
 > Old login closes Friday 18:00. Signed-in users are unaffected. Anyone not moved to the new login by then cannot sign in on Monday.
-
-## Agent-facing instruction files
-
-When the reader is an agent that acts on the file (AGENTS.md, CLAUDE.md, a rules doc), keep only commands, paths, boundaries (what may and may not change), and hard rules stated as their executable part; cut mission, ownership, vision, process asides, and slogans. Delete every line whose removal would not change what the agent does, and title the file with the repository name.
