@@ -40,7 +40,7 @@ universal invariants, and nothing else that a skill or memory could carry instea
   cover stays.
 - **No skill routing lines.** They were removed on 2026-09-21: descriptions already sit in both
   runtimes' system prompts and trigger on their own (measured in isolated HOMEs without the lines,
-  then re-checked on real Claude Code and Codex runtimes; see the main README). A routing line is a
+  then re-checked on real Claude Code and Codex runtimes; see `docs/evaluation.md`). A routing line is a
   second copy of the trigger that couples this layer to skill names. Adding, splitting or renaming a
   skill must not require touching `core.md`.
 - **No tool nudging.** No clauses that push the agent toward a particular MCP server or tool; tools
@@ -52,9 +52,9 @@ universal invariants, and nothing else that a skill or memory could carry instea
 - **No hooks where a line will do.** Hooks are runtime-specific: each runtime registers, trusts,
   and scopes them differently, and they disagree on what a hook may decide (Claude Code's
   `PreToolUse` can ask the user; Codex's is reported to support only deny, and only for shell
-  calls). The constraint therefore lives in `core.md` as a line both runtimes read. A `PreToolUse` gate for the publish line was built,
-  passed an end-to-end test on Claude Code, and was removed on 2026-09-24 for this reason; its
-  code is in `d99e87c`.
+  calls). The constraint therefore lives in `core.md` as a line both runtimes read. A
+  `PreToolUse` gate for the publish line was built, passed an end-to-end test on Claude Code,
+  and was removed on 2026-09-24 for this reason; its code is in `d99e87c`.
 
 ## Size budget
 
@@ -82,5 +82,5 @@ figure that justifies the line. It calls the model, so run it deliberately, not 
   unless the mechanism replacing it exists on both runtimes.
 - **Anchors.** Cases live in `evals/core.json`; each rule's `anchor` must match exactly one line of
   `core.md`. Update the anchor when rewording the line.
-- **Reading results.** Use the reading rules in the main README: judge with sonnet or larger, run
-  enough repetitions, and compare Wilson intervals rather than point rates.
+- **Reading results.** Use the reading rules in `docs/evaluation.md`: judge with sonnet or larger,
+  run enough repetitions, and compare Wilson intervals rather than point rates.
