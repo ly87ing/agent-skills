@@ -24,6 +24,7 @@ stay read-only.
    - Infrastructure details should stay behind adapters instead of leaking inward.
 4. Define contract changes explicitly.
    - For config, schema, or workflow changes, state defaults, failure mode, rollback path, and whether migration is required.
+   - A feature that snapshots data on its own, such as a pre-upgrade config backup, is opt-in and off by default rather than producing a copy on every run.
    - For a setup, provisioning, sync, or migration action meant to run more than once, state and ensure it is idempotent: re-running converges to the same state — applying only the missing delta and pruning what no longer belongs — instead of duplicating, clobbering, or failing on the second run. A non-idempotent re-run is a defect for anything automated or re-entrant.
    - For shared helpers or public surfaces, keep the interface narrow and name the concrete caller or test that justifies it.
 5. Verify the boundary before completion.
