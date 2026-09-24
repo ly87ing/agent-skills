@@ -46,7 +46,7 @@ decision with one owner:
 | Name the rung a claim of done has reached, and accept delegated work | `verification` |
 | Prove the built artifact in a browser: interactions, focus, zoom, contrast, overflow, responsive states, and console/runtime failures | `verification` |
 | Prove a merge is complete and correct, and decide whether it may be pushed | `safe-merge-review` |
-| Decide file placement, redaction, cleanup, runtime-dependency packaging, and clean handoff; keep credentials out of printed output, logs, and files | `artifact-hygiene` |
+| Decide file placement, redaction, cleanup, runtime-dependency packaging, and clean handoff; keep credentials out of printed output, logs, and files; reclaim repository weight from committed binaries, including a destructive history rewrite | `artifact-hygiene` |
 | Write into a shared WeCom sheet, read every cell back, and keep its login in the temporary browser profile | `wecom-docs-editing` |
 
 When the named owner is unavailable, the skill already in use may apply only its
