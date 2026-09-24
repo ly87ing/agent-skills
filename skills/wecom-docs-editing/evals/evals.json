@@ -35,6 +35,16 @@
       "id": 7,
       "prompt": "读一下这个 ONES wiki 页面的正文，帮我总结成三条要点。",
       "expected_output": "Should NOT trigger wecom-docs-editing. The source is a wiki page in an issue tracker, read rather than edited, and it is not a WeCom Docs spreadsheet."
+    },
+    {
+      "id": 8,
+      "prompt": "https://doc.weixin.qq.com/sheet/e3_Q1w2E3 这个表的 B 列全部改成下拉，选项是「通过 / 不通过 / 待定」，通过标绿、不通过标红，改完确认一下。",
+      "expected_output": "Should trigger wecom-docs-editing. The request names no product, but the doc.weixin.qq.com/sheet link is the WeCom sheet editor. The result should apply a colored dropdown validation to the range, set each option's color, and confirm the stored options and colors by reopening the validation dialog on the range and on a cell outside it."
+    },
+    {
+      "id": 9,
+      "prompt": "把 export.json 里的 40 行填进这个腾讯文档在线表格 https://docs.qq.com/sheet/DZmFrZUlk 的 Sheet1，从 A1 开始，填完核对一下。",
+      "expected_output": "Should NOT trigger wecom-docs-editing. A Tencent Docs sheet at docs.qq.com is a different product with its own editor; this skill's selectors, page script, and read-back cover only the WeCom sheet editor at doc.weixin.qq.com/sheet."
     }
   ]
 }
