@@ -1,8 +1,8 @@
 # Style, naming, validation, comments
 
 Read this when the change has a style, naming, input-validation, or comment dimension
-— including serialized config where a value can change how the file parses, and any
-final diff re-read before declaring the change done.
+— including serialized config where a value can change how the file parses, a formatter
+run, or deleting a test or guard.
 
 1. Match the local style first.
    - Use the repository's established formatter, lint, type-check, naming, and file layout.
@@ -22,6 +22,5 @@ final diff re-read before declaring the change done.
    - Stop if the comment explains intent that clearer code should carry instead — rename or restructure rather than annotate.
 5. Re-read the diff before completion.
    - Remove accidental churn, dead code, debug leftovers, misleading names, and stale comments.
-   - Before deleting code, confirm why it exists (check version-control history) and that it is truly dead.
-   - When told a resource is retired/no-longer-maintained, do a full-footprint sweep (`git grep` across code, tests, docs, Makefile, config, and wiring) and handle sibling retired resources together — do not clean up only the one that was named while leaving the rest half-removed.
+   - When told a resource is retired, handle its sibling retired resources in the same change rather than leaving them half-removed; the literal-string sweep for each is the hard gate's.
    - Distinguish a tombstone guard (a test asserting a removed feature stays gone — safe to delete along with the feature) from a build-safety/security guard (content or invariant checks kept for a build or security reason). The commit that added the guard tells you which; do not delete the latter as "redundant".
