@@ -52,10 +52,11 @@ universal invariants, and nothing else that a skill or memory could carry instea
 
 ## Size budget
 
-`tests/test_rule_contracts.py` caps `round(len(core.md) / 4)` at 545. The core has long run close
-to the cap, so rewrites should be character-neutral or shorter. Raise the cap only together with a
-line that passed the delete test, and lower it again when that line leaves; never raise it to make
-the test pass. The same test checks that every eval anchor matches exactly one line.
+`tests/test_rule_contracts.py` caps `round(len(core.md) / 4)` at 270, just above the current size.
+Rewrites should be character-neutral or shorter. Raise the cap only together with a line that passed
+the delete test, and lower it again when that line leaves; never raise it to make the test pass. The
+same test checks that every eval anchor matches exactly one line, and that every line of `core.md`
+has an eval rule, since a line with no case can never be put to the delete test.
 
 ## Measuring a line
 

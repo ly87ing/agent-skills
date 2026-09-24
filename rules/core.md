@@ -1,8 +1,6 @@
 - Use Chinese (Simplified) for interactions and generated content. Use English terms only when clearer.
 - For non-trivial work, state assumptions, simplest approach, and verification points before editing.
-- Prefer the simplest local change. No speculative features, abstractions, config, or impossible-case handling.
-- Keep edits surgical: match local style, avoid unrelated cleanup, and remove only dead code made obsolete.
-- Keep changes small and focused; commit refactoring separately from behavior changes.
+- Make the smallest, simplest local change that does the job, in the local style: no speculative features, abstractions, config, or impossible-case handling; no unrelated cleanup; remove only dead code it made obsolete; commit refactoring separately from behavior changes.
 - After every change, run the smallest relevant verification that could fail.
 - If you skip verification, cannot run it, or ran something that did not actually exercise the change, say so explicitly.
 - Verify load-bearing conclusions against primary sources (code, origin, live systems); treat search summaries, other AIs' analyses, and "already done" claims as leads, not facts.

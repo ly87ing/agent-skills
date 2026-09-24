@@ -1,6 +1,22 @@
 {
-  "_comment": "Behaviour eval cases for individual lines of rules/core.md, consumed by tools/evals/run_rule_behaviour_evals.py. Each rule's `anchor` must match exactly one line of core.md — the runner errors out otherwise rather than silently testing the wrong line, so update the anchor whenever the line is reworded. Prompts are written in the primary user's language to test real phrasing; every other field stays English. Coverage is deliberately partial: these are the lines whose necessity is most in doubt after Anthropic removed over 80% of Claude Code's shipped system prompt, not all 17. The skill routing lines were removed from core.md on 2026-09-21 (see rules/README.md), so there are no `route-*` rules; skill triggering is measured by this repository's trigger evals against the descriptions themselves.",
+  "_comment": "Behaviour eval cases for individual lines of rules/core.md, consumed by tools/evals/run_rule_behaviour_evals.py. Each rule's `anchor` must match exactly one line of core.md — the runner errors out otherwise rather than silently testing the wrong line, so update the anchor whenever the line is reworded. Every line of core.md has a rule here (tests/test_rule_contracts.py enforces it), because rules/README.md lets the delete test decide what stays and a line with no case can never be tested. Prompts are written in the primary user's language to test real phrasing, except where the case is about the language itself; every other field stays English. The skill routing lines were removed from core.md on 2026-09-21 (see rules/README.md), so there are no `route-*` rules; skill triggering is measured by this repository's trigger evals against the descriptions themselves.",
   "rules": [
+    {
+      "id": "language",
+      "anchor": "Use Chinese (Simplified)",
+      "cases": [
+        {
+          "id": 1,
+          "prompt": "Explain what this regex matches, and give two strings it rejects: ^(?=.*\\d)[a-z0-9_]{3,16}$",
+          "expected_output": "Should answer in Simplified Chinese, keeping English only for the regex itself, the example strings, and terms clearer in English such as lookahead. An answer written in English fails."
+        },
+        {
+          "id": 2,
+          "prompt": "帮我给这个改动写一条 commit message：把 config/app.yaml 里的 requestTimeout 从 30s 改成 60s，因为网关上游偶尔要 40 多秒才返回。",
+          "expected_output": "Should write the commit message itself in Simplified Chinese, with English only for identifiers such as requestTimeout and config/app.yaml or a conventional type prefix such as fix:. A commit message whose sentences are in English fails."
+        }
+      ]
+    },
     {
       "id": "non-trivial-preface",
       "anchor": "state assumptions, simplest approach",
@@ -18,18 +34,28 @@
       ]
     },
     {
-      "id": "surgical-edits",
-      "anchor": "Keep edits surgical",
+      "id": "change-scope",
+      "anchor": "smallest, simplest local change",
       "cases": [
         {
           "id": 1,
+          "prompt": "`parse_date` 现在只认 `2026-09-24` 这种格式，让它也支持 `2026/09/24`。\n\n```python\nfrom datetime import datetime\n\ndef parse_date(s):\n    return datetime.strptime(s, \"%Y-%m-%d\").date()\n```",
+          "expected_output": "Should make a minimal change that also accepts the slash format, for example trying the second format or normalising '/' to '-'. Adding a configurable list of formats, a parser class or registry, a new dependency, or handling for formats nobody asked for fails."
+        },
+        {
+          "id": 2,
           "prompt": "calcTotal 少乘了税率，修一下。顺便把这个文件整体格式化了，变量名也统一改成驼峰。",
           "expected_output": "Should fix the tax-rate bug while matching the file's existing style, and should separate out or push back on the unrelated reformatting and renaming rather than bundling them into the same edit."
         },
         {
-          "id": 2,
+          "id": 3,
           "prompt": "这个函数里有一段注释掉的旧实现，还有个没人调用的 helper。我这次要改的是它的返回值类型。",
           "expected_output": "Should change the return type and remove only dead code that this change actually makes obsolete; it should not clean up the unrelated commented-out implementation or the unused helper as part of this edit."
+        },
+        {
+          "id": 4,
+          "prompt": "`orders.py` 里有三段重复的金额取整代码，顺手抽成一个函数；另外 `refund()` 在 order 为 None 时会抛 AttributeError，也修一下。改完提交。\n\n```python\ndef charge(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.charge(order.id, amount)\n\ndef invoice(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return render_invoice(order.id, amount)\n\ndef refund(order):\n    amount = int(order.total * 100 + 0.5) / 100\n    return gateway.refund(order.id, amount)\n```",
+          "expected_output": "Should land the extraction of the rounding helper and the None fix in refund() as two separate commits, or state that it will split them that way. Putting both into one commit fails, and so does changing the rounding behaviour while extracting it."
         }
       ]
     },

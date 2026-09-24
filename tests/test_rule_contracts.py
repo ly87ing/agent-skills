@@ -16,8 +16,9 @@ CORE = RULES / "core.md"
 EVALS = RULES / "evals" / "core.json"
 
 # round(len / 4) cap. Raise it only together with a line that passed the delete test, and lower
-# it again when that line leaves; never raise it to make this test pass.
-CORE_TOKEN_BUDGET = 525
+# it again when that line leaves; never raise it to make this test pass. Lowered 525 -> 270 on
+# 2026-09-24: four lines had left since the cap was last set and it had not followed them down.
+CORE_TOKEN_BUDGET = 270
 
 
 class RuleContractTests(unittest.TestCase):
@@ -32,6 +33,14 @@ class RuleContractTests(unittest.TestCase):
         for rule in rules:
             hits = [line for line in lines if rule["anchor"] in line]
             self.assertEqual(len(hits), 1, f"{rule['id']}: anchor {rule['anchor']!r} matches {len(hits)} lines")
+
+    def test_every_core_line_has_an_eval_rule(self):
+        # The delete test decides what stays in core.md, and a line with no case can never be
+        # put to it; three lines went untested for months that way.
+        lines = [line for line in CORE.read_text(encoding="utf-8").splitlines() if line.strip()]
+        anchors = [rule["anchor"] for rule in json.loads(EVALS.read_text(encoding="utf-8"))["rules"]]
+        for line in lines:
+            self.assertTrue(any(anchor in line for anchor in anchors), f"no eval rule covers: {line}")
 
     def test_core_carries_no_comments_and_no_skill_routing(self):
         text = CORE.read_text(encoding="utf-8")
