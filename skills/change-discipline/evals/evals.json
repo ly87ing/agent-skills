@@ -24,6 +24,7 @@
     {
       "id": 5,
       "prompt": "There's a small off-by-one bug inside this private function. Help me fix it in place; it touches no interfaces, contracts, naming, or config.",
+      "behaviour_prompt": "There's a small off-by-one bug inside this private function. Help me fix it in place; it touches no interfaces, contracts, naming, or config.\n\ndef _last_page(items, page_size):\n    # items on the last page\n    pages = len(items) // page_size\n    start = pages * page_size\n    return items[start:]\n\nWhen len(items) is an exact multiple of page_size it returns an empty list instead of the last full page. Its only caller is paginate() in the same file, and tests/test_paging.py covers paginate().",
       "expected_output": "Should trigger change-discipline, at its lightest weight. The skill's hard gate covers every edit of existing code, so even a purely local fix inherits it: establish why the current logic is what it is before changing it, and verify with the narrowest test that could fail. What it must NOT pull in is the boundary and style/contract workflow — no interface, dependency, naming, validation, or config dimension is in play here, so treating this as a full review track is over-applying the skill."
     },
     {
