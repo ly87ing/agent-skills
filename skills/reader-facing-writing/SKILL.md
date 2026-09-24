@@ -11,7 +11,7 @@ A reader-facing artifact has one job, a page budget, and a figure wherever the c
 
 1. Fix the reader and the job. Decide who reads, what they already know, and whether they must decide, do, look up, or understand. One artifact, one job; a second job becomes a note or a linked artifact. Do not label the audience, purpose, or writing process in the artifact: no "for the on-call lead" in a title, no background section about the document itself (context about the system is content and stays); the opening starts with what the reader came for. Preserve a structure, framework, or correction list the user supplied, and treat requested prominence as a delivery contract, not a footnote. For a large subjective rewrite with no target tone, structure, or ordering, show a compact outline or 2-3 options before executing.
 2. Pick the skeleton and its budget from the table below. The budget is a ceiling for the main path; everything the main path does not need goes to one named detail layer (appendix, linked page, click-to-open), never to a second overview.
-3. Draft each section as one screen: a claim-led heading, the figure or table that carries the relationship, at most five sentences that argue from it, and a link to detail. Choose the figure with the form table, and its rendering by the target medium: Markdown on a code host renders static images, Mermaid, and GIF; an HTML page or deck can also carry video, step-by-step reveal, and click-to-open evidence, with a static fallback for each. Read [references/visuals-and-decks.md](references/visuals-and-decks.md) when the artifact carries a chart, diagram, screenshot, before/after pair, recording, GIF, deck, or HTML page.
+3. Draft each section as one screen. Head it by the reader's job: a claim where they decide or understand, an action or outcome where they do (a how-to's numbered steps), a searchable term where they look something up. Under it, the figure or table that carries the relationship when the content has a shape (the skeleton's default figure), at most five sentences that argue from it, and a link to detail. Choose the figure with the form table, and its rendering by the target medium: Markdown on a code host renders static images, Mermaid, and GIF; an HTML page or deck can also carry video, step-by-step reveal, and click-to-open evidence, with a static fallback for each. Read [references/visuals-and-decks.md](references/visuals-and-decks.md) when the artifact carries a chart, diagram, screenshot, before/after pair, recording, GIF, deck, or HTML page.
 4. Preserve source truth. Keep the source framework when condensing; use source wording for numbers, names, owners, and dates; keep observation, self-report, inference, and unknowns distinct, and mark unknowns TBD or cut them (a TBD is resolved or removed before a view-only audience sees it). When shipped and planned items share a list, tag maturity inline. Keep the scope that qualifies a claim (environment, period, population, excluded cases) beside it, and keep it there when the claim is compressed into a table: "79 nodes" measured on a sampled development cluster, placed unqualified in a delivery-shape matrix, read as the product's delivery size and had to be re-labelled as sample data. Never assert a capability or track record of your own side you only inferred, and never fill a length quota with invented detail. Read [references/shaping-checklist.md](references/shaping-checklist.md) when sources conflict, mix delivered with planned, or were written for a different audience.
 5. Write plain sentences with [references/prose-style.md](references/prose-style.md): active voice, one idea per sentence, no announcements, no meta-commentary, terms calibrated to the reader.
 6. Delete to budget with [references/revision-pass.md](references/revision-pass.md): drop every sentence whose removal loses no fact and every visual whose removal makes no relationship harder to see, then run the entry-point, findability, and doing-path checks. The delete pass never removes prerequisites, commands, decision points, rollback, or done checks from a how-to, and leaves bold only on the few decisions, dates, or numbers a skimmer must catch. Report what stays unverified; an author reread never proves a human understood it.
@@ -75,7 +75,7 @@ Before, scaffolding around 40 words of fact:
 
 After:
 
-> **Search was down 29 minutes (14:02-14:31); the permanent fix is merged but not released.**
+> **Search returned timeouts for 29 minutes (14:02-14:31); the permanent fix is merged but not released.**
 >
 > Root cause: cache TTL deployed as 0 instead of 300. Rolling back the config restored service.
 >
@@ -98,7 +98,7 @@ After: a sequence diagram with a one-line takeaway and the one sentence the diag
 >   Scan->>Metadata: lookup
 >   Metadata->>Queue: enqueue
 >   Scan-->>Upload: result (slow)
->   Note over Upload: 32 workers, all waiting on Scan
+>   Note over Upload: worker held until Scan returns
 > ```
 >
 > Scan's latency is inherited by every caller because the upload-to-scan call is synchronous; making that call asynchronous is the change under review.
