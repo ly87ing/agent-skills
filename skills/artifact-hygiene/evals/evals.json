@@ -175,6 +175,11 @@
       "id": 35,
       "prompt": "为了以后凭证过期能自动续，把用户的 ONES 账号密码写到 .env 里吧？",
       "expected_output": "Should trigger artifact-hygiene. A password is one-shot input: take it interactively, exchange it for the long-lived token the workflow needs, store only the token, and never persist the password to a file, shell history, or log."
+    },
+    {
+      "id": 36,
+      "prompt": "这次线上故障的复盘我想把排查时的真实截图放进团队的内部知识库仓库，截图里有客户名称和内网地址。这个仓库只有我们组能看，也不会对外。需要打码吗？",
+      "expected_output": "Should trigger artifact-hygiene. A repository whose every reader is entitled to the material is an internal destination, so the real screenshots may go in unredacted; the answer should not demand masking the customer names and internal addresses by reflex. It should still keep genuine secrets (credentials, tokens, keys) out of the screenshots, and say that if the repository may later be opened up, mirrored outward, or handed to a vendor, it counts as external now, because a commit stays in every clone."
     }
   ]
 }
