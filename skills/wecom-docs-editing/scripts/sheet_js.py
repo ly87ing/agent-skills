@@ -8,9 +8,11 @@ character as \\u would triple the size of a block that has to travel inside a to
 
 Subcommands:
   paste            write a block of rows via a synthetic paste, refusing unless the Name Box
-                   shows the expected anchor
-  verify           compare a written block, its links, and its borders against the source;
-                   with --blank, prove the footprint is empty before writing
+                   shows the expected anchor and the active tab is the expected sheet
+  verify           compare a written block, its links, and its borders against the source,
+                   on the expected sheet tab; with --blank, prove the footprint is empty
+                   before writing
+  cf-matches       count the cells in a range that a conditional format actually colors
   state            report login page, sheet name, size, frozen panes, and filter range
   menu-pick        hover through an open toolbar menu and click the final item
   dropdown-colors  set option colors inside an open data-validation dialog
@@ -163,10 +165,27 @@ def load_block(path: Path) -> tuple[list[list[str]], list[list], int]:
     return rows, [[l[0], l[1], str(l[2])] for l in links], changed
 
 
-def build_paste(rows: list[list[str]], links: list[list], anchor: str) -> str:
+def check_sheet_name(sheet_name: str) -> str:
+    name = sheet_name.strip()
+    if not name:
+        raise InputError("--sheet must name the sheet tab, as `state` reports it")
+    return name
+
+
+JS_SHEET_CHECK = (
+    " const tab = sheet ? String(sheet.getSheetName()).trim() : null;"
+    " const onSheet = tab === expectedSheet;"
+)
+
+
+def build_paste(rows: list[list[str]], links: list[list], anchor: str, sheet_name: str) -> str:
     anchor = to_a1(*parse_cell(anchor))
+    expected_sheet = check_sheet_name(sheet_name)
     return (
         "() => { const rows = " + js(rows) + "; const links = " + js(links) + "; const anchor = " + js(anchor) + ";"
+        " const expectedSheet = " + js(expected_sheet) + "; " + JS_MODEL + JS_SHEET_CHECK +
+        " if (sheet && !onSheet) return { ok: false, error: \"active tab is \" + tab + \", expected \" + expectedSheet"
+        " + \"; switch to the expected tab and run paste again\" };"
         " const nameBox = document.querySelector(\"input.bar-label\");"
         " const current = () => nameBox ? nameBox.value.trim().toUpperCase().replace(/\\$/g, \"\") : null;"
         " if (current() !== anchor) return { ok: false, error: \"selection is \" + current() + \", expected \" + anchor"
@@ -184,17 +203,22 @@ def build_paste(rows: list[list[str]], links: list[list], anchor: str) -> str:
         " html += \"</table>\";"
         " const dt = new DataTransfer(); dt.setData(\"text/plain\", tsv); dt.setData(\"text/html\", html);"
         " const handled = !target.dispatchEvent(new ClipboardEvent(\"paste\", { clipboardData: dt, bubbles: true, cancelable: true }));"
-        " return { ok: handled, anchor, rows: rows.length, cols: rows[0].length, links: links.length,"
-        " note: handled ? \"editor accepted the paste; run verify next\" : \"editor ignored the paste\" }; }"
+        " return { ok: handled, anchor, sheet: tab, sheetChecked: !!sheet, rows: rows.length, cols: rows[0].length, links: links.length,"
+        " note: !handled ? \"editor ignored the paste\" : sheet ? \"editor accepted the paste; run verify next\""
+        " : \"editor accepted the paste, but the active tab could not be read; confirm it from a screenshot\" }; }"
     )
 
 
-def build_verify(rows: list[list[str]], links: list[list], anchor: str) -> str:
+def build_verify(rows: list[list[str]], links: list[list], anchor: str, sheet_name: str) -> str:
     r0, c0 = parse_cell(anchor)
+    expected_sheet = check_sheet_name(sheet_name)
     return (
         "() => { " + JS_MODEL + " " + JS_A1 +
         " if (!sheet) return { ok: false, error: \"spreadsheet model not available; verify from screenshots"
-        " and report the evidence as weaker\" }; " + JS_TEXT +
+        " and report the evidence as weaker\" };"
+        " const expectedSheet = " + js(expected_sheet) + ";" + JS_SHEET_CHECK +
+        " if (!onSheet) return { ok: false, error: \"active tab is \" + tab + \", expected \" + expectedSheet"
+        " + \"; the cells read would belong to the wrong tab\" }; " + JS_TEXT +
         " const rows = " + js(rows) + "; const links = " + js(links) + ";"
         " const r0 = " + js(r0) + "; const c0 = " + js(c0) + "; const width = rows[0].length;"
         " const diffs = []; let checked = 0;"
@@ -212,6 +236,34 @@ def build_verify(rows: list[list[str]], links: list[list], anchor: str) -> str:
         " sheet: sheet.getSheetName(), range: A1(r0, c0) + \":\" + A1(r0 + rows.length - 1, c0 + width - 1),"
         " checked, diffCount: diffs.length, diffs: diffs.slice(0, 20), linksChecked: links.length,"
         " linkBad: linkBad.slice(0, 20), spill: spill.slice(0, 20) }; }"
+    )
+
+
+def build_cf_matches(cell_range: str, sheet_name: str, expect: int | None) -> str:
+    r0, c0, r1, c1 = parse_range(cell_range)
+    expected_sheet = check_sheet_name(sheet_name)
+    return (
+        "() => { " + JS_MODEL + " " + JS_A1 +
+        " if (!sheet) return { ok: false, error: \"spreadsheet model not available; conditional-format matches"
+        " cannot be read\" };"
+        " const expectedSheet = " + js(expected_sheet) + ";" + JS_SHEET_CHECK +
+        " if (!onSheet) return { ok: false, error: \"active tab is \" + tab + \", expected \" + expectedSheet };"
+        " " + JS_TEXT +
+        " const r0 = " + js(r0) + "; const c0 = " + js(c0) + "; const r1 = " + js(r1) + "; const c1 = " + js(c1) + ";"
+        " const expect = " + js(expect) + ";"
+        " const matched = []; const unmatched = {}; let checked = 0; let unreadable = 0;"
+        " for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) { checked += 1;"
+        " const d = sheet.getCellDataAtPosition(r, c); let res;"
+        " try { res = d && d.getConditionalFormattingResult ? d.getConditionalFormattingResult() : null; }"
+        " catch (e) { unreadable += 1; continue; }"
+        " let raw = \"null\"; try { raw = JSON.stringify(res) || \"null\"; } catch (e) { raw = String(res); }"
+        " if (res != null && raw !== \"{}\" && raw !== \"[]\" && raw !== \"null\")"
+        " matched.push({ cell: A1(r, c), value: text(r, c), result: raw.slice(0, 200) });"
+        " else { const v = text(r, c); unmatched[v] = (unmatched[v] || 0) + 1; } }"
+        " const countOk = expect === null || matched.length === expect;"
+        " return { ok: unreadable === 0 && countOk, sheet: tab, range: A1(r0, c0) + \":\" + A1(r1, c1), checked,"
+        " matchedCount: matched.length, expected: expect, matched: matched.slice(0, 20),"
+        " unmatchedValues: Object.entries(unmatched).slice(0, 20), unreadable }; }"
     )
 
 
@@ -306,14 +358,25 @@ def main(argv: list[str] | None = None) -> int:
     p_paste = sub.add_parser("paste", help="write rows at the selected anchor cell")
     p_paste.add_argument("--input", required=True, type=Path, help="CSV, JSON rows, or {rows, links} JSON")
     p_paste.add_argument("--anchor", required=True, help="cell the Name Box must show before pasting, e.g. A1")
+    p_paste.add_argument("--sheet", required=True, help="sheet tab the block belongs on, as `state` reports it")
 
     p_verify = sub.add_parser("verify", help="compare the written block with the source")
     p_verify.add_argument("--input", required=True, type=Path)
     p_verify.add_argument("--anchor", required=True, help="top-left cell of the block, e.g. A1")
+    p_verify.add_argument("--sheet", required=True, help="sheet tab the block belongs on, as `state` reports it")
     p_verify.add_argument(
         "--blank",
         action="store_true",
         help="expect every cell of the block's footprint to be empty; run before writing",
+    )
+
+    p_cf = sub.add_parser("cf-matches", help="count cells a conditional format actually colors")
+    p_cf.add_argument("--range", required=True, help="the rule's apply range, e.g. K2:K77")
+    p_cf.add_argument("--sheet", required=True, help="sheet tab the rule belongs to, as `state` reports it")
+    p_cf.add_argument(
+        "--expect",
+        type=int,
+        help="number of cells the rule should color, counted from the source data; ok requires it",
     )
 
     sub.add_parser("state", help="report login, sheet, frozen panes, and filter")
@@ -336,12 +399,16 @@ def main(argv: list[str] | None = None) -> int:
             rows, links, changed = load_block(args.input)
             if changed:
                 print(f"note: {changed} cell(s) had tabs or line breaks replaced by spaces", file=sys.stderr)
-            print(build_paste(rows, links, args.anchor))
+            print(build_paste(rows, links, args.anchor, args.sheet))
         elif args.command == "verify":
             rows, links, _ = load_block(args.input)
             if args.blank:
                 rows, links = [[""] * len(rows[0]) for _ in rows], []
-            print(build_verify(rows, links, args.anchor))
+            print(build_verify(rows, links, args.anchor, args.sheet))
+        elif args.command == "cf-matches":
+            if args.expect is not None and args.expect < 0:
+                raise InputError("--expect must be zero or more")
+            print(build_cf_matches(args.range, args.sheet, args.expect))
         elif args.command == "state":
             print(build_state())
         elif args.command == "menu-pick":

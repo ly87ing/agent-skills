@@ -120,7 +120,11 @@ readable as a chip in both light and dark themes.
   rule before deleting anything. "Delete all" asks for confirmation with the number of
   rules; compare it with the rules this session created.
 - Per-cell results can be read with `getConditionalFormattingResult()` on a cell from
-  the data model, whose fill color names the rule that matched.
+  the data model, whose fill color names the rule that matched. `cf-matches` counts a
+  cell as colored when that result is non-empty, and lists the matched cells and the
+  values it left uncolored. That empty-versus-filled reading was not re-checked on the
+  live editor when the helper was added, so on its first run compare one cell that
+  should match and one that should not before trusting the count.
 
 ## 7. Filter and frozen rows
 

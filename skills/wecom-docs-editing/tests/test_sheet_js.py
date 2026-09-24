@@ -3,8 +3,10 @@
 The generated functions run inside a live, shared spreadsheet, so the failure modes
 worth pinning are the silent ones: a tab or line break inside a cell shifting every
 later column of the paste, an anchor parsed one column off so verification compares
-the wrong cells and still reports them, a CJK label that no longer matches the page, and
-a color name that resolves to a swatch the palette does not have.
+the wrong cells and still reports them, a paste and read-back that both land on the
+wrong sheet tab and agree with each other, a conditional format that colors nothing, a
+CJK label that no longer matches the page, and a color name that resolves to a swatch
+the palette does not have.
 """
 
 from __future__ import annotations
@@ -24,6 +26,7 @@ sheet_js = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(sheet_js)
 
 MISSING = "\u7f3a\u5931"
+SHEET = "Sheet1"
 PARTIAL = "\u4e0d\u8db3"
 WORKDIR = tempfile.TemporaryDirectory()
 
@@ -100,24 +103,38 @@ class GeneratedJavaScriptTests(unittest.TestCase):
         self.links = [[1, 0, "https://example.test/task/abc"]]
 
     def test_paste_embeds_rows_and_links_verbatim(self):
-        source = sheet_js.build_paste(self.rows, self.links, "A1")
+        source = sheet_js.build_paste(self.rows, self.links, "A1", SHEET)
         self.assertIn(MISSING, source, "CJK data should travel as UTF-8, not tripled by escapes")
         self.assertEqual(embedded(source, "rows"), self.rows)
         self.assertEqual(embedded(source, "links"), self.links)
         self.assertIn("ClipboardEvent", source)
 
     def test_paste_refuses_unless_the_name_box_shows_the_normalised_anchor(self):
-        source = sheet_js.build_paste(self.rows, self.links, "$k$2")
+        source = sheet_js.build_paste(self.rows, self.links, "$k$2", SHEET)
         self.assertEqual(embedded(source, "anchor"), "K2")
         self.assertLess(source.index("current() !== anchor"), source.index("dispatchEvent(new ClipboardEvent"))
         with self.assertRaises(sheet_js.InputError):
-            sheet_js.build_paste(self.rows, self.links, "K0")
+            sheet_js.build_paste(self.rows, self.links, "K0", SHEET)
 
     def test_verify_uses_the_anchor_offsets(self):
-        source = sheet_js.build_verify(self.rows, self.links, "C5")
+        source = sheet_js.build_verify(self.rows, self.links, "C5", SHEET)
         self.assertEqual(embedded(source, "r0"), 4)
         self.assertEqual(embedded(source, "c0"), 2)
         self.assertEqual(embedded(source, "rows"), self.rows)
+
+    def test_paste_checks_the_tab_before_touching_the_grid(self):
+        source = sheet_js.build_paste(self.rows, self.links, "A1", " Sheet1 ")
+        self.assertEqual(embedded(source, "expectedSheet"), SHEET)
+        self.assertLess(source.index("!onSheet"), source.index("dispatchEvent(new ClipboardEvent"))
+        with self.assertRaises(sheet_js.InputError):
+            sheet_js.build_paste(self.rows, self.links, "A1", "  ")
+
+    def test_cf_matches_embeds_the_range_and_expected_count(self):
+        source = sheet_js.build_cf_matches("K77:K2", SHEET, 12)
+        self.assertEqual(
+            [embedded(source, name) for name in ("r0", "c0", "r1", "c1", "expect")], [1, 10, 76, 10, 12]
+        )
+        self.assertIsNone(embedded(sheet_js.build_cf_matches("K2", SHEET, None), "expect"))
 
     def test_menu_aliases_expand_to_the_page_labels(self):
         source = sheet_js.build_menu_pick(sheet_js.MENU_PATHS["dropdown"])
@@ -135,8 +152,9 @@ class GeneratedJavaScriptTests(unittest.TestCase):
         if not node:
             self.skipTest("node not installed")
         sources = {
-            "paste": sheet_js.build_paste(self.rows, self.links, "A1"),
-            "verify": sheet_js.build_verify(self.rows, self.links, "A1"),
+            "paste": sheet_js.build_paste(self.rows, self.links, "A1", SHEET),
+            "verify": sheet_js.build_verify(self.rows, self.links, "A1", SHEET),
+            "cf-matches": sheet_js.build_cf_matches("B2:B3", SHEET, 1),
             "state": sheet_js.build_state(),
             "menu-pick": sheet_js.build_menu_pick(["x", "y"]),
             "dropdown-colors": sheet_js.build_dropdown_colors({MISSING: "green"}, "medium"),
@@ -146,6 +164,65 @@ class GeneratedJavaScriptTests(unittest.TestCase):
             path = scratch_file(".js", "const f = " + source + ";\n")
             result = subprocess.run([node, "--check", str(path)], capture_output=True, text=True, timeout=60)
             self.assertEqual(result.returncode, 0, f"{name}: {result.stderr}")
+
+
+FAKE_SHEET = """
+const window = { SpreadsheetApp: { workbook: { activeSheet: {
+  getSheetName: () => TAB,
+  getCellDataAtPosition: (r, c) => {
+    const v = (CELLS[r] || [])[c];
+    if (v === undefined) return null;
+    return { value: v, formattedValue: { value: v },
+      getConditionalFormattingResult: () => (RULED.includes(v) ? { fill: "rgb(255, 220, 219)" } : null) };
+  },
+} } } };
+"""
+
+
+def run_in_fake_sheet(source: str, tab: str, cells: list[list[str]], ruled: list[str]) -> dict:
+    node = shutil.which("node")
+    if not node:
+        raise unittest.SkipTest("node not installed")
+    script = (
+        f"const TAB = {json.dumps(tab)}; const CELLS = {json.dumps(cells, ensure_ascii=False)};"
+        f" const RULED = {json.dumps(ruled, ensure_ascii=False)};"
+        + FAKE_SHEET
+        + "console.log(JSON.stringify((" + source + ")()));"
+    )
+    path = scratch_file(".js", script)
+    result = subprocess.run([node, str(path)], capture_output=True, text=True, timeout=60)
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return json.loads(result.stdout)
+
+
+class FakeSheetTests(unittest.TestCase):
+    """Run the generated functions against a stand-in for the page's data model."""
+
+    rows = [["id", "status"], ["1", MISSING], ["2", PARTIAL]]
+
+    def test_verify_fails_on_the_wrong_tab_even_when_every_cell_matches(self):
+        source = sheet_js.build_verify(self.rows, [], "A1", SHEET)
+        wrong = run_in_fake_sheet(source, "Sheet2", self.rows, [])
+        right = run_in_fake_sheet(source, SHEET, self.rows, [])
+        self.assertFalse(wrong["ok"])
+        self.assertIn("Sheet2", wrong["error"])
+        self.assertTrue(right["ok"], right)
+        self.assertEqual(right["checked"], 6)
+
+    def test_cf_matches_fails_a_rule_that_colors_nothing(self):
+        source = sheet_js.build_cf_matches("B2:B3", SHEET, 1)
+        silent = run_in_fake_sheet(source, SHEET, self.rows, [])
+        working = run_in_fake_sheet(source, SHEET, self.rows, [MISSING])
+        self.assertFalse(silent["ok"])
+        self.assertEqual(silent["matchedCount"], 0)
+        self.assertTrue(working["ok"], working)
+        self.assertEqual([m["cell"] for m in working["matched"]], ["B2"])
+        self.assertEqual(working["unmatchedValues"], [[PARTIAL, 1]])
+
+    def test_cf_matches_fails_on_the_wrong_tab(self):
+        source = sheet_js.build_cf_matches("B2:B3", SHEET, None)
+        self.assertFalse(run_in_fake_sheet(source, "Sheet2", self.rows, [MISSING])["ok"])
 
 
 class ColorResolutionTests(unittest.TestCase):
@@ -172,7 +249,7 @@ class CommandLineTests(unittest.TestCase):
     def test_blank_verify_expects_an_empty_footprint_of_the_same_shape(self):
         path = write_json({"rows": [["a", "b"], ["c", "d"], ["e", "f"]], "links": [[1, 0, "https://x.test"]]})
         result = subprocess.run(
-            ["python3", str(SCRIPT), "verify", "--input", str(path), "--anchor", "B2", "--blank"],
+            ["python3", str(SCRIPT), "verify", "--input", str(path), "--anchor", "B2", "--sheet", SHEET, "--blank"],
             capture_output=True,
             text=True,
             timeout=60,
@@ -184,7 +261,7 @@ class CommandLineTests(unittest.TestCase):
 
     def test_bad_input_exits_2_without_printing_javascript(self):
         result = subprocess.run(
-            ["python3", str(SCRIPT), "verify", "--input", str(write_json([["a"]])), "--anchor", "A0"],
+            ["python3", str(SCRIPT), "verify", "--input", str(write_json([["a"]])), "--anchor", "A0", "--sheet", SHEET],
             capture_output=True,
             text=True,
             timeout=60,
@@ -192,6 +269,18 @@ class CommandLineTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertEqual(result.stdout, "")
         self.assertIn("error:", result.stderr)
+
+    def test_paste_and_verify_refuse_to_run_without_a_sheet_tab(self):
+        for command in ("paste", "verify"):
+            result = subprocess.run(
+                ["python3", str(SCRIPT), command, "--input", str(write_json([["a"]])), "--anchor", "A1"],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            self.assertNotEqual(result.returncode, 0, command)
+            self.assertEqual(result.stdout, "", command)
+            self.assertIn("--sheet", result.stderr, command)
 
 
 if __name__ == "__main__":
