@@ -80,7 +80,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - Prove the source ref is included in `HEAD`
    - Prove `HEAD..<source-ref>` is empty
    - For a squash merge, `is-ancestor` does not apply; choose an alternative proof method per [references/merge-workflow.md](references/merge-workflow.md) section 7.5, "Squash merge completeness verification", and annotate `proof-method`
-   - List the files and diffs that actually landed
+   - List the files and diffs that actually landed (the script's landed-files section) and compare them with the source side's changed paths
 4. Do another post-merge semantic re-review.
    - Check whether the final code is just one side's logic winning by mistake
    - Focus on shared boundaries, initialization chains, configuration closure, default resources, and upstream/downstream repo coordination
@@ -96,7 +96,7 @@ Load these on demand instead of cramming every detail into the main flow:
 1. Lock down the audit target.
    - Clarify whether you are auditing a specific merge commit, a specific source ref, or the current worktree result
 2. Reconstruct the expected diff.
-   - Recompute the merge base, incoming commits, file sets, and hotspot overlap
+   - Recompute the merge base, incoming commits, file sets, and hotspot overlap; for a merge commit, run the evidence script with `--target-ref <merge-commit> --pre-merge-ref <merge-commit>^1` so the model reflects that merge, not today's `HEAD`
    - Do not equate "there is no diff now" with "it was merged correctly back then"
    - On parallel/independent baseline lines, the same logical change often lands via a **different commit and issue id** on each line; `is-ancestor <sha>`, a commit-id search, and an issue-number search can all report "missing" while the content is actually present. Judge "does this branch contain the fix" by the **file content / patch**, not the commit graph or issue id (see [references/merge-workflow.md](references/merge-workflow.md) section 3.4, "Parallel baseline lines").
 3. Check completeness and semantics.
