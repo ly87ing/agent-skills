@@ -25,8 +25,10 @@ when those companion skills are unavailable.
 - For SVG, run `scripts/validate_svg.py <candidate.svg>`. By default it rejects
   non-local dependencies so an offline artifact cannot silently load machine-local or
   network resources. Use `--allow-external` only when the user explicitly selected a
-  network-dependent artifact, and report that choice in `unverified`. Exit 0 prints an
-  `OK` summary; exit 1 lists diagnostics and fails the semantic gate.
+  network-dependent artifact, and report that choice in `unverified`. Links (`<a href>`)
+  are navigation, not dependencies: they are counted and never failed, so check their
+  targets yourself when the handoff depends on them. Exit 0 prints an `OK` summary;
+  exit 1 lists diagnostics and fails the semantic gate.
 - Reject duplicate IDs, missing endpoints, invalid references, impossible state
   transitions, and source links that do not exist at the stated revision.
 - Confirm every visual boundary, arrow direction, label, style, and comparison status

@@ -5,6 +5,13 @@ The validator is intentionally narrower than a renderer. It catches malformed XM
 an invalid or missing viewBox, duplicate IDs, broken local URL/href/ARIA references,
 and non-local dependencies. It cannot prove visual layout, accessibility, factual
 correctness, or whether active content is safe.
+
+A link (`<a href>`) is navigation, not a dependency: it may point at a detail card
+elsewhere in the host page or at a source file, and the diagram renders the same
+whether or not its target is reachable. Links are counted, never failed, except for
+active schemes such as javascript:. Everything that must load for the diagram to
+render (`use`, `image`, markers and paints through `url()`, `@import`, stylesheets,
+`src`) is still checked.
 """
 
 from __future__ import annotations
@@ -26,6 +33,7 @@ XML_STYLESHEET_HREF_PATTERN = re.compile(
 )
 IDREF_ATTRIBUTES = {"aria-describedby", "aria-labelledby"}
 RESOURCE_ATTRIBUTES = {"data", "href", "poster", "src"}
+NAVIGATION_ELEMENTS = {"a"}
 DANGEROUS_SCHEMES = ("javascript:", "vbscript:")
 MAX_DIAGNOSTICS = 50
 
@@ -70,6 +78,14 @@ def classify_reference(
             local_references.add(target[1:])
     elif not lowered.startswith("data:"):
         non_local_references.add(target)
+
+
+def classify_link(raw: str, links: set[str], errors: list[str]) -> None:
+    target = raw.strip()
+    if target.lower().startswith(DANGEROUS_SCHEMES):
+        errors.append(f"active reference is not allowed: {target}")
+    elif target:
+        links.add(target)
 
 
 def inspect_reference_value(
@@ -117,6 +133,7 @@ def validate_svg(path: Path, allow_external: bool) -> tuple[list[str], dict[str,
     identifiers: set[str] = set()
     local_references: set[str] = set()
     non_local_references: set[str] = set()
+    links: set[str] = set()
 
     for reference in stylesheet_references:
         classify_reference(reference, local_references, non_local_references, errors)
@@ -130,7 +147,9 @@ def validate_svg(path: Path, allow_external: bool) -> tuple[list[str], dict[str,
 
         for attribute, value in element.attrib.items():
             attribute_name = local_name(attribute)
-            if attribute_name in RESOURCE_ATTRIBUTES:
+            if attribute_name == "href" and local_name(element.tag) in NAVIGATION_ELEMENTS:
+                classify_link(value, links, errors)
+            elif attribute_name in RESOURCE_ATTRIBUTES:
                 classify_reference(value, local_references, non_local_references, errors)
             elif attribute_name in IDREF_ATTRIBUTES:
                 local_references.update(reference for reference in value.split() if reference)
@@ -155,6 +174,7 @@ def validate_svg(path: Path, allow_external: bool) -> tuple[list[str], dict[str,
         "ids": len(identifiers),
         "local_references": len(local_references),
         "non_local_references": len(non_local_references),
+        "links": len(links),
         "viewbox": viewbox,
     }
     return unique_errors, stats
@@ -187,7 +207,8 @@ def main() -> int:
     viewbox = " ".join(f"{value:g}" for value in stats["viewbox"])
     print(
         f"OK {args.svg}: viewBox={viewbox}; ids={stats['ids']}; "
-        f"local_refs={stats['local_references']}; external_refs={stats['non_local_references']}"
+        f"local_refs={stats['local_references']}; external_refs={stats['non_local_references']}; "
+        f"links={stats['links']} (targets not checked)"
     )
     return 0
 

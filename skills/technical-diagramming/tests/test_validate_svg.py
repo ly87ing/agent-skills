@@ -123,6 +123,32 @@ class ValidateSvgTests(unittest.TestCase):
         self.assertEqual(accepted.returncode, 0, accepted.stderr)
         self.assertIn("external_refs=1", accepted.stdout)
 
+    def test_links_are_counted_not_failed(self):
+        # A link to a detail card in the host page, or to the source file behind a
+        # node, is how an overview reaches its detail. Neither target lives inside
+        # the SVG and neither is needed to render it.
+        source = """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 50">
+  <a href="#detail-api"><rect x="0" y="0" width="80" height="40"/></a>
+  <a xlink:href="https://git.example.com/app/blob/abc123/src/api.py#L42"><text>api.py</text></a>
+</svg>"""
+
+        result = validate(source)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("links=2", result.stdout)
+        self.assertIn("external_refs=0", result.stdout)
+
+    def test_use_reference_still_needs_its_target(self):
+        source = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50">
+  <a href="#detail-api"><use href="#node-template"/></a>
+</svg>"""
+
+        result = validate(source)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing referenced id: node-template", result.stderr)
+        self.assertNotIn("detail-api", result.stderr)
+
     def test_javascript_reference_is_always_rejected(self):
         source = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50">
   <a href="javascript:alert(1)"><text>open</text></a>

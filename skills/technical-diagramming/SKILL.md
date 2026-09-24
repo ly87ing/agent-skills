@@ -59,8 +59,9 @@ reader-facing material, accept the reader question, need, and surrounding argume
      candidate and replace the last accepted artifact only after required checks pass.
    - For SVG, run [scripts/validate_svg.py](scripts/validate_svg.py) against the
      candidate. It checks XML structure, the root and viewBox, duplicate IDs, broken
-     URL/href/ARIA ID references, and non-local URL dependencies. It does not prove
-     layout or safety.
+     `use`, `url()`, and ARIA ID references, and non-local resource dependencies. It
+     counts `<a>` links, to a detail card in the page or to a source file, without
+     failing them. It does not prove layout, link targets, or safety.
    - Inspect the real render at its intended viewing sizes. Automated checks can
      prove syntax, references, containment, and repeatability; only an actual visual
      read can claim that the diagram is legible and communicates the right hierarchy.
