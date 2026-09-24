@@ -56,7 +56,7 @@
     {
       "id": 11,
       "prompt": "Here's the merge request: https://gitlab.example.com/team/backend/-/merge_requests/482 . Before I click merge, confirm the source branch is safe to bring into my current branch and that nothing on the shared config boundary was missed.",
-      "expected_output": "Should trigger safe-merge-review. From the merge request link the result should resolve the source ref and the target/current branch, fetch and model the diff (merge base, left/right counts, incoming commits, hotspot overlap on the shared config), do a semantic pre-review, and give a completeness proof plus an explicit push decision rather than blindly clicking merge. It should not defer this to a general MR-creation (gitlab) or a pre-PR code-review skill, because a merge-correctness proof is in play."
+      "expected_output": "Should trigger safe-merge-review. From the merge request link the result should resolve the source ref and the target/current branch, fetch and model the diff (merge base, left/right counts, incoming commits, hotspot overlap on the shared config), do a semantic pre-review, and give a Green/Yellow/Red verdict with an explicit merge decision rather than blindly clicking merge; any trial merge runs in a disposable worktree, and nothing is merged, committed, or pushed in the user's worktree. It should not defer this to a general MR-creation (gitlab) or a pre-PR code-review skill, because a merge-correctness proof is in play."
     },
     {
       "id": 12,
@@ -77,7 +77,7 @@
       "id": 15,
       "prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?",
       "behaviour_prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?以下是我已经拿到的信息:\n\n$ git rev-parse --abbrev-ref HEAD\nfeature/export-csv\n$ git fetch origin && git merge-base HEAD origin/main\n4d2e9a0\n$ git rev-list --left-right --count origin/main...HEAD\n6\t4\n$ git log --oneline origin/main..HEAD\nb7c1e20 export: add CSV export endpoint /api/reports/export\nc3a9f41 export: stream rows instead of loading whole report\nd05e8b2 export: add export permission check\ne1f7a33 test: export endpoint happy path\n\n两边自合并基点以来都改过的文件: src/reports/service.py, src/auth/permissions.py。\norigin/main 的 6 个提交里,有一个把 permissions.py 里的 can_view_report(user, report) 改成了 can_view_report(user, report, tenant);本分支 d05e8b2 新增的导出权限检查仍按两个参数调用它。",
-      "expected_output": "Should trigger safe-merge-review. This is a pre-merge go/no-go suitability review — deciding whether a branch is ready to be merged into the main branch — which is in scope. The result should model the diff (source ref, merge base, incoming commits, hotspot overlap), do a semantic pre-review, and give a completeness- and verification-backed recommendation on whether it is safe to merge, rather than treating it as a general branch code-quality review with no merge in play."
+      "expected_output": "Should trigger safe-merge-review. This is a pre-merge go/no-go suitability review — deciding whether a branch is ready to be merged into the main branch — which is in scope. The result should model the diff (source ref, merge base, incoming commits, hotspot overlap), do a semantic pre-review, and give a verification-backed recommendation on whether it is safe to merge — here the stale two-argument can_view_report call — without merging or committing in the user's worktree, rather than treating it as a general branch code-quality review with no merge in play."
     },
     {
       "id": 16,

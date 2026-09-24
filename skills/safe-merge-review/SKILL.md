@@ -18,7 +18,8 @@ Treat "merge succeeded" and "merge is correct" as two different things, and prod
 | "How should this conflict be resolved, and can I push after resolving it" | repo path + conflicted files + source ref | Path 1 + Path 2 |
 | "The corresponding branches in these repos all need merging; help me confirm whether it is correct" | repo list + source refs | Path 1 + Path 2 |
 | "This branch looks already merged; help me prove whether it is really included" | repo path + source ref or merge commit | Path 3 |
-| "Review this merge request before we merge it" | merge request link or id | resolve to refs first, then Path 1 + Path 2 |
+| "Is this branch ready to merge into main?" | repo path + source ref + target branch | Path 4 |
+| "Review this merge request before we merge it" | merge request link or id | resolve to refs first, then Path 4 |
 
 A merge request link is a pointer, not a ref pair. Resolve it before any path runs:
 read the request's source branch, target branch, and current head sha from the
@@ -107,6 +108,13 @@ Load these on demand instead of cramming every detail into the main flow:
 4. Run the minimal relevant verification and produce a conclusion.
    - The conclusion can only be `Green / Yellow / Red`
    - It must come with an evidence matrix and residual risks
+
+### Path 4: Judge readiness without merging
+
+1. Lock down the source ref and the target branch as in Path 1 step 2, fetch both, and model the diff with the evidence script's `--target-ref <target-ref>`; the user's checked-out branch does not have to be the target, and its dirty state does not block a trial merge that never touches it.
+2. Trial-merge in a disposable worktree per [references/merge-workflow.md](references/merge-workflow.md) section 5.4, never in the user's worktree; read the conflicts and staged result there, and run the minimal relevant verification there.
+3. Review the hotspots and the conflicts semantically, as in Path 1 step 4 and Path 2 step 2, without writing a resolution.
+4. Remove the trial worktree, then report `Green / Yellow / Red` with the merge decision: merge as is, merge after named fixes, or do not merge. Commit, merge, and push nothing; Path 2 runs only when the user asks for the merge.
 
 ## Failure and Escalation
 

@@ -6,7 +6,7 @@
 - 2. Lock down the ref and fetch the latest state
 - 3. Diff modeling and patch-equivalent check
 - 4. Hotspot-overlap file identification
-- 5. Merge strategy matrix
+- 5. Merge strategy matrix, and the readiness trial merge (5.4)
 - 6. Conflict handling
 - 7. Merge completeness verification
 - 8. Minimal relevant verification and push decision
@@ -198,6 +198,28 @@ After confirming the result is correct, create the final merge commit. Its messa
 
 Do not treat `git merge --no-edit <source-ref>` as the default path, unless you have already proven this is a low-risk, low-ambiguity trivial merge.
 
+### 5.4 Readiness check: trial merge in a disposable worktree
+
+For "is this branch ready to merge" or a merge request review, the answer is a verdict, not a merge. Model the diff read-only with the evidence script's `--target-ref <target-ref>`, then try the merge where it cannot touch the user's worktree or history:
+
+```bash
+trial=$(mktemp -d)
+git worktree add --detach "$trial/worktree" <target-ref>
+git -C "$trial/worktree" merge --no-ff --no-commit <source-ref>
+git -C "$trial/worktree" diff --name-only --diff-filter=U
+git -C "$trial/worktree" diff --cached --stat
+```
+
+Put `$trial` under the runtime's scratchpad directory when it provides one. Read conflicts and the staged result there, and run the minimal relevant verification there when it could fail because of this merge. A clean trial merge proves only that Git can merge; the semantic pre-review still decides the verdict.
+
+Then remove the worktree and confirm it is gone; nothing was committed, so there is nothing to push:
+
+```bash
+git worktree remove --force "$trial/worktree"
+rmdir "$trial"
+git worktree list
+```
+
 ## 6. Conflict handling
 
 When a conflict occurs, first locate the files:
@@ -286,29 +308,36 @@ For a multi-repo merge, do this step per repo.
 
 ### 7.5 Squash merge completeness verification
 
-`git merge-base --is-ancestor` does not apply to a squash merge, because the original commits are not ancestors of HEAD. An alternative proof path is needed.
+`git merge-base --is-ancestor` does not apply to a squash merge, because the original commits are not ancestors of HEAD. Comparing only the hotspot files is not a proof either: a squash that drops a file the source added or deleted, which the target never touched, leaves every hotspot identical and still passes. Every method below covers every path the source changed.
 
-**Method 1: patch-equivalent check**
-
-Verify whether all of the source branch's changes already exist equivalently in the current branch:
+Set the names once (`<squash>` is the squash commit; for an audit of an older squash, `PRE_MERGE_HEAD` is `<squash>^1`):
 
 ```bash
 BASE=$(git merge-base HEAD <source-ref>)
-git diff "$BASE"..<source-ref> > /tmp/source.patch
-git diff "$BASE"..HEAD > /tmp/current.patch
+PRE_MERGE_HEAD=$(git rev-parse <squash>^1)
 ```
 
-If all hunks of source.patch are already contained in current.patch, the changes have been merged in equivalently.
-
-A more precise approach is to compare the final state file by file:
+**Method 1: file state over every source-side path (`proof-method: tree-diff`)**
 
 ```bash
-git diff HEAD <source-ref> -- <hotspot-files>
+git diff -z --name-only "$BASE" <source-ref> | xargs -0 -r git diff --name-status HEAD <source-ref> --
 ```
 
-If the diff of the hotspot files is empty or only contains follow-up changes exclusive to the current branch, the source changes have landed.
+Every path the source changed must come out either absent from this list or explained by a target-side change:
 
-**Method 2: isolated cherry-pick no-op check**
+- A path the target did not change in `$BASE..$PRE_MERGE_HEAD` must not appear, unless a later target commit (`git log --oneline <squash>..HEAD -- <path>`) changed it. `A` means a file the source added is missing from HEAD, `D` means a file the source deleted is still there, `M` means source content did not land.
+- A hotspot path may appear, but review `git diff HEAD <source-ref> -- <path>` hunk by hunk: each difference must come from the target side (`git diff "$BASE" "$PRE_MERGE_HEAD" -- <path>` or a later target commit), never from source content that is missing.
+
+**Method 2: whole-range patch id (`proof-method: patch-equivalent`)**
+
+```bash
+git show <squash> | git patch-id --stable
+git diff "$BASE" <source-ref> | git patch-id --stable
+```
+
+Equal ids prove the squash commit is exactly the source range. Unequal ids are inconclusive, because a squash that resolved conflicts legitimately differs; fall back to Method 1.
+
+**Method 3: isolated cherry-pick no-op check (`proof-method: cherry-pick-noop`)**
 
 ```bash
 audit_root=$(mktemp -d)
@@ -320,9 +349,9 @@ git -C "$audit_root/worktree" diff --quiet
 
 Run this only in the disposable worktree, never by stashing and mutating the user's current worktree. Interpret it as follows:
 
-- The cherry-pick exits successfully and both diff checks are quiet: the selected patches are a no-op on `HEAD`; record `proof-method: cherry-pick-noop`.
+- The cherry-pick exits successfully and both diff checks are quiet: the selected patches are a no-op on `HEAD`.
 - The cherry-pick exits successfully but either diff is non-empty: the source still contributes content, so it is not a no-op.
-- The cherry-pick conflicts: the result is inconclusive. A conflict can come from a different target-side change and does not prove that the source content is present; fall back to file-content or patch-equivalent evidence.
+- The cherry-pick conflicts: the result is inconclusive. A conflict can come from a different target-side change and does not prove that the source content is present; fall back to Method 1.
 
 After recording the result, remove only the disposable worktree and its empty parent:
 
@@ -331,22 +360,11 @@ git worktree remove --force "$audit_root/worktree"
 rmdir "$audit_root"
 ```
 
-**Method 3: tree-level diff**
-
-Directly compare the final file state of the source branch and the current branch on the key paths:
-
-```bash
-git diff HEAD <source-ref> --stat
-```
-
-Confirm file by file: the differences come only from the current branch's subsequent evolution, not from omissions on the source branch.
-
 Verdict rules for the squash merge scenario:
 
-- You cannot use `is-ancestor` as the sole completeness evidence
-- Prefer Method 1 (patch-equivalent / final-state file diff) by default, use Method 3 (tree-diff) for a quick sanity pass, and reach for Method 2 (isolated cherry-pick no-op) only when the other two are inconclusive
-- You must use at least one of the above methods, and annotate `proof-method: patch-equivalent` or `proof-method: tree-diff` in the evidence matrix
-- If the source branch still has new commits after the squash, you must recheck rather than reuse the old conclusion
+- Use at least one method above and annotate its `proof-method` in the evidence matrix; Method 1 is the default, Method 2 a fast exact check for conflict-free squashes, Method 3 the fallback when the others are inconclusive
+- Neither `is-ancestor` nor a hotspot-only diff is completeness evidence for a squash
+- If the source branch still has new commits after the squash, recheck rather than reuse the old conclusion
 
 ## 8. Minimal relevant verification and push decision
 
