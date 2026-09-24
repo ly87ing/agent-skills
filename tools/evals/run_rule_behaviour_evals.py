@@ -43,6 +43,13 @@ The same probe under that HOME answers NO, so the arm sees exactly the rule text
 runner put there and nothing else. Writing the arm's text to `~/.claude/CLAUDE.md`
 also means both arms exercise the real injection path rather than a prompt prefix.
 
+Every call also runs in its own fresh empty directory with `--no-session-persistence`.
+Until 2026-09-24 calls ran in the throwaway HOME itself and saved their sessions there,
+so an arm that searched its working directory found `~/.claude/projects/` and read
+earlier transcripts, including the other arm's answer to the same prompt (observed:
+answers citing "Claude Code's own session logs"). That pulls the two arms together and
+biases every result toward "no lift"; numbers from before the fix are not comparable.
+
 Both arms also get the maintained skill catalog symlinked into `~/.claude/skills/`,
 because the machine these rules ship to always has it. Isolating the rule from the
 skill layer measures a world that does not exist: every skill's description sits in
@@ -183,7 +190,8 @@ class IsolatedHome:
 def run_claude(home: IsolatedHome, prompt: str, model: str, timeout: int) -> str | None:
     env = os.environ.copy()
     env["HOME"] = str(home.path)
-    # Run outside the repo so no project CLAUDE.md is discovered either.
+    # Run outside the repo so no project CLAUDE.md is discovered either, and in a fresh
+    # directory per call with no saved sessions, so no call can read another's transcript.
     #
     # `--strict-mcp-config` with no `--mcp-config` leaves the arm with zero MCP
     # servers. The copied `~/.claude.json` carries the machine's server list, and
@@ -193,14 +201,15 @@ def run_claude(home: IsolatedHome, prompt: str, model: str, timeout: int) -> str
     # TOOL to reach for cannot be measured here, because no MCP tool exists in the
     # arm. Rules about what the model does with the repo are unaffected.
     try:
-        result = subprocess.run(
-            ["claude", "-p", prompt, "--model", model, "--strict-mcp-config"],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            env=env,
-            cwd=home.path,
-        )
+        with tempfile.TemporaryDirectory(prefix="rule-eval-cwd-") as cwd:
+            result = subprocess.run(
+                ["claude", "-p", prompt, "--model", model, "--strict-mcp-config", "--no-session-persistence"],
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                env=env,
+                cwd=cwd,
+            )
     except subprocess.TimeoutExpired:
         return None
     if result.returncode != 0:
