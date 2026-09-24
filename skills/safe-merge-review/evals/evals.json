@@ -4,6 +4,7 @@
     {
       "id": 1,
       "prompt": "Help me merge origin/feature/tenant-migration into the current branch, and confirm whether the initialization chain and config write-back were missed.",
+      "behaviour_prompt": "Help me merge origin/feature/tenant-migration into the current branch, and confirm whether the initialization chain and config write-back were missed. What I have so far:\n\n$ git rev-parse --abbrev-ref HEAD\nrelease/3.2\n$ git status --short\n(clean)\n$ git fetch origin && git merge-base HEAD origin/feature/tenant-migration\n9c41e07\n$ git rev-list --left-right --count HEAD...origin/feature/tenant-migration\n3\t5\n$ git log --oneline HEAD..origin/feature/tenant-migration\na81f2d4 tenant: add TenantMode.SHARDED and route it in the request filter\n5be0c19 tenant: write shard map back to config on first boot\nc07d3e2 tenant: migration script for tenant_shard table\ne44a1b8 tenant: default shard count in defaults.yaml\nf1290aa test: shard-map write-back unit test\n\nFiles changed on both sides since the merge base: src/tenant/bootstrap.py, config/defaults.yaml.\nOn release/3.2, bootstrap.py gained an init_quota() step before init_tenant_mode(), and defaults.yaml renamed tenant.mode to tenant.default_mode.\nOn the source side, init_tenant_mode() now calls load_shard_map(), and defaults.yaml adds tenant.mode: sharded and tenant.shard_count: 8.",
       "expected_output": "Should trigger safe-merge-review. The result should first lock down the source ref and the current branch, model the merge base, left/right counts, incoming commits, and hotspot files, then provide a completeness proof, the minimal relevant verification, and a push decision."
     },
     {
@@ -19,6 +20,7 @@
     {
       "id": 4,
       "prompt": "For this conflicted file, help me decide whether to keep ours or theirs, and after resolving it can I actually push?",
+      "behaviour_prompt": "For this conflicted file, help me decide whether to keep ours or theirs, and after resolving it can I actually push? I am merging origin/feature/retry-budget into main.\n\n$ git status --short\nUU config/retry.yaml\nM  src/client/retry.py\n$ git diff config/retry.yaml\n<<<<<<< HEAD\nretry:\n  max_attempts: 5\n  backoff_ms: 200\n=======\nretry:\n  max_attempts: 3\n  backoff_ms: 200\n  budget_per_minute: 60\n>>>>>>> origin/feature/retry-budget\n\nsrc/client/retry.py merged cleanly; it now reads retry.budget_per_minute and raises KeyError when the key is missing.",
       "expected_output": "Should trigger safe-merge-review. The result should require looking at the base, ours, theirs three-way evidence, explain the conflict resolution, and give a push recommendation only after a completeness proof and the minimal relevant verification."
     },
     {
@@ -74,6 +76,7 @@
     {
       "id": 15,
       "prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?",
+      "behaviour_prompt": "这个分支做了哪些变更,评估一下是否适合合入主分支?以下是我已经拿到的信息:\n\n$ git rev-parse --abbrev-ref HEAD\nfeature/export-csv\n$ git fetch origin && git merge-base HEAD origin/main\n4d2e9a0\n$ git rev-list --left-right --count origin/main...HEAD\n6\t4\n$ git log --oneline origin/main..HEAD\nb7c1e20 export: add CSV export endpoint /api/reports/export\nc3a9f41 export: stream rows instead of loading whole report\nd05e8b2 export: add export permission check\ne1f7a33 test: export endpoint happy path\n\n两边自合并基点以来都改过的文件: src/reports/service.py, src/auth/permissions.py。\norigin/main 的 6 个提交里,有一个把 permissions.py 里的 can_view_report(user, report) 改成了 can_view_report(user, report, tenant);本分支 d05e8b2 新增的导出权限检查仍按两个参数调用它。",
       "expected_output": "Should trigger safe-merge-review. This is a pre-merge go/no-go suitability review — deciding whether a branch is ready to be merged into the main branch — which is in scope. The result should model the diff (source ref, merge base, incoming commits, hotspot overlap), do a semantic pre-review, and give a completeness- and verification-backed recommendation on whether it is safe to merge, rather than treating it as a general branch code-quality review with no merge in play."
     },
     {

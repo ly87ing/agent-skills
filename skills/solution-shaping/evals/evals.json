@@ -52,6 +52,16 @@
       "id": 10,
       "prompt": "帮我写个快速排序。",
       "expected_output": "Should NOT trigger solution-shaping. A self-contained coding exercise with no scheme to shape."
+    },
+    {
+      "id": 11,
+      "prompt": "版本化资源名的过滤 bug 有三种修法：A 把报错的这个具体名字加进正则；B 在我们服务里按字段做通用的版本号识别；C 要求所有上游生产方统一命名格式。帮我比较一下该选哪个。",
+      "expected_output": "Should trigger solution-shaping. This is a comparison of candidate fixes before any edit, so the result should place the three options on the scope ladder and choose B, the generic rule inside the component the team owns, rejecting A as a special case for the reported sample and C as a contract imposed on producers the team does not control, and name the smallest step that proves B."
+    },
+    {
+      "id": 12,
+      "prompt": "我们打算把每晚的镜像构建从独立构建机迁到共享的生产 K8s 集群上跑，省掉构建机。现在每晚 120 个镜像，构建机上 16 并发、跑 2 小时；集群白天跑业务，夜里还有定时对账任务。帮我评估这个迁移方案还缺什么。",
+      "expected_output": "Should trigger solution-shaping. The result should report the scheme as incomplete until its resource footprint is answered: the CPU, memory, disk, and IO the builds add at peak on the shared production cluster, measured rather than estimated, how the builds back off under load, and the headroom left for the nightly reconciliation jobs, alongside the other blast-radius rows, rather than approving the move on the saved build machines alone."
     }
   ]
 }
