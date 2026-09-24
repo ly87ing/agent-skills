@@ -23,13 +23,13 @@
       "cases": [
         {
           "id": 1,
-          "prompt": "我们要把订单服务里的支付逻辑拆成独立模块，涉及 12 个文件和一张表的 schema 变更。开始动手吧。",
-          "expected_output": "Should state its assumptions, the simplest approach it intends to take, and how it will verify the result, before making any edits — rather than going straight into editing."
+          "prompt": "给 `get_user` 加上缓存，60 秒过期，改完把代码给我。\n\n```python\ndef get_user(user_id):\n    return db.query(\"select * from users where id = %s\", user_id)\n\ndef update_user(user_id, **fields):\n    db.execute(\"update users set ... where id = %s\", user_id, **fields)\n```",
+          "expected_output": "Before giving the changed code, should state its assumptions (for example a single process, and whether a user may read stale data after update_user), the simplest approach it will take, and how the change will be verified. Code with none of these stated first fails, and so does code with only a trailing note."
         },
         {
           "id": 2,
-          "prompt": "帮我把这个项目的日志系统从 log4j 换成 slf4j。",
-          "expected_output": "Should surface assumptions, the simplest migration approach, and concrete verification points up front, instead of starting the migration immediately."
+          "prompt": "把下面的配置读取从环境变量改成读 `config.yaml`，现有默认值保持不变，给我改好的代码。\n\n```python\nimport os\n\nTIMEOUT = int(os.environ.get(\"APP_TIMEOUT\", \"30\"))\nRETRIES = int(os.environ.get(\"APP_RETRIES\", \"2\"))\nENDPOINT = os.environ[\"APP_ENDPOINT\"]\n```",
+          "expected_output": "Before giving the changed code, should state its assumptions (for example where config.yaml lives, whether environment variables still override it, and what happens when APP_ENDPOINT is missing), the simplest approach, and how the change will be verified. Code with none of these stated first fails, and so does code with only a trailing note."
         }
       ]
     },
