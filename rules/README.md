@@ -49,36 +49,12 @@ universal invariants, and nothing else that a skill or memory could carry instea
   them every turn, and any agent that opens the file with a read tool sees them anyway. Notes for
   maintainers go in this README.
 - **Portable wording.** The same file goes to both runtimes; do not name one runtime's tool.
-
-## Enforcing the publish line
-
-`core.md` is context, not enforcement: the model weighs it, and nothing stops a call that
-ignores it. The last line — never publish, package, export, or send work without consent —
-is the one hard constraint in the file, so on Claude Code it also has a gate:
-[`hooks/publish_gate.py`](hooks/publish_gate.py), a `PreToolUse` hook that answers `ask` for
-`git push`, `gh`/`glab` pull-request, merge, and release commands, package publishes, image
-pushes, uploads to a remote host, and MCP tools named for pushing, publishing, merging,
-releasing, sending, or uploading. Every other call passes with no output. Under `claude -p`
-there is nobody to ask, so a gated call is denied. Register it in `~/.claude/settings.json`
-with the path to this checkout:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|mcp__.*",
-        "hooks": [{ "type": "command", "command": "python3 /path/to/agent-skills/rules/hooks/publish_gate.py" }]
-      }
-    ]
-  }
-}
-```
-
-The rule line stays in `core.md`: it is the only copy another runtime reads, and it also
-covers publishing the hook cannot see, such as a deliverable sent through a tool it does
-not match. `tests/test_publish_gate_hook.py` pins the shapes it gates and the everyday
-commands it must let through.
+- **No hooks where a line will do.** Hooks are runtime-specific: each runtime registers, trusts,
+  and scopes them differently, and they disagree on what a hook may decide (Claude Code's
+  `PreToolUse` can ask the user; Codex's is reported to support only deny, and only for shell
+  calls). The constraint therefore lives in `core.md` as a line both runtimes read. A `PreToolUse` gate for the publish line was built,
+  passed an end-to-end test on Claude Code, and was removed on 2026-09-24 for this reason; its
+  code is in `d99e87c`.
 
 ## Size budget
 

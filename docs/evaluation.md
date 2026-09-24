@@ -102,7 +102,7 @@ Always-on rules, the same day, same runner and settings as the delete tests abov
 
 - The first change-scope run read 4/12 against 5/12, and two of its four cases failed in almost every arm. Reading the answers showed why: one ended at a request for permission to run its own check, and the other went looking for a repository the empty directory does not have. The prompts were changed to ask for the code and the commit plan directly (`e57fe19`), and the table shows the re-run.
 - The rule runner worked unchanged on a Linux cloud container, where the keychain symlink it creates points nowhere and auth comes from the copied `~/.claude.json`. A probe with no rules installed answered NO to carrying any language rule, so the isolation held there too.
-- The publish line now has a gate as well, `rules/hooks/publish_gate.py`. Registered as `rules/README.md` shows, it stopped a `claude -p` `git push` in a scratch repository (the bare remote stayed empty) and let `git status` through.
+- A `PreToolUse` gate for the publish line stopped a `claude -p` `git push` in a scratch repository (the bare remote stayed empty) and let `git status` through, then was removed the same day: hooks are not portable across the two runtimes, and `rules/README.md` now keeps constraints as lines.
 
 ## Already-Tested Dead Ends
 
