@@ -54,7 +54,7 @@ Case: a version-decision service was declared verified because eight removed con
 ## Evidence from delegated work
 
 - A worker's status line, its screenshot file, its "tests pass", or a passing exit code is a claim, not acceptance. Re-run the decisive check, read the diff, and drive the surface yourself.
-- Before handing delegated implementation to the user, check that the user can use it end to end: it builds, it is packaged or downloadable where the user expects it, and the usage note exists. Case: a delegated implementation stopped at "server capability done", and the user had to ask for the CLI, the binaries, the download page, and the build script one by one. That check is yours, so it reaches rung 4 at most; report the work as accepted only after the consumer confirms it through their own path.
+- Before handing delegated implementation to the user, check that the user can use it end to end: it builds, it is packaged or downloadable where the user expects it, and the usage note exists. Case: a delegated implementation stopped at "server capability done", and the user had to ask for the CLI, the binaries, the download page, and the build script one by one. That check is yours, so it cannot reach rung 5: report the work as accepted only after the consumer confirms it through their own path.
 - Keeping audit sub-agents read-only, and checking afterwards that nothing was committed or pushed under your identity, belongs to `change-discipline`.
 
 ## Browser and rendered-surface evidence
