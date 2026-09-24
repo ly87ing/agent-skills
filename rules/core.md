@@ -4,7 +4,6 @@
 - Prefer the simplest local change. No speculative features, abstractions, config, or impossible-case handling.
 - Keep edits surgical: match local style, avoid unrelated cleanup, and remove only dead code made obsolete.
 - Keep changes small and focused; commit refactoring separately from behavior changes.
-- Never add AI attribution (Co-Authored-By etc.) to commits or MR descriptions.
 - Before edits that change behavior, touch shared code, or span multiple files, inspect the affected code and nearby tests first.
 - Never delete tests, make tests easier, loosen assertions, or skip/xfail failures just to make code pass; change tests only when intended behavior changed, and state why the old expectation was wrong.
 - After every change, run the smallest relevant verification that could fail.

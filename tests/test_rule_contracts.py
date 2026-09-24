@@ -17,7 +17,7 @@ EVALS = RULES / "evals" / "core.json"
 
 # round(len / 4) cap. Raise it only together with a line that passed the delete test, and lower
 # it again when that line leaves; never raise it to make this test pass.
-CORE_TOKEN_BUDGET = 545
+CORE_TOKEN_BUDGET = 525
 
 
 class RuleContractTests(unittest.TestCase):
