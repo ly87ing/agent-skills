@@ -23,12 +23,15 @@ test.
 
 ## Provenance, and why it expires
 
-Captured 2026-07-29 from the skill catalog a live Claude Code session renders into its system
-prompt, on **Claude Code 2.1.220**. That is the only place these strings exist in readable form.
+Captured 2026-09-23 from the skill catalog a live Claude Code session renders into its system
+prompt, on **Claude Code 2.1.281**. That is the only place these strings exist in readable form.
 
 They will drift as the CLI ships new versions, and a stale fixture is a new source of exactly the
-false confidence it was built to remove. Re-capture when the CLI has moved a minor version, and
-record the version above. If you cannot confirm the capture is current, say the measurement was run
+false confidence it was built to remove. Re-capture whenever the CLI version changes, and record the
+version above. A minor-version rule was too loose: between 2.1.220 and 2.1.281, the same minor
+version, the rendered catalog gained `artifact-diagramming`, `code-review`, and `workflow-authoring`,
+lost `review`, and changed three descriptions — `artifact-diagramming` being a direct competitor of
+technical-diagramming. If you cannot confirm the capture is current, say the measurement was run
 against a dated catalog rather than presenting it as the live one.
 
 Descriptions are reproduced verbatim, including quirks (`claude-api`'s TRIGGER/SKIP block is folded
