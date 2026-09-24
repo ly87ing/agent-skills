@@ -16,7 +16,7 @@ Read this when the scheme is agreed and someone else, a person or an implementin
 
 ## Rules
 
-- "Code exists on a branch" is a lower rung than the acceptance criterion. Case: a delegated implementation stopped at "server capability done"; the user then had to ask separately for the CLI, the binaries, the download page, and the build script that produced them.
+- "Code exists on a branch" is a lower rung than the acceptance criterion; the case behind this rule is in `verification`.
 - The coordinator re-runs the decisive check and reads the diff; the implementer's report, its screenshot file, and its exit code are claims. The ladder that decides which rung the evidence reaches is in `verification`.
 - One shared interface has one owner; when two implementers touch it, the brief names which one.
 - A brief that cannot state the acceptance criterion as something the user can do is a scheme that is not finished; go back to the workflow before delegating.

@@ -47,7 +47,7 @@ Case: a version-decision service was declared verified because eight removed con
 
 - A worker's status line, its screenshot file, its "tests pass", or a passing exit code is a claim, not acceptance. Re-run the decisive check, read the diff, and drive the surface yourself.
 - The acceptance criterion for delegated implementation is that the end user can use the result: it builds, it is packaged or downloadable where the user expects it, and the usage note exists. Case: a delegated implementation stopped at "server capability done", and the user had to ask for the CLI, the binaries, the download page, and the build script one by one.
-- Sub-agents that audit stay read-only; after they finish, `git status` and `git ls-remote` confirm nothing was committed or pushed under your identity.
+- Keeping audit sub-agents read-only, and checking afterwards that nothing was committed or pushed under your identity, belongs to `change-discipline`.
 
 ## Browser and rendered-surface evidence
 
