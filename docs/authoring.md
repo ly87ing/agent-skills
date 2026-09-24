@@ -49,6 +49,7 @@ All eight current skills already ship with `evals/evals.json`, aligning with Ant
 ## Contribution Guidance
 
 - One skill per directory, with names as clear and direct as possible.
+- Before adding a rule, find the decision it serves in the README's ownership table. When another skill owns that decision, add the rule there and leave at most a one-line pointer here; a second full copy drifts from the first.
 - `SKILL.md` keeps only the core workflow; don't stuff README, CHANGELOG, or installation instructions into the skill package.
 - Distill repeated and fragile steps into `scripts/` first, instead of restating them over and over in prose.
 - Write trigger conditions for real user requests, not as abstract slogans.

@@ -6,7 +6,7 @@ An open-source collection of general-purpose skills for agent runtimes such as C
 
 This repository collects directly reusable `SKILL.md` packages, not scattered prompts.
 
-The goal is to distill high-frequency, error-prone engineering workflows that require reliable execution into team-reusable skills:
+The goal is to distill high-frequency, error-prone workflows that require reliable execution — engineering work, and edits to shared documents other people read — into team-reusable skills:
 
 - with clear trigger conditions
 - with minimal context requirements
@@ -42,8 +42,12 @@ decision with one owner:
 | Decide whether the reader needs a diagram, the reader question it must answer, its takeaway, and the surrounding material | `reader-facing-writing` |
 | Model the technical nodes, edges, boundaries, and states; choose the layout; author and semantically validate the diagram artifact | `technical-diagramming` |
 | Decide what to build or change and prove the scheme is complete before anything is edited | `solution-shaping` |
+| Establish why existing behaviour is what it is before editing it; keep audit sub-agents read-only and check that nothing was committed or pushed; state the impact of commands that touch login state, auth files, network egress, or a process the user is running | `change-discipline` |
+| Name the rung a claim of done has reached, and accept delegated work | `verification` |
 | Prove the built artifact in a browser: interactions, focus, zoom, contrast, overflow, responsive states, and console/runtime failures | `verification` |
-| Decide file placement, redaction, cleanup, runtime-dependency packaging, and clean handoff | `artifact-hygiene` |
+| Prove a merge is complete and correct, and decide whether it may be pushed | `safe-merge-review` |
+| Decide file placement, redaction, cleanup, runtime-dependency packaging, and clean handoff; keep credentials out of printed output, logs, and files | `artifact-hygiene` |
+| Write into a shared WeCom sheet, read every cell back, and keep its login in the temporary browser profile | `wecom-docs-editing` |
 
 When the named owner is unavailable, the skill already in use may apply only its
 documented minimum fallback and must report the resulting verification limit. A
