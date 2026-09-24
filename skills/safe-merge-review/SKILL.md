@@ -43,7 +43,7 @@ Load these on demand instead of cramming every detail into the main flow:
 
 - When you need command templates, the strategy matrix, patch-equivalent, or completeness-verification methods, read [references/merge-workflow.md](references/merge-workflow.md)
 - When you need to judge hotspot risk, conflict semantics, or post-merge logical-mismatch patterns, read [references/merge-review-checklist.md](references/merge-review-checklist.md)
-- After the refs are locked down, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) with `--collect --repo <path> --source-ref <ref>` to derive the read-only Git facts and a stable reporting skeleton in one bounded output. For manual fields and unfilled-marker behavior, read [references/merge-workflow.md](references/merge-workflow.md) section 9, "Reporting skeleton".
+- After the refs are locked down, run [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py) with `--collect --repo <path> --source-ref <ref>` (add `--target-ref <ref>` when the target is not the checked-out branch) to derive the read-only Git facts and a stable reporting skeleton in one bounded output. For the post-merge re-run, manual fields, and unfilled-marker behavior, read [references/merge-workflow.md](references/merge-workflow.md) section 9, "Reporting skeleton".
 
 ## Workflow Paths
 
@@ -76,7 +76,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - For each conflicted file, look at base / ours / theirs
    - Record the final resolution and why no necessary semantics from the other side were lost
 3. Prove "complete merge".
-   - Re-run the evidence script's `--collect` mode against the final `HEAD`
+   - Re-run the evidence script's `--collect` mode with `--pre-merge-ref` set to the target as it was before the merge (`HEAD^1` for a merge commit, the sha saved before a fast-forward or squash): the diff model stays computed against the old target, completeness is proved against the final `HEAD`, and the landed files are listed. Without it, the merge base becomes the source tip and the incoming and hotspot lists come back `none`
    - Prove the source ref is included in `HEAD`
    - Prove `HEAD..<source-ref>` is empty
    - For a squash merge, `is-ancestor` does not apply; choose an alternative proof method per [references/merge-workflow.md](references/merge-workflow.md) section 7.5, "Squash merge completeness verification", and annotate `proof-method`
@@ -128,12 +128,13 @@ After completing, report at least the following:
 The skeleton and field order come from [scripts/build_merge_evidence.py](scripts/build_merge_evidence.py); what each field means:
 
 - repo: the repository under review
-- current branch: the target branch `HEAD` actually points to
+- target: the branch the source merges into — the checked-out branch, or the ref given with `--target-ref`
 - source ref: the exact ref being merged in
 - merge base: the common ancestor all diff modeling is based on
 - left/right counts: commits exclusive to each side
 - incoming key commits: the source-side commits that matter semantically
 - hotspot overlap files: files both sides changed since the merge base
+- landed files: files the merge actually changed on the target (collected with `--pre-merge-ref`)
 - dirty worktree status: worktree state and how it was handled
 - merge strategy: already-contained / fast-forward / no-ff / squash, and why
 - conflicted files and reasoning: each conflict and why the resolution loses no needed semantics

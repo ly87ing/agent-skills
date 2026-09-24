@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Render a deterministic Safe Merge Review evidence summary from CLI-supplied fields.
 
-Each Reporting field maps to a flag; unset scalar fields render as TODO (residual
-risks as "none recorded"). With --collect, the script derives read-only Git facts
-from --repo and --source-ref and bounds long commit/hotspot lists. It prints markdown
-to stdout, or writes it to --output PATH. Standard library only.
+Each Reporting field maps to a flag; unset fields render as TODO (residual risks as
+"none recorded"). With --collect, the script derives read-only Git facts from --repo,
+--source-ref and --target-ref (default HEAD) and bounds long commit/hotspot lists.
+After the merge, pass --pre-merge-ref so the diff model is computed against the target
+as it was before the merge while completeness is proved against the target as it is
+now. Values passed by flag are never overwritten by collection, and a collected list
+that is genuinely empty renders as "none", not TODO. It prints markdown to stdout, or
+writes it to --output PATH. Standard library only.
 
 Proof method has no default on purpose. Collection fills it only when both ancestry
 and an empty remaining range prove inclusion; squash merges still require an explicit
@@ -51,11 +55,26 @@ def bounded(items: list[str], maximum: int, label: str, risks: list[str]) -> lis
     return items[:maximum]
 
 
+def check_ref(repo: Path, label: str, ref: str) -> None:
+    if ref.startswith("-") or any(char in ref for char in "\r\n\0"):
+        raise ValueError(f"{label} must not start with '-' or contain control characters")
+    if run_git(repo, "rev-parse", "--verify", f"{ref}^{{commit}}", check=False).returncode != 0:
+        raise ValueError(f"{label} is not a commit: {ref}")
+
+
+def collect_list(
+    args: argparse.Namespace, field: str, items: list[str], label: str
+) -> None:
+    """Fill a list field from Git unless the caller already passed it by flag."""
+    if getattr(args, field):
+        return
+    setattr(args, field, bounded(items, args.max_items, label, args.risk))
+    args.collected.add(field)
+
+
 def collect_git_evidence(args: argparse.Namespace) -> None:
     if not args.repo or not args.source_ref:
         raise ValueError("--collect requires --repo and --source-ref")
-    if args.source_ref.startswith("-") or any(char in args.source_ref for char in "\r\n\0"):
-        raise ValueError("source ref must not start with '-' or contain control characters")
     if args.max_items < 1:
         raise ValueError("--max-items must be at least 1")
 
@@ -65,54 +84,69 @@ def collect_git_evidence(args: argparse.Namespace) -> None:
         raise ValueError(f"repo is not a git worktree: {requested_repo}")
     repo = Path(root_result.stdout.strip()).resolve()
 
-    source_result = run_git(repo, "rev-parse", "--verify", f"{args.source_ref}^{{commit}}", check=False)
-    if source_result.returncode != 0:
-        raise ValueError(f"source ref is not a commit: {args.source_ref}")
+    source, target, pre_merge = args.source_ref, args.target_ref, args.pre_merge_ref
+    check_ref(repo, "source ref", source)
+    check_ref(repo, "target ref", target)
+    if pre_merge:
+        check_ref(repo, "pre-merge ref", pre_merge)
+    model = pre_merge or target
 
-    base_result = run_git(repo, "merge-base", "HEAD", args.source_ref, check=False)
+    base_result = run_git(repo, "merge-base", model, source, check=False)
     if base_result.returncode != 0 or not base_result.stdout.strip():
-        raise ValueError(f"HEAD and {args.source_ref} have no merge base")
+        raise ValueError(f"{model} and {source} have no merge base")
     merge_base = base_result.stdout.strip()
 
-    branch = run_git(repo, "branch", "--show-current").stdout.strip()
-    if not branch:
-        short_head = run_git(repo, "rev-parse", "--short", "HEAD").stdout.strip()
-        branch = f"HEAD (detached at {short_head})"
+    if target == "HEAD":
+        branch = run_git(repo, "branch", "--show-current").stdout.strip()
+        if not branch:
+            short_head = run_git(repo, "rev-parse", "--short", "HEAD").stdout.strip()
+            branch = f"HEAD (detached at {short_head})"
+    else:
+        branch = target
 
     dirty_lines = run_git(repo, "status", "--porcelain=v1").stdout.splitlines()
-    incoming = run_git(repo, "log", "--format=%h %s", f"HEAD..{args.source_ref}").stdout.splitlines()
-    current_paths = set(run_git(repo, "diff", "--name-only", f"{merge_base}..HEAD").stdout.splitlines())
-    source_paths = set(
-        run_git(repo, "diff", "--name-only", f"{merge_base}..{args.source_ref}").stdout.splitlines()
-    )
+    incoming = run_git(repo, "log", "--format=%h %s", f"{model}..{source}").stdout.splitlines()
+    target_paths = set(run_git(repo, "diff", "--name-only", f"{merge_base}..{model}").stdout.splitlines())
+    source_paths = set(run_git(repo, "diff", "--name-only", f"{merge_base}..{source}").stdout.splitlines())
 
     args.repo = str(repo)
-    args.current_branch = branch
-    args.merge_base = merge_base
-    args.left_right_counts = run_git(
-        repo, "rev-list", "--left-right", "--count", f"HEAD...{args.source_ref}"
+    args.target = args.target or branch
+    args.merge_base = args.merge_base or merge_base
+    args.left_right_counts = args.left_right_counts or run_git(
+        repo, "rev-list", "--left-right", "--count", f"{model}...{source}"
     ).stdout.strip()
-    args.dirty_worktree = "clean" if not dirty_lines else "dirty: " + "; ".join(dirty_lines)
-    args.incoming_commit = bounded(incoming, args.max_items, "incoming commits", args.risk)
-    args.hotspot = bounded(sorted(current_paths & source_paths), args.max_items, "hotspots", args.risk)
+    args.dirty_worktree = args.dirty_worktree or (
+        "clean" if not dirty_lines else "dirty: " + "; ".join(dirty_lines)
+    )
+    collect_list(args, "incoming_commit", incoming, "incoming commits")
+    collect_list(args, "hotspot", sorted(target_paths & source_paths), "hotspots")
+    if pre_merge:
+        landed = run_git(repo, "diff", "--name-only", f"{pre_merge}..{target}").stdout.splitlines()
+        collect_list(args, "landed_file", landed, "landed files")
 
-    ancestor = run_git(repo, "merge-base", "--is-ancestor", args.source_ref, "HEAD", check=False)
-    if ancestor.returncode == 0 and not incoming:
-        args.completeness_proof = (
-            f"{args.source_ref} is an ancestor of HEAD and HEAD..{args.source_ref} is empty"
+    remaining = run_git(repo, "log", "--format=%h", f"{target}..{source}").stdout.splitlines()
+    ancestor = run_git(repo, "merge-base", "--is-ancestor", source, target, check=False)
+    if ancestor.returncode == 0 and not remaining:
+        if not args.completeness_proof and not args.proof_method:
+            args.completeness_proof = f"{source} is an ancestor of {target} and {target}..{source} is empty"
+            args.proof_method = "is-ancestor"
+    elif pre_merge and not args.proof_method:
+        args.risk.append(
+            f"{source} is not an ancestor of {target}; prove completeness with "
+            "patch-equivalent, tree-diff, or cherry-pick-noop before calling the merge complete"
         )
-        args.proof_method = "is-ancestor"
-    else:
-        args.completeness_proof = None
-        args.proof_method = None
 
 
 def build_markdown(args: argparse.Namespace) -> str:
+    def items(field: str) -> list[str]:
+        placeholder = "none" if field in args.collected else "TODO"
+        return render_list(getattr(args, field), placeholder)
+
     lines = [
         "# Safe Merge Review Summary",
         "",
         f"- repo: {render_value(args.repo)}",
-        f"- current branch: {render_value(args.current_branch)}",
+        f"- target: {render_value(args.target)}",
         f"- source ref: {render_value(args.source_ref)}",
         f"- merge base: {render_value(args.merge_base)}",
         f"- left/right counts: {render_value(args.left_right_counts)}",
@@ -125,11 +159,15 @@ def build_markdown(args: argparse.Namespace) -> str:
         "",
         "## Incoming key commits",
         "",
-        *render_list(args.incoming_commit),
+        *items("incoming_commit"),
         "",
         "## Hotspot overlap files",
         "",
-        *render_list(args.hotspot),
+        *items("hotspot"),
+        "",
+        "## Landed files",
+        "",
+        *items("landed_file"),
         "",
         "## Conflicted files and reasoning",
         "",
@@ -163,10 +201,20 @@ def main() -> int:
         "--max-items",
         type=int,
         default=20,
-        help="maximum collected incoming commits or hotspots to render (default: 20)",
+        help="maximum collected incoming commits, hotspots, or landed files to render (default: 20)",
+    )
+    parser.add_argument(
+        "--target-ref",
+        default="HEAD",
+        help="ref the source merges into; completeness is proved against it (default: HEAD)",
+    )
+    parser.add_argument(
+        "--pre-merge-ref",
+        help="the target before the merge (HEAD^1 of a merge commit, or the sha saved before a "
+        "fast-forward or squash); the diff model uses it and landed files are listed",
     )
     parser.add_argument("--repo")
-    parser.add_argument("--current-branch")
+    parser.add_argument("--target", help="the branch the source merges into, when not collected")
     parser.add_argument("--source-ref")
     parser.add_argument("--merge-base")
     parser.add_argument("--left-right-counts")
@@ -178,11 +226,13 @@ def main() -> int:
     parser.add_argument("--push-status")
     parser.add_argument("--incoming-commit", action="append", default=[])
     parser.add_argument("--hotspot", action="append", default=[])
+    parser.add_argument("--landed-file", action="append", default=[])
     parser.add_argument("--conflict", action="append", default=[])
     parser.add_argument("--verification", action="append", default=[])
     parser.add_argument("--risk", action="append", default=[])
     parser.add_argument("--output")
     args = parser.parse_args()
+    args.collected = set()
 
     if args.collect:
         try:

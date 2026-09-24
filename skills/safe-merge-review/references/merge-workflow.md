@@ -273,7 +273,7 @@ git diff --stat HEAD^1 HEAD
 git diff --name-only HEAD^1 HEAD
 ```
 
-Or, for a fast-forward merge, save the pre-merge commit:
+Or, for a fast-forward or squash merge, where `HEAD^1` is not the old target, save the pre-merge commit first:
 
 ```bash
 PRE_MERGE_HEAD=$(git rev-parse HEAD)
@@ -376,27 +376,37 @@ After fetching and locking the refs, collect the mechanically verifiable fields 
 
 ```bash
 python3 scripts/build_merge_evidence.py \
-  --collect --repo <repo-path> --source-ref <source-ref>
+  --collect --repo <repo-path> --source-ref <source-ref> [--target-ref <target-ref>]
 ```
 
-Collection derives repo, current branch, source ref, merge base, left/right counts, dirty-worktree status, incoming commits, and hotspot intersection. It sets `proof-method: is-ancestor` only when ancestry succeeds and `HEAD..<source-ref>` is empty. Commit and hotspot lists default to 20 items; change that with `--max-items`, and treat a truncation residual risk as a prompt to inspect the full Git output outside the report.
+`--target-ref` defaults to `HEAD`. Pass the target branch (for example `origin/main`) to model a merge into a branch that is not checked out, such as a merge request's target, without touching the user's worktree.
 
-Manual single-value flags:
+Collection derives repo, target, merge base, left/right counts, dirty-worktree status, incoming commits, and hotspot intersection. It sets `proof-method: is-ancestor` only when the source is an ancestor of the target and `<target>..<source-ref>` is empty. Commit, hotspot, and landed-file lists default to 20 items; change that with `--max-items`, and treat a truncation residual risk as a prompt to inspect the full Git output outside the report.
+
+After the merge, re-run it with the pre-merge target so the diff model is not recomputed from the merged result:
+
+```bash
+python3 scripts/build_merge_evidence.py \
+  --collect --repo <repo-path> --source-ref <source-ref> --pre-merge-ref HEAD^1
+```
+
+Use `HEAD^1` for a merge commit and the `PRE_MERGE_HEAD` saved in section 7.4 for a fast-forward or squash. The merge base, counts, incoming commits, and hotspots are computed against `--pre-merge-ref`; completeness is proved against `--target-ref`; and the landed files are `git diff --name-only <pre-merge-ref>..<target-ref>`. When the source is not an ancestor of the target (a squash), the proof method stays unfilled and a residual risk says so, until you pass a section 7.5 proof.
+
+Manual flags, which collection never overwrites:
 
 ```text
 --merge-strategy --completeness-proof --proof-method --semantic-review
---push-status
+--push-status --target --merge-base --left-right-counts --dirty-worktree
 ```
 
-Without `--collect`, the original derived-field flags remain available for an audit that cannot access the repo: `--repo`, `--current-branch`, `--source-ref`, `--merge-base`, `--left-right-counts`, and `--dirty-worktree`.
-
-Repeatable manual flags, once per item: `--conflict`, `--verification`, `--risk`. Without collection, `--incoming-commit` and `--hotspot` are also manual.
+Repeatable manual flags, once per item: `--conflict`, `--verification`, `--risk`, and `--incoming-commit`, `--hotspot`, `--landed-file` when you want to supply a list instead of collecting it. Without `--collect`, every field is manual, for an audit that cannot access the repo.
 
 It prints the markdown skeleton to stdout, or writes it to `--output PATH` (creating parent directories).
 
-Two behaviors to rely on:
+Three behaviors to rely on:
 
-- Any field left unset renders as a visible unfilled marker. `--proof-method` deliberately has no default, so a summary built before the completeness check ran can never read as an `is-ancestor` proof it never performed.
+- Any field left unset renders as `TODO`. `--proof-method` deliberately has no default, so a summary built before the completeness check ran can never read as an `is-ancestor` proof it never performed.
+- A list that collection ran and found empty renders as `none`, so "nothing incoming" and "never filled in" read differently.
 - Residual risks render as `none recorded` when none were passed.
 
-Fill every field before treating the summary as final.
+Fill every `TODO` before treating the summary as final.
