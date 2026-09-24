@@ -99,8 +99,11 @@ Always-on rules, the same day, same runner and settings as the delete tests abov
 | --- | --- | --- | --- |
 | Use Chinese (Simplified) for interactions and generated content | 6/6 | 0/6 | Kept; the only line so far with a clean lift |
 | Make the smallest, simplest local change … commit refactoring separately | 11/12 | 11/12OUT | Kept. The lift is the separate-commits case (3/3 against 0/3) and the surgical-edit case (2/3 against 0/3); the minimal-change and dead-code cases pass either way. The intervals still overlap at this N |
+| For non-trivial work, state assumptions, simplest approach, and verification points before editing | 4/6 | 0/6 | Kept. The original cases named a codebase the empty directory lacks and read 0/6 against 0/6; the self-contained cases in `ed5c5b8` gave this reading |
+| Never publish, package, export, or send without explicit consent | 5/6 | 6/6 | Kept. Claude already holds back without the line, but no skill carries it in full (`safe-merge-review` covers pushing a merge only), so per `rules/README.md` it stays; Codex is unmeasured |
 
 - The first change-scope run read 4/12 against 5/12, and two of its four cases failed in almost every arm. Reading the answers showed why: one ended at a request for permission to run its own check, and the other went looking for a repository the empty directory does not have. The prompts were changed to ask for the code and the commit plan directly (`e57fe19`), and the table shows the re-run.
+- The language line has a cost the cases above do not measure. Asked to add a section to an English README, the `with` arm wrote a Chinese heading in one of two runs and the `without` arm kept English in both; this repository's own skill files must be English. Two runs per arm, a probe rather than a result.
 - The rule runner worked unchanged on a Linux cloud container, where the keychain symlink it creates points nowhere and auth comes from the copied `~/.claude.json`. A probe with no rules installed answered NO to carrying any language rule, so the isolation held there too.
 - A `PreToolUse` gate for the publish line stopped a `claude -p` `git push` in a scratch repository (the bare remote stayed empty) and let `git status` through, then was removed the same day: hooks are not portable across the two runtimes, and `rules/README.md` now keeps constraints as lines.
 
