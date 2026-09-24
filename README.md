@@ -29,8 +29,9 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | [artifact-hygiene](./skills/artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./skills/reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents around per-artifact skeletons with page budgets, a form-by-content-shape table, per-medium figure rules, and before/after examples; ships with triggering and behavioural evals. |
 | [technical-diagramming](./skills/technical-diagramming/SKILL.md) | Builds and verifies evidence-grounded architecture, deployment, workflow, sequence, data-flow, lifecycle, and topology-comparison diagrams; ships with triggering and behavioral evals plus deterministic SVG checks. |
+| [wecom-docs-editing](./skills/wecom-docs-editing/SKILL.md) | Writes and formats WeCom Docs online spreadsheets in a browser the user logs into once per work session — empty-footprint check, one-paste writes, cell-by-cell read-back, colored dropdowns, conditional formats, filters, frozen rows — with the login kept in a temporary profile and never exported; ships with triggering evals and a unit-tested in-page script generator. |
 
-All seven skills are self-contained and have no cross-skill prerequisites.
+All eight skills are self-contained and have no cross-skill prerequisites.
 
 Self-contained does not mean that adjacent skills should duplicate one another. When
 several of these skills are available for one task, compose them by phase and keep each

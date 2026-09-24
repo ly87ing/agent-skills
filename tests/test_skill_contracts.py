@@ -16,6 +16,7 @@ MAINTAINED_SKILLS = {
     "solution-shaping",
     "technical-diagramming",
     "verification",
+    "wecom-docs-editing",
 }
 RULE_DERIVED_SKILLS = {
     "artifact-hygiene",
@@ -198,10 +199,16 @@ class SkillContractTests(unittest.TestCase):
         # design-phase skill add one stage's worth of resident cost. The budget is the
         # sum of what each stage needs in order to trigger, not a number to squeeze
         # under; a stage that cannot be reached costs more than its description does.
+        #
+        # Raised 5800 -> 6100 on 2026-09-23 for `wecom-docs-editing` (290 chars). It
+        # is the first skill that edits a shared online document other people read,
+        # and it only fires if its description names the WeCom sheet surface and the
+        # operations people ask for; one description covers the sheet editor now and
+        # the document editor later, instead of two skills paying twice.
         total = 0
         for skill_dir in skill_dirs():
             total += len(read_frontmatter(skill_dir).get("description", ""))
-        self.assertLessEqual(total, 5800, f"resident description budget exceeded: {total}B")
+        self.assertLessEqual(total, 6100, f"resident description budget exceeded: {total}B")
 
     def test_rule_derived_skills_exist_and_retired_skinning_skills_are_absent(self):
         current = {path.name for path in skill_dirs()}

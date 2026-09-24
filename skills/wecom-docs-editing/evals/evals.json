@@ -1,0 +1,40 @@
+{
+  "skill_name": "wecom-docs-editing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "把 tracker.csv 里的 76 行需求写进企业微信表格 https://doc.weixin.qq.com/sheet/e3_AbCdEf 的 Sheet1，从 A1 开始，写完帮我逐格核对有没有写错。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should check the login state, confirm the target footprint is empty before writing, select the anchor through the Name Box, paste the block in one operation, and prove the write with a cell-by-cell read-back that also checks the cells past the block's right and bottom edges."
+    },
+    {
+      "id": 2,
+      "prompt": "企微在线表格里 G 到 J 列是评分，帮我改成下拉选项：缺失标红、不足标黄、清楚标绿、不适用标灰，改完确认一下颜色对不对。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should use a colored dropdown validation on the range rather than free-text rules, check the auto-detected options against the intended vocabulary, set each option's palette color, and confirm the stored options and colors by reopening the validation dialog on the range and on a cell outside it."
+    },
+    {
+      "id": 3,
+      "prompt": "这个企业微信文档表格帮我冻结首行、给表头加上筛选，改完确认一下是不是真的生效了。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should select the header-plus-data range through the Name Box, apply the filter and freeze the first row, read the filter range and frozen row count back from the sheet state, and describe that a filter may change what collaborators see instead of asserting that it does not."
+    },
+    {
+      "id": 4,
+      "prompt": "Fill the WeCom Docs sheet at doc.weixin.qq.com/sheet/e3_XyZ with the rows in export.json, link the ID column to each ticket URL, and confirm every cell and link matches.",
+      "expected_output": "Should trigger wecom-docs-editing. The result should carry the ticket URLs as links inside the pasted block, verify both cell text and link targets after writing, and report the cells compared and any mismatch rather than retyping silently."
+    },
+    {
+      "id": 5,
+      "prompt": "把这份需求质量矩阵导出成 Excel 文件放到下载目录，评分列带颜色、表头带筛选。",
+      "expected_output": "Should NOT trigger wecom-docs-editing. The deliverable is a local spreadsheet file, which belongs to a spreadsheet-file workflow, not to editing an online WeCom sheet through a browser session."
+    },
+    {
+      "id": 6,
+      "prompt": "在企业微信里给这几个负责人发消息，提醒他们周五前把 ONES 需求描述补全。",
+      "expected_output": "Should NOT trigger wecom-docs-editing. The request is to send WeCom chat messages, not to write or format an online spreadsheet."
+    },
+    {
+      "id": 7,
+      "prompt": "读一下这个 ONES wiki 页面的正文，帮我总结成三条要点。",
+      "expected_output": "Should NOT trigger wecom-docs-editing. The source is a wiki page in an issue tracker, read rather than edited, and it is not a WeCom Docs spreadsheet."
+    }
+  ]
+}

@@ -24,7 +24,7 @@ Each canonical skill directory should be as self-contained as possible, typicall
 - `evals/evals.json`: triggering and behavioral evaluation cases, with positive cases covering the triggering scenarios in `description`, and negative cases guarding against false triggers or confirming routing to a sibling skill. Eval prompts may be written in the primary user's language (including Chinese) to test real trigger phrasing — as may the optional `behaviour_prompt` that restates one of them with its material inlined for the behaviour runner; every other field stays English.
 - `tests/`: per-skill unit tests guarding fragile script logic, run automatically by the top-level suite
 
-All seven current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
+All eight current skills already ship with `evals/evals.json`, aligning with Anthropic's "evals first" skill authoring practice.
 
 ## Runtime Adaptation Rules
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeCom Docs Editing"
+  short_description: "Write and verify WeCom online sheets in a browser"
+  default_prompt: "Use $wecom-docs-editing to write this data into the WeCom online spreadsheet and verify every cell."
