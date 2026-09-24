@@ -104,6 +104,12 @@
       "prompt": "把一套跨多个子系统的业务架构做成可供评审阅读和探索的完整说明：既要一眼看到全局边界与主链路，也要能沿依赖查看具体子系统，不能把全部节点和说明挤进一张自动布局图。",
       "behaviour_prompt": "请为评审制作一份可交互的业务架构说明。已确认的系统边界包括渠道层、接入层、交易域、履约域、数据域和外部合作方；主链路为 Web Portal → API Gateway → Order Service → Fulfillment Service，Order Service 还会异步发布事件到 Message Bus，再由 Analytics Pipeline 消费。评审既需要先理解六个边界和两条主链路，也需要按子系统查看职责、依赖与证据来源。请决定内容层次、图的语义模型和交互呈现方式，并说明如何验证成品。",
       "expected_output": "Should trigger technical-diagramming. The result should model the confirmed boundaries, directions, and asynchronous handoff without inventing topology, while using reader-facing-writing when available to preserve the reviewer's overview-to-detail reading path. It should separate a legible global overview, dependency exploration, and subsystem detail instead of forcing every fact into one dense auto-layout graph, choose geometry from semantic needs rather than a fixed node threshold or preferred library, and use verification for the built interactive surface when available."
+    },
+    {
+      "id": 21,
+      "prompt": "给新同事讲清楚我们蓝绿发布时流量是怎么一步步从 blue 切到 green 的，做成能动起来的图放到 wiki 上，别只给一张静态框图。",
+      "behaviour_prompt": "给新同事讲清楚我们蓝绿发布时流量是怎么一步步从 blue 切到 green 的，做成能动起来的图放到 wiki 上，别只给一张静态框图。发布手册里的步骤：\n\n1. green 部署新版本，健康检查通过前不接流量。\n2. 负载均衡把 5% 流量切到 green，观察 10 分钟错误率。\n3. 错误率低于 0.5% 时切到 50%，再观察 10 分钟。\n4. 切到 100%，blue 保留 1 小时用于回滚，然后缩容。\n任何一步错误率超标，负载均衡立即切回 100% blue。\n\nwiki 支持内嵌 GIF 和 Mermaid。",
+      "expected_output": "Should trigger technical-diagramming. Change over time is the point, so the result should choose an animation (a GIF, video, or animated page) or a phase-by-phase frame sequence rather than insisting on a single SVG, keep blue, green, and the load balancer in fixed positions so only the traffic split moves, include the rollback path, keep an editable source that regenerates the frames, and ship a static step list or frame with the same facts."
     }
   ]
 }

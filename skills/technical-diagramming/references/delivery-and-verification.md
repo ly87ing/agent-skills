@@ -1,6 +1,7 @@
 # Delivery And Verification
 
-Use this reference for rendered SVG/HTML, comparison artifacts, or handoff. It owns
+Use this reference for a rendered diagram in any medium, comparison artifacts, or
+handoff. It owns
 the diagram-specific source-to-artifact contract, semantic checks, and visual reading.
 When `verification` is available, it owns browser and rendered-surface
 acceptance. When `artifact-hygiene` is available, it owns placement, redaction,
@@ -9,8 +10,9 @@ when those companion skills are unavailable.
 
 ## Source And Artifact Contract
 
-- Keep one editable source of truth. If a renderer produces SVG or HTML, record the
-  exact source file and command or maintained build entry point that produced it.
+- Keep one editable source of truth. If a renderer produces the artifact (SVG, HTML,
+  PNG, GIF, or video), record the exact source file and command or maintained build
+  entry point that produced it.
 - Freeze the source before final rendering. Write the render to a private
   same-directory candidate, run the checks against that candidate, and atomically
   replace the accepted artifact only after all required checks pass. A failure leaves
@@ -21,8 +23,14 @@ when those companion skills are unavailable.
 
 ## Semantic Checks
 
-- Parse the editable source with its real parser or renderer.
-- For SVG, run `scripts/validate_svg.py <candidate.svg>`. By default it rejects
+- Parse the editable source with its real parser or renderer: the Mermaid CLI or
+  host preview, the project's diagram tool, or a browser for HTML/CSS and canvas.
+- For an HTML page that draws natively, check in the browser that every element a
+  link, label, or `aria-*` attribute names exists, and that each node's evidence note
+  survived into the page.
+- For an animation, check the frame count and duration with the tool that rendered
+  it, and that the static frame or step list carries every fact the frames do.
+- For SVG, standalone or inline, run `scripts/validate_svg.py <candidate.svg>`. By default it rejects
   non-local dependencies so an offline artifact cannot silently load machine-local or
   network resources. Use `--allow-external` only when the user explicitly selected a
   network-dependent artifact, and report that choice in `unverified`. Links (`<a href>`)
@@ -45,6 +53,8 @@ when those companion skills are unavailable.
 - Check light and dark themes when both are offered. Wait for fonts, images, and motion
   to settle before capturing evidence. A screenshot covers one state at one size, not
   the whole interaction.
+- For an animation, read every frame, or a contact sheet of them, at the playback
+  size: a label that is legible in one frame can be clipped or covered in the next.
 - Read the render as the target reader: what the eye reaches first, whether the main
   question can be answered, and whether any line, color, position, or animation claims
   a relationship the evidence does not support.
@@ -69,7 +79,8 @@ remote scripts merely to deliver the diagram.
 Report only fields that exist for the chosen format:
 
 ```text
-diagram_type: architecture|workflow|sequence|dataflow|lifecycle|comparison
+diagram_type: architecture|deployment|workflow|sequence|dataflow|lifecycle|comparison
+medium: mermaid|svg|html|canvas|slide|gif|video|<project format>
 source: <absolute path>
 artifact: <absolute path or not generated>
 evidence_basis: <revision, environment, or user-supplied description>
