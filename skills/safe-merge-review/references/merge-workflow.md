@@ -119,25 +119,7 @@ git diff --name-only "$BASE"..HEAD
 git diff --name-only "$BASE"..<source-ref>
 ```
 
-Then take the intersection, and focus on the files both sides changed.
-
-If the shell environment allows, you can use:
-
-```bash
-BASE=$(git merge-base HEAD <source-ref>)
-git diff --name-only "$BASE"..HEAD | sort -u > /tmp/current.files
-git diff --name-only "$BASE"..<source-ref> | sort -u > /tmp/source.files
-comm -12 /tmp/current.files /tmp/source.files
-```
-
-Prioritize reviewing the following overlaps:
-
-- Shared service / util / adapter
-- controller and API contract
-- Config, schema, migration, initialization logic
-- build, packaging, deploy, CI scripts
-- Tests and test fixtures
-- Generated artifacts and their source files
+The intersection is the hotspot list; the evidence script's `--collect` computes it. Rank it by the high-risk signs in `merge-review-checklist.md` section 2.3.
 
 ## 5. Merge strategy matrix
 
@@ -304,8 +286,6 @@ git diff --stat "$PRE_MERGE_HEAD"..HEAD
 git diff --name-only "$PRE_MERGE_HEAD"..HEAD
 ```
 
-For a multi-repo merge, do this step per repo.
-
 ### 7.5 Squash merge completeness verification
 
 `git merge-base --is-ancestor` does not apply to a squash merge, because the original commits are not ancestors of HEAD. Comparing only the hotspot files is not a proof either: a squash that drops a file the source added or deleted, which the target never touched, leaves every hotspot identical and still passes. Every method below covers every path the source changed.
@@ -373,7 +353,6 @@ Based on the actual changes, choose a minimal but genuinely-failable verificatio
 - Java code: `compileJava`, relevant unit tests, module tests
 - Frontend code: relevant tests, build, local smoke
 - Config/scripts: run the corresponding check or dry-run
-- Multi-repo coordination: verify per repo, then give an overall result
 
 After verifying, look once more:
 

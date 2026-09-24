@@ -61,8 +61,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - Fetch the locked source ref, then use the evidence script's `--collect` mode for merge base, left/right counts, incoming commits, and hotspot intersection; inspect its residual-risk line if a long list was truncated
    - When the history shows signs of rebase / squash / rewrite, additionally run the patch-equivalent check
 4. Identify the hotspot overlap and do a semantic pre-review.
-   - Prioritize reviewing shared logic, public interfaces, config, schema, migrations, build scripts, tests, and generated artifacts that both sides changed
-   - For high-risk files, review item by item per [references/merge-review-checklist.md](references/merge-review-checklist.md)
+   - Rank the hotspot files the script lists by the high-risk signs in [references/merge-review-checklist.md](references/merge-review-checklist.md) section 2.3, and review the high-risk ones item by item per its sections 2.4 and 2.5
 5. Choose a merge strategy.
    - When the source is already included, report `already contained` directly
    - For a non-trivial merge, default to a reviewable path: inspect the staged result first, then land the final commit
@@ -86,9 +85,7 @@ Load these on demand instead of cramming every detail into the main flow:
    - Check whether the final code is just one side's logic winning by mistake
    - Focus on shared boundaries, initialization chains, configuration closure, default resources, and upstream/downstream repo coordination
 5. Run the minimal relevant verification.
-   - Run only the verification commands that could actually fail because of this merge
-   - In multi-repo scenarios, record per repo; do not collapse into a single "all passed"
-   - When the diff's own updated tests only assert configuration shape (counts, JSON structure) and never exercise the runtime, disk, or external state where this merge could actually fail, a green run is not evidence — trace the downstream consumer's code path and simulate the post-merge pipeline (for example a re-pin / `bump` / `apply` against the tracked ref) by reading it
+   - When the diff's own updated tests only assert configuration shape (counts, JSON structure) and never exercise the runtime, disk, or external state where this merge could actually fail, a green run is not evidence — trace the downstream consumer's code path and simulate the post-merge pipeline (for example a re-pin, `bump`, or `apply`) by reading it
 6. Decide whether to allow a push.
    - Push only when the user explicitly requests it or the process explicitly requires it
    - When the change registers or references an externally-sourced artifact (a skill, package, submodule pin, generated asset), gate the merge on that artifact already being published on the exact ref the config tracks (`git ls-remote` the tracked branch), not merely present in a local unpushed commit — otherwise the post-merge pipeline resolves the tracked ref and hard-fails on the missing artifact
@@ -125,7 +122,6 @@ Stop or escalate, instead of continuing to guess, when:
 - You cannot `fetch` the latest source state but still need to judge a remote branch
 - A destructive action is required (such as `reset`, `checkout --`, or force-overwriting the conflict result), but the user has not yet approved it
 - In a multi-repo coordination, some repo lacks context, lacks a source ref, or lacks a verification command
-- You cannot provide a minimal relevant verification, so you can only report "not verified" and cannot claim completion
 
 ## Reporting
 
