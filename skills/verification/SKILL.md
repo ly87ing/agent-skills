@@ -5,21 +5,29 @@ description: Prove that a change, fix, deployment, or config edit actually works
 
 # Verification
 
-A claim of done names a rung on a delivery ladder, and the evidence in hand has to reach that rung. The failures this skill prevents all came from real sessions: a deployment check reported as correctness verification, a reachable but different environment used as a substitute for the one a bug named, only the internal path tested while users arrive through the external gateway, push success read as took effect, a worker's passing exit code read as acceptance. Lock the target, collect evidence at the rung being claimed, and report the rung actually reached.
+A claim of done names a rung on a delivery ladder, and the evidence in hand has to reach that rung. Two builds recur below and are never interchangeable: the build under test carries the change, and the pre-change build is the same code without it.
+
+## Procedure
+
+1. Lock the target, per the hard gate below. Stop and report when the named environment cannot be reached in the right auth or permission state, when the change is not in it, or when it is in live use and the check could disturb it without the user's go-ahead.
+2. Name the rung the claim needs on the delivery ladder.
+3. Collect evidence that reaches that rung: the narrowest test that can fail for rung 1, SHA read-backs for rungs 2 and 3, real inputs compared against the pre-change build for rung 4, the consumer's own confirmation for rung 5. Check through the consumer's real path, and for a rendered surface follow the browser section.
+4. For delegated work, apply the delegated-work section before repeating anything the worker claims.
+5. Report with the template at the end: the rung reached, never a higher one.
 
 ## Lock the target before collecting any evidence (hard gate)
 
-- Print the target triple — baseline branch or build, environment, entry address — and the source of each: the bug's environment tag, the user's words, the project profile, or the deployed build id. When the source is a bug's tag or the user's words, that environment is the only acceptable one.
+- Print the target triple — the build under test (branch, commit, or image), environment, entry address — and the source of each: the bug's environment tag, the user's words, the project profile, or the deployed build id. When the source is a bug's tag or the user's words, that environment is the only acceptable one.
 - A reachable but non-equivalent environment is never a substitute. When the named environment is down or unauthenticated, report the blocker and stop; anything measured on a substitute is discarded, never uploaded or written back. Case: a UI fix for a bug tagged with one QA environment was checked on a different reachable site after the named one failed its health check; the user rejected it and every result was thrown away.
 - Confirm the change under test is in the target: commit SHA or ancestry, image tag, or file hash. A version endpoint's release string or a release name does not prove the commit is deployed.
 - When a fixture, address, or case points at a target that has moved, it is a wrong case to delete, not a failure to rerun. Case: probes kept running against a router address retired months earlier, producing false failures until the cases were removed.
-- Do not disturb what is in live use. When the environment, the process, or the agent under test is in the user's hands right now, design the check read-only, or state the impact and wait for a go-ahead.
+- Do not disturb what is in live use. When the environment, the process, or the agent under test is in the user's hands right now, design the check read-only; if it cannot be read-only, state the impact and stop until the user gives a go-ahead.
 
 ## The delivery ladder
 
 | Rung | What proves it | What does not |
 | --- | --- | --- |
-| 1. Tests green | The narrowest test that exercises the change, its real result read (`BUILD SUCCESSFUL`, `N failed`), and the failing set diffed against a clean baseline, reported as "no new failures" | A piped command's exit code (`cmd \| tail` reports tail's status); a pass count; watch-mode output; "all passed" while old failures remain |
+| 1. Tests green | The narrowest test that exercises the change, its real result read (`BUILD SUCCESSFUL`, `N failed`), and the failing set diffed against the same tests on the pre-change build, reported as "no new failures" | A piped command's exit code (`cmd \| tail` reports tail's status); a pass count; watch-mode output; "all passed" while old failures remain |
 | 2. Pushed | After `git fetch`, local HEAD, the tracking branch, and the remote share one SHA; the working tree is clean; every nested sub-repo listed line by line and checked | A `git push` exit code; a clean status at a hub root that ignores nested repos |
 | 3. Applied or deployed | The running build carries the commit (SHA, image tag, hash) and the live configuration reads back with the new value | Push success; a version string; an HTTP 200; a "loaded" log line; a config file that exists |
 | 4. Verified | The changed behaviour exercised with real inputs and compared against the pre-change build on the same inputs, including the failure branch | Existence checks; deployment checks; status codes; a unit test alone for a behaviour that lives in the deployed system |
@@ -46,7 +54,7 @@ Case: a version-decision service was declared verified because eight removed con
 ## Evidence from delegated work
 
 - A worker's status line, its screenshot file, its "tests pass", or a passing exit code is a claim, not acceptance. Re-run the decisive check, read the diff, and drive the surface yourself.
-- The acceptance criterion for delegated implementation is that the end user can use the result: it builds, it is packaged or downloadable where the user expects it, and the usage note exists. Case: a delegated implementation stopped at "server capability done", and the user had to ask for the CLI, the binaries, the download page, and the build script one by one.
+- Before handing delegated implementation to the user, check that the user can use it end to end: it builds, it is packaged or downloadable where the user expects it, and the usage note exists. Case: a delegated implementation stopped at "server capability done", and the user had to ask for the CLI, the binaries, the download page, and the build script one by one. That check is yours, so it reaches rung 4 at most; report the work as accepted only after the consumer confirms it through their own path.
 - Keeping audit sub-agents read-only, and checking afterwards that nothing was committed or pushed under your identity, belongs to `change-discipline`.
 
 ## Browser and rendered-surface evidence
@@ -86,17 +94,18 @@ Case: a version-decision service was declared verified because eight removed con
 
 ## Report
 
-- State the rung reached, the environment and build, the inputs used, and what stays unverified and why.
-- Say what a capture or a run does not cover: a screenshot proves one state at one size, not the flow around it, and a recording of a passing run is not a regression test.
+Fill every line; write `none` rather than dropping one.
 
-## Stop conditions
+```text
+claim: <what is being called done>
+rung reached: <1-5 and its name>; next rung: <name, and what would prove it>
+target: <build under test> on <environment> at <entry address>; sources: <bug tag, user's words, profile, build id>
+evidence: <check run -> result read>, one line each
+inputs: <where they came from; how many; which failure-branch input>
+pre-change comparison: <build compared, differences and their cause> | not run: <why>
+not covered: <states, sizes, paths, identities, and consumers not exercised, and why>
+```
 
-- The named environment cannot be reached in the right auth or permission state — a blocker, not a licence to substitute.
-- The change is not in the deployed build.
-- The evidence in hand belongs to a lower rung than the claim being made.
-- The screenshot or browser state does not match the claimed user flow.
-- A one-off visual check is being offered as durable regression coverage.
-- A login or captcha flow is being hand-implemented while the project ships a helper for it.
-- The task is only writing or debugging Playwright test code, with no evidence to capture.
+A screenshot proves one state at one size, not the flow around it, and a recording of a passing run is not a regression test; say so under `not covered` when either is offered as evidence.
 
 `reader-facing-writing` owns why a visual is needed; `technical-diagramming` owns a diagram's model and validation; `artifact-hygiene` owns where evidence files live and when they are cleaned up; `change-discipline` owns what to change and why before verification starts.
