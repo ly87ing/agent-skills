@@ -77,6 +77,33 @@ The first recorded runs of `run_rule_behaviour_evals.py` since it moved here, af
 - A prompt that names a file the empty directory lacks makes every arm ask for the path and measures nothing; inline the material.
 - Codex is not measured here, which is why partial cover is not enough: its current model prompt says not to add or run tests unless asked, and a line leaves only when a skill installed on both runtimes carries it.
 
+## Review Fixes, 2026-09-24
+
+A full review of the catalog found functional defects in four places and text problems in the rest: references restating `SKILL.md` and drifting from it, repository history and measurement counts inside skill bodies, and examples that broke their own skill's rules. Each fix is its own commit on this date. The script defects were reproduced before they were fixed and are pinned by unit tests that fail on the old code; everything else was measured against the pre-edit catalog at `38a85f4` with `--baseline-root`, sonnet, two runs per arm unless noted. Every interval overlaps at this N, so read the table for regressions, not for gains.
+
+| Skill | Cases | Current | Baseline | Reading |
+| --- | --- | --- | --- | --- |
+| safe-merge-review | #1, #4, #15 | 0/2, 2/2, 2/2 | 0/2, 2/2, 2/2 | No change; #1 still measures nothing, as recorded on 2026-09-23 |
+| technical-diagramming | #14, #21 (new: blue-green rollout as a moving diagram) | 2/2, 2/2 | 2/2, 1/2 | No regression. On #21 the current arm split the answer into a GIF for the traffic shift and a static Mermaid for the rollback branches, with an evidence comment on every node |
+| verification | #24, #25, #27 | 2/2, 2/2, 1/2 | 2/2, 2/2, 0/2 | No regression |
+| reader-facing-writing | #25, #31, #38, #45 | 2/2, 2/2, 2/2, 0/2 | 2/2, 1/2, 1/2, 0/2 | No regression after deleting about a third of the reference text; #25 is the how-to that the old claim-heading rule contradicted |
+| change-discipline | #5 (N=6 pooled), #16, #18, #25, #30, #34, #36 | 2/6, 2/2, 2/2, 1/2, 2/2, 2/2, 2/2 | 1/6, 2/2, 2/2, 0/2, 2/2, 2/2, 1/2 | No regression. #5 first read 0/2 against 1/2; re-run at N=4 it read 2/4 against 0/4. Most answers in both arms still stop to ask for the file |
+| solution-shaping | #2, #4, #11, #12 | 2/2, 2/2, 2/2, 2/2 | 0/2, 2/2, 2/2, 1/2 | No regression; #11 is the three-fix comparison the checklist scoping was written for |
+| artifact-hygiene | #8, #19, #34, #36 (new: real screenshots in an internal knowledge-base repository) | 2/2, 2/2, 2/2, 1/2 | 2/2, 2/2, 2/2, 1/2 | No change. On #36 one baseline answer said to keep unredacted originals out of even a private repository, the contradiction the fix removed; one current answer still masked customer names on compliance grounds, which the expectation fails |
+
+`wecom-docs-editing` is again measured by its unit suite, not by this runner: the new tab and conditional-format checks run the generated functions in Node against a stand-in data model. The `cf-matches` reading of an empty versus filled conditional-format result has not been re-checked on the live editor; `references/ui-recipes.md` says so and asks for a one-cell comparison on first use.
+
+Always-on rules, the same day, same runner and settings as the delete tests above. The two lines that had no case now have one, and `tests/test_rule_contracts.py` fails if a line of `core.md` has none. The three change-scope lines were merged into one before measuring, as the review suggested.
+
+| Line | With | Without | Outcome |
+| --- | --- | --- | --- |
+| Use Chinese (Simplified) for interactions and generated content | 6/6 | 0/6 | Kept; the only line so far with a clean lift |
+| Make the smallest, simplest local change … commit refactoring separately | 11/12 | 11/12OUT | Kept. The lift is the separate-commits case (3/3 against 0/3) and the surgical-edit case (2/3 against 0/3); the minimal-change and dead-code cases pass either way. The intervals still overlap at this N |
+
+- The first change-scope run read 4/12 against 5/12, and two of its four cases failed in almost every arm. Reading the answers showed why: one ended at a request for permission to run its own check, and the other went looking for a repository the empty directory does not have. The prompts were changed to ask for the code and the commit plan directly (`e57fe19`), and the table shows the re-run.
+- The rule runner worked unchanged on a Linux cloud container, where the keychain symlink it creates points nowhere and auth comes from the copied `~/.claude.json`. A probe with no rules installed answered NO to carrying any language rule, so the isolation held there too.
+- The publish line now has a gate as well, `rules/hooks/publish_gate.py`. Registered as `rules/README.md` shows, it stopped a `claude -p` `git push` in a scratch repository (the bare remote stayed empty) and let `git status` through.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:
