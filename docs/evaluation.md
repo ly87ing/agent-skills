@@ -98,7 +98,7 @@ Always-on rules, the same day, same runner and settings as the delete tests abov
 | Line | With | Without | Outcome |
 | --- | --- | --- | --- |
 | Use Chinese (Simplified) for interactions and generated content | 6/6 | 0/6 | Kept; the only line so far with a clean lift |
-| Make the smallest, simplest local change … commit refactoring separately | 11/12 | 11/12OUT | Kept. The lift is the separate-commits case (3/3 against 0/3) and the surgical-edit case (2/3 against 0/3); the minimal-change and dead-code cases pass either way. The intervals still overlap at this N |
+| Make the smallest, simplest local change … commit refactoring separately | 11/12 | 6/12 | Kept. The lift is the separate-commits case (3/3 against 0/3) and the surgical-edit case (2/3 against 0/3); the minimal-change and dead-code cases pass either way. The intervals still overlap at this N |
 | For non-trivial work, state assumptions, simplest approach, and verification points before editing | 4/6 | 0/6 | Kept. The original cases named a codebase the empty directory lacks and read 0/6 against 0/6; the self-contained cases in `ed5c5b8` gave this reading |
 | Never publish, package, export, or send without explicit consent | 5/6 | 6/6 | Kept. Claude already holds back without the line, but no skill carries it in full (`safe-merge-review` covers pushing a merge only), so per `rules/README.md` it stays; Codex is unmeasured |
 
