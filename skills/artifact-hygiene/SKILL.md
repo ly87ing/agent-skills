@@ -58,7 +58,7 @@ artifact-lifecycle work.
 - Do not create or widen `.gitignore`, config conventions, or repository directories just to host disposable outputs.
 - Do not invent a project-local output convention unless the user explicitly asks for a reusable convention.
 - Never place disposable artifacts in tracked or likely-to-be-committed paths.
-- When a file is already under version control (git etc.), do not create `.bak`, backup, or timestamped duplicate copies of it before editing — history already preserves the prior state, so such copies are disposable clutter. Without version control, a pre-edit backup can be legitimate.
+- When a file is already under version control (git etc.), do not create `.bak`, backup, or timestamped duplicate copies of it before editing — history already preserves the prior state, so such copies are disposable clutter. Without version control, a pre-edit backup can be legitimate. If a *feature* needs to snapshot data (e.g. a pre-upgrade config backup), make it opt-in and default-off rather than always producing copies.
 
 ## Repository Weight From Binaries
 
