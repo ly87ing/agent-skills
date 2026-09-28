@@ -1,4 +1,4 @@
 interface:
   display_name: "Artifact Hygiene"
-  short_description: "Place debug and generated artifacts safely"
-  default_prompt: "Use $artifact-hygiene to decide where these generated or debug artifacts belong."
+  short_description: "Place, redact, package, and clean up generated artifacts"
+  default_prompt: "Use $artifact-hygiene to decide where these artifacts belong, what to redact, and what to clean up."
