@@ -75,7 +75,7 @@ agent-skills/
 ├── docs/
 │   ├── authoring.md                    # design principles, package layout, contributing
 │   └── evaluation.md                   # model-backed runners, reading results, measurements
-├── tools/evals/                        # model-backed eval runners and the built-in catalog fixture
+├── tools/evals/                        # model-backed eval runners, the session-usage scan, and the built-in catalog fixture
 └── tests/                              # offline gate: contracts, unit suites, runner harness tests
 ```
 

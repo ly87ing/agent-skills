@@ -1,6 +1,6 @@
 # Evaluation
 
-How the skills and the always-on rules are measured, how to read the results, and what has already been measured. The offline gate is `python3 -m unittest discover -s tests`; everything below calls a live model, costs model calls, and is run by hand. The runners live in [`tools/evals/`](../tools/evals/).
+How the skills and the always-on rules are measured, how to read the results, and what has already been measured. The offline gate is `python3 -m unittest discover -s tests`; every runner below except the session scan calls a live model, costs model calls, and is run by hand. The runners live in [`tools/evals/`](../tools/evals/).
 
 ## Runners
 
@@ -8,6 +8,7 @@ How the skills and the always-on rules are measured, how to read the results, an
 - `python3 tools/evals/run_codex_catalog_evals.py --case artifact-hygiene:19 --case verification:19 --show-responses` — observe the real Codex runtime instead of simulating a single skill choice. It first proves the selected maintained packages match the installed copies, then runs each request serially in a fresh read-only directory and records every `SKILL.md` Codex actually loads from its active catalog, including multi-skill composition. A route pass is not a behavior pass: `--show-responses` prints the expected behavior and final answer for manual review, and the runner deliberately does not replace that review with fixed-phrase matching. Use substantive, self-contained cases that benefit from a workflow; a simple one-step request may be answered correctly without loading a skill and is poor evidence for implicit activation. Because the active runtime can consult ambient context, print transcripts only when the eval inputs and possible ambient findings are safe to display.
 - `python3 tools/evals/run_rule_behaviour_evals.py --rule <id>` — measure whether a line of `rules/core.md` changes what the model does, against `core.md` with that line removed; see `rules/README.md` for the isolation it needs.
 - `python3 tools/evals/run_behaviour_evals.py --skill <name> --ids <id>` — measure whether the skill changes what the model does, against the same request run without it. For an existing-skill edit, pass an unpacked pre-edit catalog with `--baseline-root <path>` so the comparison arm uses the previous skill instead of no skill. Every answer and grading call gets a fresh temporary directory, disables ambient Claude customizations and session persistence, and receives no eval answers; a skill arm gets only a runtime copy of `SKILL.md`, `references/`, `scripts/`, and `assets/`, with read-only tools available for on-demand loading. It costs 4 model calls per case per run, so start narrow. A case whose `prompt` names material it does not carry still cannot be measured — both arms fail identically. Give such a case a `behaviour_prompt` restating the request with the material inlined; only this runner reads it, so `prompt` stays realistic for trigger evaluation. For manual transcript review, `--show-responses` prints both answers to stdout; use it only with eval inputs safe to display.
+- `python3 tools/evals/scan_session_usage.py --days 30` — count how often each skill in this catalog loaded in real sessions on this machine, from the transcripts Claude Code and Codex already keep, and for sessions that edited a file whether it loaded before the first edit, only after, or never. No model calls; it prints counts only, so the output is safe to paste here. Sessions in temporary directories (eval runs, probes) and in this repository (maintaining the catalog) are excluded. The trigger runner measures whether a description can win a one-turn choice; this measures whether it does in the long, mid-task sessions the skills exist for. A skill counts only under its current name, so a window spanning a rename undercounts it.
 
 ## Reading Trigger-Eval Results
 
@@ -106,6 +107,23 @@ Always-on rules, the same day, same runner and settings as the delete tests abov
 - The language line has a cost the cases above do not measure. Asked to add a section to an English README, the `with` arm wrote a Chinese heading in one of two runs and the `without` arm kept English in both; this repository's own skill files must be English. Two runs per arm, a probe rather than a result.
 - The rule runner worked unchanged on a Linux cloud container, where the keychain symlink it creates points nowhere and auth comes from the copied `~/.claude.json`. A probe with no rules installed answered NO to carrying any language rule, so the isolation held there too.
 - A `PreToolUse` gate for the publish line stopped a `claude -p` `git push` in a scratch repository (the bare remote stayed empty) and let `git status` through, then was removed the same day: hooks are not portable across the two runtimes, and `rules/README.md` now keeps constraints as lines.
+
+## Field Usage, 2026-09-27
+
+The first run of `scan_session_usage.py`, over the last 30 days on the maintainer's machine. The newest catalog either runtime ran in that window was the one installed on 2026-09-22, so none of the 2026-09-23 to 2026-09-26 edits recorded above were in play.
+
+| Skill | Claude Code: loaded before the first edit, of 16 editing sessions | Codex: of 12 |
+| --- | --- | --- |
+| change-discipline | 1 (2 more only after) | 10 (1 more only after) |
+| artifact-hygiene | 1 (1 after) | 11 (1 after) |
+| reader-facing-writing | 8 (1 after) | 4 (4 after) |
+| verification | 0 (1 after) | 1 |
+| solution-shaping | 2 (1 after) | 1 |
+
+- Across all 55 Claude Code sessions, `reader-facing-writing` loaded in 20, `change-discipline` in 7, `verification` in 1 (plus 5 under its pre-merge name), `safe-merge-review` in none; across 32 Codex sessions, `change-discipline` loaded in 21 and `artifact-hygiene` in 20.
+- The same descriptions reach the edit-time gate in most Codex editing sessions and almost no Claude Code ones. `change-discipline`'s trigger cases pass on Claude (the four session-derived ones 9/9 at sonnet, N=3), and that does not transfer: a trigger eval answers a one-turn "which skill would you load", while the Claude Code sessions that skipped it were multi-turn and often opened through a task-tracker or bug-loop skill from another catalog. Among the misses was a fix to versioned resource-name handling, the kind of change the skill's fix-scope ladder was written from.
+- `verification` rarely loads on either runtime: it triggers on the user asking for proof, and in real sessions the user seldom asks. What reaches every session is the verification line in `rules/core.md`.
+- Re-run this scan after a description change and compare against this table; a trigger-eval pass alone does not show that the change reached real sessions.
 
 ## Already-Tested Dead Ends
 
