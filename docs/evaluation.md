@@ -125,6 +125,24 @@ The first run of `scan_session_usage.py`, over the last 30 days on the maintaine
 - `verification` rarely loads on either runtime: it triggers on the user asking for proof, and in real sessions the user seldom asks. What reaches every session is the verification line in `rules/core.md`.
 - Re-run this scan after a description change and compare against this table; a trigger-eval pass alone does not show that the change reached real sessions.
 
+## Challenge Step in `solution-shaping`, 2026-09-27
+
+Step 6 — attack the recommendation before closing, and brief a fresh challenger when reverting would not undo the scheme — was added with cases #13 and #14. Sonnet, two runs per arm; the pre-edit skill is `db70f3b`. The grader passed pre-edit answers on #13 that the expectation fails, so the table also gives what reading every answer found.
+
+| Case | Arm | Graded | Read |
+| --- | --- | --- | --- |
+| #13 two fixes, the user leaning to the cheaper | Bare model | 0/2 | — |
+| | Pre-edit skill, two measurements | 1/2, then 2/2 | 0/4 wrote a challenge: what they said against the recommendation stayed in the risk column, none gave the rejected option's best case, and none ruled on an objection |
+| | Edited skill | 2/2 | 2/2 wrote the rival's best case, the recommendation's likeliest failure, what would overturn it, and a ruling on each |
+| #14 moving files to object storage, then deleting the originals | Bare model | 0/2 | — |
+| | Pre-edit skill, two measurements | 0/2, then 0/1 | No challenge and no word on independence; one answer came back empty and its pair was dropped |
+| | Edited skill | 1/1 | 2/2 challenged the scheme, said the challenge was not independent because no fresh agent could be started, and recommended one given only the constraints, target, and scheme |
+
+- No regression on #2, #4, #11, #12: 7/7 against 7/7, one pair dropped when the edited arm returned no answer on #2. One empty answer fell on each arm across the two runs. The cost is length: on these four cases the edited arm's answers averaged about a fifth longer than the pre-edit arm's.
+- The runner gives answers read-only file tools and no way to start an agent, so every #14 answer took the fallback. Whether a real session briefs a fresh challenger when it can is not measured, and neither is Codex.
+- In one #13 answer the edited skill escalated because the recommended option needs the front-end team to act, although the prompt said both options change only the export service; the other-team trigger read the scheme rather than the user's summary of it.
+- Trigger, sonnet, N=3, full catalog: #13 and #14 both 3/3. The description was not changed.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:

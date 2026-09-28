@@ -62,6 +62,18 @@
       "id": 12,
       "prompt": "我们打算把每晚的镜像构建从独立构建机迁到共享的生产 K8s 集群上跑，省掉构建机。现在每晚 120 个镜像，构建机上 16 并发、跑 2 小时；集群白天跑业务，夜里还有定时对账任务。帮我评估这个迁移方案还缺什么。",
       "expected_output": "Should trigger solution-shaping. The result should report the scheme as incomplete until its resource footprint is answered: the CPU, memory, disk, and IO the builds add at peak on the shared production cluster, measured rather than estimated, how the builds back off under load, and the headroom left for the nightly reconciliation jobs, alongside the other blast-radius rows, rather than approving the move on the saved build machines alone."
+    },
+    {
+      "id": 13,
+      "prompt": "报表导出接口高峰期经常超时，现在有两个方案：A 把导出改成异步任务，前端轮询下载；B 给导出加一层结果缓存，同样的查询条件 10 分钟内直接返回缓存。我倾向 B，改动小。帮我定一下选哪个。",
+      "behaviour_prompt": "报表导出接口高峰期经常超时，现在有两个方案：A 把导出改成异步任务，前端轮询下载；B 给导出加一层结果缓存，同样的查询条件 10 分钟内直接返回缓存。我倾向 B，改动小。帮我定一下选哪个。已知情况：导出接口同步生成 Excel，高峰期 P99 是 40 秒，网关超时是 30 秒；服务两个实例；缓存可以用现有的 Redis；导出的是实时订单状态，用户常常改完筛选条件马上再导一次；同一查询条件 10 分钟内重复导出的比例还没统计过。两个方案都只改导出服务本身，回滚就是回退这次发布。",
+      "expected_output": "Should trigger solution-shaping. Before closing, the answer should argue against the option it recommends: put the strongest case for the option it rejects, name the likeliest way the recommended one fails once built (for example, if B is chosen, the repeat-query rate is unmeasured, so the first uncached export still runs past the 30-second gateway limit), and rule on each objection as adopted, rejected with evidence, or open with who decides. A list of risks with mitigations, or a pros-and-cons table, does not satisfy this."
+    },
+    {
+      "id": 14,
+      "prompt": "我们准备把用户头像和附件从 NFS 共享盘迁到对象存储，迁完后删掉 NFS 上的原文件，客户端团队要同步改下载地址。方案我写好了，帮我把把关，看能不能定下来。",
+      "behaviour_prompt": "我们准备把用户头像和附件从 NFS 共享盘迁到对象存储，迁完后删掉 NFS 上的原文件，客户端团队要同步改下载地址。方案我写好了，帮我把把关，看能不能定下来。方案：1）新版本上线后，后台任务把 NFS 上约 8TB 文件逐个传到对象存储，并把数据库里的文件路径改写成对象存储的 key；2）服务读文件时先查对象存储，查不到再回落到 NFS；3）迁移完成、观察一周后删除 NFS 原文件并卸载挂载；4）客户端团队下个版本把下载地址从 /files/ 改成对象存储的签名 URL，老客户端继续走 /files/，由服务代理。约束：客户按整个部署包升级，可能跳过中间版本；多数站点单副本；这个版本允许改数据。",
+      "expected_output": "Should trigger solution-shaping. The scheme rewrites stored paths, deletes the original files, and needs another team to act, so reverting the release does not undo it. The answer should therefore not settle for challenging the scheme itself: it should brief a fresh challenger that has not seen the discussion, giving it only the constraints, target, scheme, and evidence, or, where it cannot start one, state that its own challenge was not independent and that an independent one is due before the decision."
     }
   ]
 }
