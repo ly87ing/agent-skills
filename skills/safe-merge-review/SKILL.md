@@ -23,7 +23,7 @@ Treat "merge succeeded" and "merge is correct" as two different things, and prod
 
 A merge request link is a pointer, not a ref pair. Resolve it before any path runs:
 read the request's source branch, target branch, and current head sha from the
-forge (the `gitlab` skill or `glab`/`gh` when available), then restate them as the
+forge (its connector, or `glab`/`gh`, when available), then restate them as the
 source ref and target branch this review is actually about, and confirm the local
 repo has both fetched. A request retargeted or force-pushed since it was opened
 still shows its original title — trust the head sha you just read, not the link.
