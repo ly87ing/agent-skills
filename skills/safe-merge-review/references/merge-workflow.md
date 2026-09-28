@@ -176,7 +176,7 @@ git diff --cached --name-only
 git diff --cached
 ```
 
-After confirming the result is correct, create the final merge commit. Its message — like a conflict-resolution commit's — falls under the AI-provenance ban in `SKILL.md` Path 2, step 1.
+After confirming the result is correct, create the final merge commit.
 
 Do not treat `git merge --no-edit <source-ref>` as the default path, unless you have already proven this is a low-risk, low-ambiguity trivial merge.
 
