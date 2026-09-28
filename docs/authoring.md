@@ -50,6 +50,7 @@ All eight current skills already ship with `evals/evals.json`, aligning with Ant
 
 - One skill per directory, with names as clear and direct as possible.
 - Before adding a rule, find the decision it serves in the README's ownership table. When another skill owns that decision, add the rule there and leave at most a one-line pointer here; a second full copy drifts from the first.
+- Importing external best-practice guidance is itself an abstraction decision: first inventory what the current rules and skills already cover, judge each item by necessity × existing coverage × where it belongs, and prefer folding it into an existing skill or rule over creating a new one. A new skill needs ≥2 real consumers or a clear gap — do not copy an external guide wholesale.
 - `SKILL.md` keeps only the core workflow; don't stuff README, CHANGELOG, or installation instructions into the skill package.
 - Distill repeated and fragile steps into `scripts/` first, instead of restating them over and over in prose.
 - Write trigger conditions for real user requests, not as abstract slogans.
