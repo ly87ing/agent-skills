@@ -31,7 +31,7 @@
     {
       "id": 6,
       "prompt": "Help me use the browser to click through this already-live checkout flow and confirm it isn't broken.",
-      "expected_output": "Should NOT trigger reader-facing-writing; this is a browser-verification task on an existing UI, which falls under frontend verification rather than writing or revising a reader-facing document."
+      "expected_output": "Should NOT trigger reader-facing-writing; this is a browser-verification task on an existing UI, which falls under verification rather than writing or revising a reader-facing document."
     },
     {
       "id": 7,

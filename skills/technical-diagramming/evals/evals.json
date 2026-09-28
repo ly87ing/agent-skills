@@ -56,7 +56,7 @@
     {
       "id": 11,
       "prompt": "This interactive system map is already built. Use the browser to check its keyboard navigation, focus behavior, contrast, mobile overflow, and console errors.",
-      "expected_output": "Should NOT trigger technical-diagramming. The request is to verify an existing rendered UI surface in a browser, which belongs to frontend verification rather than modeling or authoring the diagram."
+      "expected_output": "Should NOT trigger technical-diagramming. The request is to verify an existing rendered UI surface in a browser, which belongs to verification rather than modeling or authoring the diagram."
     },
     {
       "id": 12,
