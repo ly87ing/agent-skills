@@ -164,7 +164,7 @@
     {
       "id": 33,
       "prompt": "根据这两个版本的组件清单画一张拓扑对比图,标出新增、删除、移动和改道,并验证每条连线的语义。",
-      "expected_output": "Should NOT trigger artifact-hygiene. The task is to model, author, and semantically validate a technical comparison diagram; placement, redaction, packaging, and cleanup are explicitly out of scope, so technical-diagramming owns it."
+      "expected_output": "Should NOT trigger artifact-hygiene. The task is to model, author, and semantically validate a technical comparison diagram; placement, redaction, packaging, and cleanup are explicitly out of scope, so this is diagram-authoring work."
     },
     {
       "id": 34,

@@ -18,9 +18,8 @@ description: Decide safe locations, redaction, and cleanup rules for generated f
 This skill owns an artifact's placement, redaction, dependency packaging, cleanup, and
 handoff. It does not decide what a reader-facing artifact should say, model or lay out
 a technical diagram, or prove a rendered interface in a browser. When available, use
-`reader-facing-writing`, `technical-diagramming`, and `verification` for those
-decisions; they may run alongside this skill without becoming prerequisites for its
-artifact-lifecycle work.
+`reader-facing-writing` and `verification` for those decisions; they may run alongside
+this skill without becoming prerequisites for its artifact-lifecycle work.
 
 ## Placement Rules
 

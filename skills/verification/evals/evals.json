@@ -109,7 +109,7 @@
     {
       "id": 22,
       "prompt": "从仓库代码和配置画一张部署拓扑图,把节点、边界、调用方向和同步异步关系建模清楚。",
-      "expected_output": "Should NOT trigger verification. The task is to model and author the technical diagram itself, with no built browser surface or UI verification decision; that work belongs to technical-diagramming."
+      "expected_output": "Should NOT trigger verification. The task is to model and author the technical diagram itself, with no built browser surface or UI verification decision; that is diagram-authoring work, not verification."
     },
     {
       "id": 23,
@@ -153,6 +153,12 @@
       "id": 30,
       "prompt": "改造方案里要不要把这个服务拆出来？给我个建议。",
       "expected_output": "Should NOT trigger verification. This is a design decision with nothing built yet, so there is no environment to lock, no build to check, and no claim whose evidence could be judged."
+    },
+    {
+      "id": 31,
+      "prompt": "架构图我已经画完了,配色和连线也照着图例做了。请验证这张 SVG 是否能直接交给评审。",
+      "behaviour_prompt": "架构图我画完了,配色和连线都是照着图例来的,存成了 diagram.svg。直接发给评审应该没问题吧?下面是文件内容:\n\n<svg viewBox=\"0 0 420 180\">\n  <defs>\n    <marker id=\"arr\" markerWidth=\"6\" markerHeight=\"6\" refX=\"5\" refY=\"3\" orient=\"auto\">\n      <path d=\"M0,0 L6,3 L0,6 z\" fill=\"#3fb950\"/>\n    </marker>\n  </defs>\n  <rect x=\"20\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#8b949e\"/>\n  <text x=\"32\" y=\"52\" font-size=\"13\">old control plane</text>\n  <text x=\"70\" y=\"52\" font-size=\"13\">apiserver 6443</text>\n  <rect x=\"250\" y=\"30\" width=\"150\" height=\"46\" rx=\"8\" fill=\"none\" stroke=\"#3fb950\"/>\n  <text x=\"262\" y=\"58\" font-size=\"13\">new control plane 6445</text>\n  <path d=\"M170,53 L246,53\" stroke=\"#e8a13a\" stroke-width=\"2\" marker-end=\"url(#arrow)\"/>\n  <text x=\"20\" y=\"150\" font-size=\"11\" fill=\"#3fb950\">green = added component</text>\n  <text x=\"140\" y=\"150\" font-size=\"11\" fill=\"#e8a13a\">orange = unchanged</text>\n</svg>",
+      "expected_output": "Should trigger verification. The result should parse the SVG, detect broken references such as the marker ID mismatch, then inspect the actual render at its intended viewing size for overlaps, clipping, label legibility, direction, legend agreement, and hierarchy. It must not accept source inspection or an automated screenshot as human visual review."
     }
   ]
 }

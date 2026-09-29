@@ -89,6 +89,7 @@ Case: a version-decision service was declared verified because eight removed con
 6. Capture what is actually rendered.
    - Settle animations before capturing: force or wait out entrance, staggered, and scroll-triggered motion, or the capture shows partial content and stands as false evidence of the rendered layout. Wait for images to finish decoding too, because a capture taken mid-decode shows blank or black regions.
    - Treat a defect that appears only in such an early capture as a phantom: re-capture and confirm it is real before editing the page, or you will "fix" a correct page against a false screenshot.
+   - For an SVG handed over as a file or inline in a page (save an inline one to a file), run `python3 scripts/validate_svg.py <file>`: it catches malformed XML, a missing or invalid viewBox, duplicate IDs, broken local references, and non-local dependencies, but cannot prove layout, legibility, accessibility, or factual correctness, so still read the real render at its viewing size.
    - Read what is on screen from the pixels, not from the log, transcript, or DOM text that produced them — a UI renders streamed content progressively, so a timestamp marks when a message completed, not when it first became visible. When it matters what a viewer could see and when, extract frames and check them.
    - State what a capture does not cover before handing it over as evidence.
 
@@ -108,4 +109,4 @@ not covered: <states, sizes, paths, identities, and consumers not exercised, and
 
 A screenshot proves one state at one size, not the flow around it, and a recording of a passing run is not a regression test; say so under `not covered` when either is offered as evidence.
 
-`reader-facing-writing` owns why a visual is needed; `technical-diagramming` owns a diagram's model and validation; `artifact-hygiene` owns where evidence files live and when they are cleaned up; `change-discipline` owns what to change and why before verification starts.
+`reader-facing-writing` owns why a visual is needed; `artifact-hygiene` owns where evidence files live and when they are cleaned up; `change-discipline` owns what to change and why before verification starts.

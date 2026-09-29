@@ -1,4 +1,0 @@
-interface:
-  display_name: "Technical Diagramming"
-  short_description: "Build evidence-grounded technical diagrams"
-  default_prompt: "Use $technical-diagramming to create a verified technical diagram from this system or repository."

@@ -14,7 +14,6 @@ MAINTAINED_SKILLS = {
     "reader-facing-writing",
     "safe-merge-review",
     "solution-shaping",
-    "technical-diagramming",
     "verification",
     "wecom-docs-editing",
 }

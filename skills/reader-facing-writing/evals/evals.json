@@ -138,12 +138,12 @@
     {
       "id": 26,
       "prompt": "升级期间新旧两套组件在同一批机器上并存,我要给评审画一张图,说清楚每个阶段哪些组件在、端口怎么错开。用 mermaid 画出来标签全挤成一团,怎么办?",
-      "expected_output": "Should NOT trigger reader-facing-writing. The request has already decided that the diagram itself is the deliverable and asks for technical topology and geometry repair, which now belongs to technical-diagramming. reader-facing-writing still decides whether a broader document needs a diagram and what reader question it should answer."
+      "expected_output": "Should NOT trigger reader-facing-writing. The request has already decided that the diagram itself is the deliverable and asks for technical topology and geometry repair, which is diagram-authoring work rather than document writing. reader-facing-writing still decides whether a broader document needs a diagram and what reader question it should answer."
     },
     {
       "id": 27,
       "prompt": "架构图我画完了,配色和连线都是照着图例来的,直接发给评审应该没问题吧?",
-      "expected_output": "Should NOT trigger reader-facing-writing. The content and visual choice are settled; the request is diagram-specific semantic and render acceptance, which now belongs to technical-diagramming. reader-facing-writing retains visual review when revising the surrounding document rather than the diagram as its own deliverable."
+      "expected_output": "Should NOT trigger reader-facing-writing. The content and visual choice are settled; the request is diagram-specific semantic and render acceptance, not document writing. reader-facing-writing retains visual review when revising the surrounding document rather than the diagram as its own deliverable."
     },
     {
       "id": 28,

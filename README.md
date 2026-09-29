@@ -20,6 +20,8 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 
 `frontend-verification` was merged into `verification` on 2026-09-21, because verification evidence was split across two skills and the non-UI rungs — tests, pushed, deployed, accepted — had no owner.
 
+Technical diagrams — architecture, deployment, workflow, sequence, data-flow, and lifecycle — are drawn by the externally maintained [archify](https://github.com/tt-a1i/archify) skill, installed separately; this repository no longer maintains a diagramming skill.
+
 | Skill | Description |
 | --- | --- |
 | [safe-merge-review](./skills/safe-merge-review/SKILL.md) | Treats "merge succeeded" and "merge is correct" as separate concerns, emphasizing diff modeling, hotspot-overlap review, completeness verification, and the push decision; ships with triggering evals. |
@@ -28,10 +30,9 @@ If a skill can only answer "how to do it" but cannot reliably get the task done,
 | [verification](./skills/verification/SKILL.md) | Proves a change works at the rung it claims — target lock, delivery ladder (tests, pushed, deployed, verified, accepted), real-input old-new comparison, consumer path, delegated-work acceptance — with browser and rendered-surface evidence as its UI facet; ships with triggering and behavioural evals. |
 | [artifact-hygiene](./skills/artifact-hygiene/SKILL.md) | Decides the placement and cleanup boundaries for generated files, debug artifacts, Playwright evidence, downloads, and temporary scripts; ships with triggering evals. |
 | [reader-facing-writing](./skills/reader-facing-writing/SKILL.md) | Writes or revises reader-facing plans, reports, proposals, specs, checklists, Markdown, and HTML documents around per-artifact skeletons with page budgets, a form-by-content-shape table, per-medium figure rules, and before/after examples; ships with triggering and behavioural evals. |
-| [technical-diagramming](./skills/technical-diagramming/SKILL.md) | Builds and verifies evidence-grounded architecture, deployment, workflow, sequence, data-flow, lifecycle, and topology-comparison diagrams in whichever medium the reader gets them from fastest — Mermaid, SVG, shapes drawn natively in the page, or a short animation; ships with triggering and behavioral evals plus deterministic SVG checks. |
 | [wecom-docs-editing](./skills/wecom-docs-editing/SKILL.md) | Writes and formats WeCom Docs online spreadsheets — data through the official `wecom-cli` with an empty-footprint check and cell-by-cell read-back, colored dropdowns, conditional formats, filters, and frozen rows in a browser the user logs into once per work session, with the login kept in a temporary profile and never exported; ships with triggering evals, a unit-tested read-back comparator, and an in-page script generator. |
 
-All eight skills are self-contained and have no cross-skill prerequisites.
+All seven skills are self-contained and have no cross-skill prerequisites.
 
 Self-contained does not mean that adjacent skills should duplicate one another. When
 several of these skills are available for one task, compose them by phase and keep each
@@ -40,7 +41,6 @@ decision with one owner:
 | Decision | Owner |
 | --- | --- |
 | Decide whether the reader needs a diagram, the reader question it must answer, its takeaway, and the surrounding material | `reader-facing-writing` |
-| Model the technical nodes, edges, boundaries, and states; choose the layout; author and semantically validate the diagram artifact | `technical-diagramming` |
 | Decide what to build or change and prove the scheme is complete before anything is edited | `solution-shaping` |
 | Establish why existing behaviour is what it is before editing it; keep audit sub-agents read-only and check that nothing was committed or pushed; state the impact of commands that touch login state, auth files, network egress, or a process the user is running | `change-discipline` |
 | Name the rung a claim of done has reached, and accept delegated work | `verification` |
@@ -114,4 +114,4 @@ Skills split out of the rule system should carry only low-frequency, topic-speci
 
 A short description suitable for the GitHub repository settings page:
 
-`Evidence-first agent skills for Claude Code and Codex: safe merges, disciplined changes, verification, solution shaping, reader-facing writing, diagrams, and WeCom sheets, each shipped with triggering evals.`
+`Evidence-first agent skills for Claude Code and Codex: safe merges, disciplined changes, verification, solution shaping, reader-facing writing, and WeCom sheets, each shipped with triggering evals.`
