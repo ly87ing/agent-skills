@@ -16,9 +16,9 @@ A subagent given no model inherits the main session's. In one session with the m
 Fable, six parallel `general-purpose` readers inherited Fable, and the plan's allowance ran out.
 Set `CLAUDE_CODE_SUBAGENT_MODEL` to `opus` in `~/.claude/settings.json` under `env` so unassigned
 subagents stop at Opus; a definition's `model` (such as `implementer`'s `sonnet`) and a model
-passed on the call still win. Measured once on Claude Code with an Opus main session: the variable
-moved `general-purpose` but not the built-in `Plan`, which stayed on the main model although the
-documentation says otherwise. A fork always runs on the main session's model and ignores any
+passed on the call still win. The variable does not move the built-in `Explore` (main model,
+capped at Opus) or `Plan` (main model), as the documentation says and one run with an Opus main
+session confirmed for `Plan`. A fork always runs on the main session's model and ignores any
 override, so the variable does not cap it either.
 
 A fresh subagent shares no prompt cache with the main session, so it pays for everything it reads.
