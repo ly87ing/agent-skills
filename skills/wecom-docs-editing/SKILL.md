@@ -60,7 +60,13 @@ discarded when the browser closes.
    name `state` reports; pass it as `--sheet TAB` to every command below), anchor cell,
    and the source of the rows. Put the block in a JSON or CSV file in a scratch
    location, not in any repository: a list of rows, or `{"rows": [...], "links":
-   [[row, col, url], ...]}` with zero-based positions inside the block.
+   [[row, col, url], ...]}` with zero-based positions inside the block. When the
+   source carries a URL per row (a ticket or wiki link), put it as a link on that
+   row's ID or title cell by default instead of a column of raw URLs. For each column
+   that will get a dropdown in step 5, list its distinct values and ask before writing
+   when two of them differ only by spaces, full- or half-width characters, or wording
+   for the same state ("done" and "completed"): the dropdown makes each distinct value
+   its own option, so an unmerged variant splits one state across two filter entries.
 2. **Look before writing.** Generate `verify --input BLOCK --anchor A1 --sheet TAB --blank`
    and evaluate it. `ok: true` means the footprint and its right and bottom borders are
    empty. When resuming interrupted work, run the full `verify` first: if the block is
@@ -84,12 +90,16 @@ discarded when the browser closes.
    default, even when the user asked only for the data: each value carries its color,
    the column filters by option, and the list rejects typos that would make a filter or
    a text rule miss. Color by meaning (bad red, at risk yellow or orange, good green,
-   not applicable gray) and state the mapping in the report. Leave names, dates,
-   numbers, IDs, and free text as plain cells; use conditional formatting for their
-   rules and for formula rules, then a filter and a frozen header on request. After
-   each change, read it back through its own surface - `dialog-readback` on a corner
-   cell and on a cell just outside the range for dropdowns, `state` for the filter and
-   frozen rows. For a conditional format, a rule in the list is not proof it
+   not applicable gray) and state the mapping in the report. One value keeps one color
+   across columns and tabs: read the colors of dropdowns already in the sheet with
+   `dialog-readback` and reuse them. Leave names, dates, numbers, IDs, and free text as
+   plain cells; use conditional formatting for their rules and for formula rules. When
+   the write created a new table with a header row in a blank area, also freeze the
+   header row and add a filter over header plus data by default; a filter with no
+   condition set hides no rows. On a table that was already there, add them on request.
+   After each change, read it back through its own surface - `dialog-readback` on a
+   corner cell and on a cell just outside the range for dropdowns, `state` for the
+   filter and frozen rows. For a conditional format, a rule in the list is not proof it
    works: count from the source data how many cells in the apply range it should color,
    then require `ok: true` from `cf-matches --range K2:K77 --sheet TAB --expect N`. A
    rule that colors fewer or more cells than that is a failed rule to fix, not a
@@ -106,8 +116,10 @@ discarded when the browser closes.
   confirmation states a rule count; proceed only when it equals what this session made.
 - Before a change the user did not ask for that alters what collaborators see, such as
   a filter that hides rows, a sort, or a dropdown on columns this session did not
-  write. A filter the user asked for is added directly. Either way, whether a filter
-  is shared with collaborators could not be established from the page, so describe that risk in the report instead of asserting either way.
+  write. A filter the user asked for, or the condition-free default of step 5, is
+  added directly. Either way, whether a filter is shared with collaborators could not
+  be established from the page, so describe that risk in the report instead of
+  asserting either way.
 - After adding a dropdown, values outside its list become invalid; say so.
 - When a label or element is missing, `menu-pick` returns the visible menu items. Stop
   and report them; do not guess by screen coordinates, because a changed page makes a

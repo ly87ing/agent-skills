@@ -49,7 +49,22 @@
     {
       "id": 10,
       "prompt": "把 issues.csv 里的 30 行写进 https://doc.weixin.qq.com/sheet/e3_Mn8Kp2 的 Sheet1，从 A1 开始，列是编号、标题、负责人、状态（未开始/进行中/已完成）、优先级（高/中/低）。",
-      "expected_output": "Should trigger wecom-docs-editing. The user asked only for the data, yet the status and priority columns repeat a short fixed vocabulary, so after the verified write the result should give those two columns colored dropdowns by default, colored by meaning, confirm the stored options and colors through the validation dialog, leave the ID, title, and owner columns as plain cells, and state the color mapping in the report."
+      "expected_output": "Should trigger wecom-docs-editing. The user asked only for the data, yet the status and priority columns repeat a short fixed vocabulary, so after the verified write the result should give those two columns colored dropdowns by default, colored by meaning, confirm the stored options and colors through the validation dialog, leave the ID, title, and owner columns as plain cells, freeze the header row and add a condition-free filter over header plus data because the write created a new table in a blank area, read both back from the sheet state, and state the color mapping in the report."
+    },
+    {
+      "id": 11,
+      "prompt": "把 bugs.json 里的 50 条缺陷写进 https://doc.weixin.qq.com/sheet/e3_Rt5Yu7 的「缺陷」页，从 A1 开始。状态列的值有「进行中」「进行中 」「完成」「已完成」「待处理」。",
+      "expected_output": "Should trigger wecom-docs-editing. Before writing, the result should list the distinct values of the status column, point out that the in-progress value with a trailing space and the two wordings of done look like variants of one state, and ask whether to merge them, because the colored dropdown would otherwise turn each variant into its own option and split one state across filter entries."
+    },
+    {
+      "id": 12,
+      "prompt": "https://doc.weixin.qq.com/sheet/e3_Wq3Er4 的 Sheet1 已经有一列「状态」下拉（已完成是绿色、阻塞是红色），帮我在 H 列后面追加一列「验收结果」，值是已完成/阻塞/待验收，写好。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should read the existing status dropdown's stored colors with the validation dialog and reuse them for the new column, so done stays green and blocked stays red, give the new pending-acceptance value a color by meaning, and confirm the new dropdown's options and colors by reading them back."
+    },
+    {
+      "id": 13,
+      "prompt": "把 ONES 导出的 20 条需求（编号、标题、链接、状态）写进 https://doc.weixin.qq.com/sheet/e3_Zx9Cv1 的 Sheet1，从 A1 开始。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should carry each requirement URL as a link on its ID or title cell inside the pasted block instead of a separate column of raw URLs, verify both cell text and link targets after writing, and give the status column a colored dropdown."
     }
   ]
 }
