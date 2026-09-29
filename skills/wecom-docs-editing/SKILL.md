@@ -1,6 +1,6 @@
 ---
 name: wecom-docs-editing
-description: "Writes, formats, and verifies WeCom Docs online spreadsheets (doc.weixin.qq.com/sheet): writes rows via wecom-cli, reads every cell back, sets colored dropdowns, conditional formats, filters, and frozen rows in a logged-in browser. Use when the target is a live WeCom sheet other people share."
+description: "Writes, formats, and verifies WeCom Docs online spreadsheets: writes rows via wecom-cli, reads every cell back, sets colored dropdowns, conditional formats, filters, and frozen rows in a logged-in browser. Use for a live shared sheet at doc.weixin.qq.com/sheet, not Tencent Docs (docs.qq.com)."
 ---
 
 # WeCom Docs Editing

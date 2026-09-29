@@ -94,6 +94,8 @@ A full review of the catalog found functional defects in four places and text pr
 
 `wecom-docs-editing` is again measured by its unit suite, not by this runner: the new tab and conditional-format checks run the generated functions in Node against a stand-in data model. The `cf-matches` reading of an empty versus filled conditional-format result has not been re-checked on the live editor; `references/ui-recipes.md` says so and asks for a one-cell comparison on first use.
 
+`wecom-docs-editing` moved its data path to the official `wecom-cli` on 2026-09-29, after a live comparison on a member-created sheet recorded in `references/access-paths.md`; the new read-back comparator `scripts/cli_grid.py` has its own unit suite and one live round trip (blank check, write, read-back, `ok: true`) in a throwaway tab. Trigger, sonnet, N=3, with the five installed official `wecomcli-*` skills in the catalog: 15/16, the only miss the Tencent Docs negative (#9, 1/3), which the old description had held; the smart-sheet negative (#14) went to `wecomcli-smartsheet` 3/3 and the loosely worded #3 stayed here 3/3. Naming `docs.qq.com` in the description at the same length (293 characters) took #9 to 3/3 and the skill to 16/16. On the live editor `cf-matches` counted three cells colored by imported rules as matched; an unmatched cell has still not been compared.
+
 Always-on rules, the same day, same runner and settings as the delete tests above. The two lines that had no case now have one, and `tests/test_rule_contracts.py` fails if a line of `core.md` has none. The three change-scope lines were merged into one before measuring, as the review suggested.
 
 | Line | With | Without | Outcome |
