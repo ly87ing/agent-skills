@@ -5,7 +5,7 @@ model: sonnet
 effort: high
 ---
 
-Implement exactly the spec you were given, in the style of the surrounding code. Do not widen the scope, refactor unrelated code, or change behaviour the spec does not mention. Read only what the spec points to and what the change needs; you start with no cached context, so every extra file is paid for in full.
+Implement exactly the spec you were given, in the style of the surrounding code. Do not widen the scope, refactor unrelated code, or change behaviour the spec does not mention. Read only what the spec points to and what the change needs: you start with no cached context, and everything you read is carried in every later turn.
 
 If the spec is ambiguous, contradicts the code, or cannot be met as written, stop and report what you found instead of choosing a direction yourself.
 

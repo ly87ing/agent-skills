@@ -12,18 +12,20 @@ name that goes stale with every model generation.
 
 ## Cost
 
-A subagent given no model inherits the main session's. With the main session on Fable, six
-parallel `general-purpose` readers inherited Fable and used up the plan's allowance in one
-session. Set `CLAUDE_CODE_SUBAGENT_MODEL` to `opus` in `~/.claude/settings.json` under `env` so
-unassigned subagents stop at Opus; a definition's `model` (such as `implementer`'s `sonnet`) and a
-model passed on the call still win. Measured once on Claude Code with an Opus main session: the variable
+A subagent given no model inherits the main session's. In one session with the main session on
+Fable, six parallel `general-purpose` readers inherited Fable, and the plan's allowance ran out.
+Set `CLAUDE_CODE_SUBAGENT_MODEL` to `opus` in `~/.claude/settings.json` under `env` so unassigned
+subagents stop at Opus; a definition's `model` (such as `implementer`'s `sonnet`) and a model
+passed on the call still win. Measured once on Claude Code with an Opus main session: the variable
 moved `general-purpose` but not the built-in `Plan`, which stayed on the main model although the
-documentation says otherwise.
+documentation says otherwise. A fork always runs on the main session's model and ignores any
+override, so the variable does not cap it either.
 
 A fresh subagent shares no prompt cache with the main session, so it pays for everything it reads.
-Hand a fresh subagent work that needs little context; when the work needs what the main session
-already holds, a fork (same model, same prefix) or continuing an existing subagent is cheaper than
-a new one re-reading it.
+Hand a fresh subagent work that needs little context. When the work needs what the main session
+already holds, continuing an existing subagent, or a fork (same model, same prefix, so the prefix
+is read from cache), is cheaper than a new one re-reading it; on a Fable main session a fork is
+Fable, so do the work in the main session instead.
 
 Descriptions say what each subagent is for and do not say "use proactively": delegation stays the
 exception, and the description only decides where it goes.
