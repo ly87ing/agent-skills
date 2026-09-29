@@ -16,7 +16,8 @@ Subcommands:
   state            report login page, sheet name, size, frozen panes, and filter range
   menu-pick        hover through an open toolbar menu and click the final item
   dropdown-colors  set option colors inside an open data-validation dialog
-  dialog-readback  read range, options, and colors of an open data-validation dialog
+  dialog-readback  read range, option source, options, and colors of an open data-validation
+                   dialog
 """
 
 from __future__ import annotations
@@ -33,6 +34,7 @@ LABELS = {
     "cancel": "\u53d6\u6d88",
     "option_placeholder": "\u8bf7\u8f93\u5165\u9009\u9879",
     "range_placeholder": "\u8bf7\u8f93\u5165\u4e00\u4e2a\u5355\u5143\u683c\u8303\u56f4",
+    "reference_placeholder": "\u9009\u9879\u7528\u82f1\u6587\u9017\u53f7\u9694\u5f00\uff0c\u59821,2,3",
 }
 
 MENU_PATHS = {
@@ -339,11 +341,16 @@ def build_dialog_readback(keep_open: bool) -> str:
         "async () => { const range = document.querySelector(\"input[placeholder=\" + JSON.stringify("
         + js(LABELS["range_placeholder"]) + ") + \"]\");"
         " if (!range) return { ok: false, error: \"no data validation dialog is open\" };"
-        " const options = Array.from(document.querySelectorAll(\"input[placeholder=\" + JSON.stringify("
-        + js(LABELS["option_placeholder"]) + ") + \"]\")).map(i => { const box = i.closest(\".input-container\");"
+        " const shown = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };"
+        " const ref = Array.from(document.querySelectorAll(\"[placeholder=\" + JSON.stringify("
+        + js(LABELS["reference_placeholder"]) + ") + \"]\")).find(shown);"
+        " const options = ref ? ref.value.split(\",\").map(t => t.trim()).filter(Boolean).map(text => ({ text, color: null }))"
+        " : Array.from(document.querySelectorAll(\"input[placeholder=\" + JSON.stringify("
+        + js(LABELS["option_placeholder"]) + ") + \"]\")).filter(shown).map(i => { const box = i.closest(\".input-container\");"
         " const block = box && box.querySelector(\".color-block\");"
         " return { text: i.value, color: block ? getComputedStyle(block).backgroundColor : null }; });"
-        " const result = { ok: true, range: range.value, options };"
+        " const result = { ok: true, range: range.value, source: ref ? \"reference\" : \"manual\", options };"
+        " if (ref) result.reference = ref.value;"
         " if (!" + js(keep_open) + ") { const cancel = Array.from(document.querySelectorAll(\"button\")).find(b =>"
         " (b.innerText || \"\").trim() === " + js(LABELS["cancel"]) + " && b.getBoundingClientRect().width > 0);"
         " if (cancel) cancel.click(); result.cancelled = !!cancel; }"

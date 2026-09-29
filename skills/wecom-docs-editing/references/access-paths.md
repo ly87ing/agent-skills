@@ -37,8 +37,11 @@ wecom-cli 1.3.4 against a member-created sheet and two imported ones.
 - Text that looks like a number is stored as a number: `007` and `0012` read back and
   displayed as `7` and `12`. A leading apostrophe stays in the cell as a literal
   character. Date-like text (`2026-09-28`, `1/2`, `3-4`) stayed text.
-- Rows written through the API took the font SimSun 8 pt while imported rows used
-  Calibri 11 pt, so appended rows can look different from the rest of the table.
+- In an imported sheet, rows written through the API displayed smaller than the
+  imported rows (which showed Calibri 11 pt). The read-back reported SimSun 8 pt for
+  both, and also for rows of a sheet created in the page, so the read-back font is not
+  the displayed font and cannot be used to match styles; check appended rows on a
+  screenshot when the look matters.
 - No commands for data validation, conditional formats, filters, frozen panes, or
   deleting a document; `doc --help` mentions deletion but lists no such command.
 - Import of an `.xlsx` built with openpyxl carried: the list validation (as a

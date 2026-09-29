@@ -225,6 +225,67 @@ class FakeSheetTests(unittest.TestCase):
         self.assertFalse(run_in_fake_sheet(source, "Sheet2", self.rows, [MISSING])["ok"])
 
 
+FAKE_DIALOG = """
+const el = (placeholder, value, shown, color) => ({ placeholder, value,
+  getBoundingClientRect: () => ({ width: shown ? 100 : 0, height: shown ? 20 : 0 }),
+  closest: () => ({ querySelector: () => (color ? { color } : null) }) });
+const INPUTS = FIELDS.map(f => el(f[0], f[1], f[2], f[3]));
+globalThis.getComputedStyle = b => ({ backgroundColor: b.color });
+globalThis.document = {
+  querySelector: sel => INPUTS.find(i => sel.includes(JSON.stringify(i.placeholder))) || null,
+  querySelectorAll: sel => INPUTS.filter(i => sel.includes(JSON.stringify(i.placeholder))),
+};
+"""
+
+
+def run_dialog_readback(fields: list) -> dict:
+    node = shutil.which("node")
+    if not node:
+        raise unittest.SkipTest("node not installed")
+    source = sheet_js.build_dialog_readback(True)
+    script = (
+        f"const FIELDS = {json.dumps(fields, ensure_ascii=False)};" + FAKE_DIALOG
+        + "(" + source + ")().then(r => console.log(JSON.stringify(r)));"
+    )
+    path = scratch_file(".js", script)
+    result = subprocess.run([node, str(path)], capture_output=True, text=True, timeout=60)
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return json.loads(result.stdout)
+
+
+class DialogReadbackTests(unittest.TestCase):
+    """Imported dropdowns keep their list in one reference box; hidden manual inputs linger."""
+
+    RANGE = sheet_js.LABELS["range_placeholder"]
+    OPTION = sheet_js.LABELS["option_placeholder"]
+    REFERENCE = sheet_js.LABELS["reference_placeholder"]
+
+    def test_reference_source_reads_the_list_and_ignores_hidden_manual_inputs(self):
+        result = run_dialog_readback([
+            [self.RANGE, "C2", True, None],
+            [self.OPTION, "stale", False, "rgb(255, 255, 255)"],
+            [self.REFERENCE, "a, b,c", True, None],
+        ])
+        self.assertEqual(result["source"], "reference")
+        self.assertEqual(result["reference"], "a, b,c")
+        self.assertEqual([o["text"] for o in result["options"]], ["a", "b", "c"])
+        self.assertTrue(all(o["color"] is None for o in result["options"]))
+
+    def test_manual_source_reads_visible_options_with_colors(self):
+        result = run_dialog_readback([
+            [self.RANGE, "G2:J77", True, None],
+            [self.OPTION, MISSING, True, "rgb(255, 181, 179)"],
+            [self.OPTION, PARTIAL, True, "rgb(255, 234, 153)"],
+            [self.REFERENCE, "", False, None],
+        ])
+        self.assertEqual(result["source"], "manual")
+        self.assertEqual(result["options"], [
+            {"text": MISSING, "color": "rgb(255, 181, 179)"},
+            {"text": PARTIAL, "color": "rgb(255, 234, 153)"},
+        ])
+
+
 class ColorResolutionTests(unittest.TestCase):
     def test_palette_rows_have_one_swatch_per_hue(self):
         for shade, swatches in sheet_js.PALETTE.items():

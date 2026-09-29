@@ -173,8 +173,10 @@ toolbar menu first with the browser tool, then run `menu-pick`.
   worked again; set the window width before driving menus.
 - A dropdown imported from an `.xlsx` list validation uses the reference-data source
   (the option list sits in one text box, for example `a,b,c`) and has no color
-  swatches. `dialog-readback` reads only manual-entry options and returned wrong
-  options for it; read the reference box from a snapshot instead. Recoloring an
+  swatches. The first `dialog-readback` read only manual-entry inputs and returned a
+  hidden leftover as an option; it now reports `source: "reference"` with the box's
+  list, built from that day's page snapshot and checked only against a stand-in page,
+  so compare it once with a screenshot on first live use. Recoloring an
   imported dropdown was not tried: if `dropdown-colors` finds no swatches, remove that
   validation (only when this session created it) and add a manual-entry dropdown as in
   section 4.
