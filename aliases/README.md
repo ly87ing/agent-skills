@@ -3,7 +3,9 @@
 Agent Manager reads every `aliases/*.json` file here as recommended shell aliases when this
 repository is one of its skill sources. They appear as "recommended · add" on its terminal
 shortcuts page; nothing is written to `~/.zshrc` or `~/.zprofile` until the user adds one, and a
-name the user already defines anywhere in those files is not recommended.
+name the user already defines anywhere in those files is not recommended. Agent Manager is the
+maintainer's own tool and is not public; without it, copy the aliases you want into your shell
+profile by hand, replacing `{timezone}` and `{lang}` yourself.
 
 Each file has this shape:
 

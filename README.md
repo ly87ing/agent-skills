@@ -79,7 +79,7 @@ agent-skills/
 └── tests/                              # offline gate: contracts, unit suites, runner harness tests
 ```
 
-The directories under `skills/` are the single source of truth for the skills. `rules/` holds the always-on rule layer that the skills are designed against: `core.md` carries only universal invariants and no skill names, and [`rules/README.md`](./rules/README.md) records what may go in it. Agent Manager reads `rules/*.md` from this repository as rule templates, and `aliases/*.json` as recommended terminal shortcuts (see [`aliases/README.md`](./aliases/README.md)).
+The directories under `skills/` are the single source of truth for the skills. `rules/` holds the always-on rule layer that the skills are designed against: `core.md` carries only universal invariants and no skill names, and [`rules/README.md`](./rules/README.md) records what may go in it. Agent Manager, the maintainer's own configuration tool (not public), reads `rules/*.md` from this repository as rule templates, and `aliases/*.json` as recommended terminal shortcuts (see [`aliases/README.md`](./aliases/README.md)); without it, copy what you want by hand.
 
 How a skill package is laid out, designed, and contributed is in [docs/authoring.md](./docs/authoring.md); how skills and rules are measured, and what the measurements found, is in [docs/evaluation.md](./docs/evaluation.md).
 
@@ -114,4 +114,4 @@ Skills split out of the rule system should carry only low-frequency, topic-speci
 
 A short description suitable for the GitHub repository settings page:
 
-`Open-source, team-grade skills for safe merges, rule-derived workflows, and reusable agent execution.`
+`Evidence-first agent skills for Claude Code and Codex: safe merges, disciplined changes, verification, solution shaping, reader-facing writing, diagrams, and WeCom sheets, each shipped with triggering evals.`

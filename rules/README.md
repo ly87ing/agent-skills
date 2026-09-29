@@ -14,7 +14,9 @@ user sees the difference against the current file first. Editing `core.md` there
 machine by itself; after the change is pushed, "update source" in Agent Manager fetches it and
 offers the new version, and a local-checkout source shows it immediately.
 
-A new `.md` file in this directory becomes a new template in Agent Manager. `evals/` holds the
+A new `.md` file in this directory becomes a new template in Agent Manager. Agent Manager is the
+maintainer's own tool and is not public; without it, copy `core.md` into `~/.claude/CLAUDE.md` or
+`~/.codex/AGENTS.md` by hand. `evals/` holds the
 behaviour eval cases for `core.md`.
 
 This directory moved here from the `agent-manager` repository (`agent-rule/rules`) on 2026-09-23
