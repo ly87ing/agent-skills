@@ -10,8 +10,7 @@ model; only well-specified implementation is handed down a tier.
   deep work.
 
 Codex has no equivalent here: it has no family aliases, so a role file would pin a concrete model
-name that goes stale with every model generation, and its main session already runs the coding
-tier.
+name that goes stale with every model generation.
 
 Descriptions say what each subagent is for and do not say "use proactively": delegation stays the
 exception, and the description only decides where it goes.
