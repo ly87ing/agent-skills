@@ -5,15 +5,30 @@ The delegating agent keeps requirements, design, review, and judgement on the ma
 model; only well-specified implementation is handed down a tier.
 
 - `claude/implementer.md` — Claude Code, `model: sonnet`, `effort: high`. It uses the family
-  alias, so a new Sonnet release needs no edit. Built-in subagents (Explore, Plan,
-  general-purpose) already inherit the main session's model, so no definition is needed for
-  deep work.
+  alias, so a new Sonnet release needs no edit.
 
 Codex has no equivalent here: it has no family aliases, so a role file would pin a concrete model
 name that goes stale with every model generation.
 
+## Cost
+
+A subagent given no model inherits the main session's. With the main session on Fable, six
+parallel `general-purpose` readers inherited Fable and used up the plan's allowance in one
+session. Set `CLAUDE_CODE_SUBAGENT_MODEL` to `opus` in `~/.claude/settings.json` under `env` so
+unassigned subagents stop at Opus; a definition's `model` (such as `implementer`'s `sonnet`) and a
+model passed on the call still win. Measured once on Claude Code with an Opus main session: the variable
+moved `general-purpose` but not the built-in `Plan`, which stayed on the main model although the
+documentation says otherwise.
+
+A fresh subagent shares no prompt cache with the main session, so it pays for everything it reads.
+Hand a fresh subagent work that needs little context; when the work needs what the main session
+already holds, a fork (same model, same prefix) or continuing an existing subagent is cheaper than
+a new one re-reading it.
+
 Descriptions say what each subagent is for and do not say "use proactively": delegation stays the
 exception, and the description only decides where it goes.
+
+## Installing
 
 Agent Manager does not install these yet. Copy a file into `~/.claude/agents/` (all projects) or a
 project's `.claude/agents/` by hand.
