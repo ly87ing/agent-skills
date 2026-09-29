@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "把 tracker.csv 里的 76 行需求写进企业微信表格 https://doc.weixin.qq.com/sheet/e3_AbCdEf 的 Sheet1，从 A1 开始，写完帮我逐格核对有没有写错。",
-      "expected_output": "Should trigger wecom-docs-editing. The result should check the login state, confirm the target footprint is empty before writing, select the anchor through the Name Box, paste the block in one operation, and prove the write with a cell-by-cell read-back that also checks the cells past the block's right and bottom edges."
+      "expected_output": "Should trigger wecom-docs-editing. The result should check the wecom-cli authorization, look up the tab's sheet_id, prove the target footprint and its borders are empty from a mode-default read-back before writing, write the block through wecom-cli as text cells in one request, and prove the write with a cell-by-cell read-back that also checks the cells past the block's right and bottom edges."
     },
     {
       "id": 2,
@@ -19,7 +19,7 @@
     {
       "id": 4,
       "prompt": "Fill the WeCom Docs sheet at doc.weixin.qq.com/sheet/e3_XyZ with the rows in export.json, link the ID column to each ticket URL, and confirm every cell and link matches.",
-      "expected_output": "Should trigger wecom-docs-editing. The result should carry the ticket URLs as links inside the pasted block, verify both cell text and link targets after writing, and report the cells compared and any mismatch rather than retyping silently."
+      "expected_output": "Should trigger wecom-docs-editing. The result should write the ticket URLs as link cells in the same wecom-cli request as the text, verify both cell text and link targets from the read-back, and report the cells compared and any mismatch rather than retyping silently."
     },
     {
       "id": 5,
@@ -64,7 +64,22 @@
     {
       "id": 13,
       "prompt": "把 ONES 导出的 20 条需求（编号、标题、链接、状态）写进 https://doc.weixin.qq.com/sheet/e3_Zx9Cv1 的 Sheet1，从 A1 开始。",
-      "expected_output": "Should trigger wecom-docs-editing. The result should carry each requirement URL as a link on its ID or title cell inside the pasted block instead of a separate column of raw URLs, verify both cell text and link targets after writing, and give the status column a colored dropdown."
+      "expected_output": "Should trigger wecom-docs-editing. The result should carry each requirement URL as a link on its ID or title cell inside the written block instead of a separate column of raw URLs, verify both cell text and link targets after writing, and give the status column a colored dropdown."
+    },
+    {
+      "id": 14,
+      "prompt": "https://doc.weixin.qq.com/smartsheet/s3_Kp9Lm2 这个智能表格里加一个「状态」单选字段，选项未开始/进行中/已完成，分别配灰黄绿。",
+      "expected_output": "Should NOT trigger wecom-docs-editing. A smart sheet is a different document type whose select fields and option colors belong to the official wecomcli-smartsheet skill; this skill covers only the online spreadsheet editor at doc.weixin.qq.com/sheet."
+    },
+    {
+      "id": 15,
+      "prompt": "把 export.json 的 25 行写进 https://doc.weixin.qq.com/sheet/e3_Hj4Kl8 的 Sheet1，从 A1 开始，第一列编号是 007、012 这种带前导零的。",
+      "expected_output": "Should trigger wecom-docs-editing. Before writing, the result should warn that wecom-cli stores leading-zero IDs such as 007 as numbers that read back as 7, let the user choose how to proceed, write the chosen block as text cells, and report any cell that the read-back shows changed instead of calling the write clean."
+    },
+    {
+      "id": 16,
+      "prompt": "新建一个企微在线表格，放这周 12 条需求的跟进表，列是编号、标题、负责人、状态（未开始/进行中/已完成），要能按状态筛选。",
+      "expected_output": "Should trigger wecom-docs-editing. The result should build a local .xlsx with a list validation on the status column, text-formatted IDs, a frozen header, and a filter, import it as a new online sheet through wecom-cli, verify the imported cells from a read-back, and then color the status options in the browser, confirming them through the validation dialog."
     }
   ]
 }

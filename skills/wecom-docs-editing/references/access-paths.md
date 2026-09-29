@@ -1,5 +1,56 @@
 # Access paths and credentials
 
+Table of Contents
+
+1. wecom-cli (official, open source)
+2. Official WeCom document API
+3. Browser session: one login per work session
+4. Why no persistent profile and no exported cookie
+
+## wecom-cli (official, open source)
+
+Source: https://github.com/WecomTeam/wecom-cli (MIT), installed with
+`npm install -g @wecom/cli`. Everything below was observed on 2026-09-29 with
+wecom-cli 1.3.4 against a member-created sheet and two imported ones.
+
+- Auth: `wecom-cli auth init` shows a QR code; scanning it creates a bot in the user's
+  name and stores its credential encrypted under the CLI's config directory. Calls run
+  as that bot on behalf of the user. Creating and importing documents worked right
+  away; reading any document returned errcode 851008 ("partial no authorization") until
+  the user granted the bot the document-content permission in WeCom.
+- Works: `sheet get` (tab titles and `sheet_id`s), `sheet ranges get` with
+  `"mode": "default"` and a range (structured `grid_data`: text, number, link text and
+  URL, select value, fonts), `sheet contents update` for text, number, and link cells
+  plus bold and font styles, `sheet subsheets add|delete`, and `sheet import` of a
+  local `.xlsx` into a new document. All of these worked on a sheet the user created.
+- Without `mode`, `sheet ranges get` returned CSV text in a `content` field even when a
+  range was passed, although the official skill documents `default` as the default.
+- `SELECT` and `CHECKBOX` cells, although the schema lists option colors and a
+  multi-select flag: every variant tried (eight shapes, with and without ids, colors,
+  and `multiple`) returned errcode 0 and read back empty, and the page showed the cells
+  empty. In a column that already had a list validation, the same write left a broken
+  cell whose value read back as `[""]`.
+- Plain text in a column with a list validation (imported from `.xlsx`) read back as a
+  select value, and the page showed it as the chosen option. A value outside the list
+  ("urgent" in a high/medium/low column) was stored the same way and shown with a red
+  corner marking it invalid; the API gave no warning.
+- Text that looks like a number is stored as a number: `007` and `0012` read back and
+  displayed as `7` and `12`. A leading apostrophe stays in the cell as a literal
+  character. Date-like text (`2026-09-28`, `1/2`, `3-4`) stayed text.
+- Rows written through the API took the font SimSun 8 pt while imported rows used
+  Calibri 11 pt, so appended rows can look different from the rest of the table.
+- No commands for data validation, conditional formats, filters, frozen panes, or
+  deleting a document; `doc --help` mentions deletion but lists no such command.
+- Import of an `.xlsx` built with openpyxl carried: the list validation (as a
+  "reference data" dropdown with no option colors), conditional-format fills (only when
+  the fill is set with `bgColor`; an `fgColor`-only fill imported as a rule with no
+  visible fill), the frozen header row, the filter (which later grew to cover rows
+  written through the API), and IDs in text-formatted cells such as `007`.
+- The official `wecomcli-sheet` skill triggers on the same `doc.weixin.qq.com/sheet`
+  links as this skill and documents neither the dropped select cells nor the number
+  conversion; install the other `wecomcli-*` skills with `npx skills add
+  WeComTeam/wecom-cli --skill <names>` and leave that one out.
+
 ## Official WeCom document API
 
 Checked against the official pages on 2026-09-23.
@@ -41,6 +92,10 @@ Checked against the official pages on 2026-09-23.
   window through the operating system or the user, not the page.
   The temporary profile sat in the per-user temp folder with owner-only permissions, and
   Time Machine excluded it.
+- Observed on 2026-09-29 with `@playwright/cli` 0.1.19: `playwright-cli -s=NAME open
+  --headed URL` without `--persistent` keeps the profile in memory, the login worked,
+  and closing the session discarded it. Run it from a scratch directory, because it
+  writes snapshots and screenshots under `.playwright-cli/` in the working directory.
 - Attaching to the user's everyday browser avoids the login but exposes every open tab
   and every site session to the automation; do it only when the user asks for it.
 

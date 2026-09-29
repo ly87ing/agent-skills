@@ -14,8 +14,8 @@ Table of Contents
 
 The editor's labels are Chinese. They are written below as `\u` escapes; decode them
 when matching page text, and prefer `scripts/sheet_js.py`, which already embeds them.
-Everything here was observed on the live editor on 2026-09-23; re-check a recipe the
-first time it fails rather than assuming the page is broken.
+Everything here was observed on the live editor on 2026-09-23 unless dated otherwise;
+re-check a recipe the first time it fails rather than assuming the page is broken.
 
 ## 1. Labels
 
@@ -35,6 +35,8 @@ first time it fails rather than assuming the page is broken.
 | Freeze first row | `\u51bb\u7ed3\u9996\u884c` |
 | Cancel / Confirm | `\u53d6\u6d88` / `\u786e\u5b9a` |
 | Multi-select / Color (dropdown dialog checkboxes) | `\u591a\u9009` / `\u989c\u8272` |
+| Manual entry / Reference data (dropdown option source) | `\u624b\u52a8\u8f93\u5165` / `\u5f15\u7528\u6570\u636e` |
+| File operations (title bar) / Delete document / Confirm delete | `\u6309\u94ae:\u6587\u4ef6\u64cd\u4f5c` / `\u5220\u9664\u6587\u6863` / `\u786e\u5b9a\u5220\u9664` |
 
 ## 2. Selecting a range
 
@@ -50,6 +52,15 @@ one typed; `paste` therefore refuses to write unless the Name Box shows its anch
 After Enter, focus leaves the Name Box for the page, not the grid.
 
 ## 3. Writing and reading cells
+
+This is the fallback write path for when `wecom-cli` is unavailable; the default data
+path is in SKILL.md. Before writing, evaluate `verify --input BLOCK --anchor A1 --sheet
+TAB --blank` and require `ok: true`. Then select the anchor through the Name Box and
+evaluate `paste --input BLOCK --anchor A1 --sheet TAB`: it refuses unless the active tab
+is TAB and the Name Box shows exactly that anchor, then focuses the grid and pastes as
+one undoable user action that syncs like typing. If it returns `sheetChecked: false`,
+confirm the tab from a screenshot. Finish with `verify` on the same file, anchor, and
+tab. Never write through the page's internal data model.
 
 - The grid's input proxy is a content-editable element (id `alloy-rich-text-editor`
   when observed). Focusing it with a script keeps the selection where it is. `paste`
@@ -156,5 +167,19 @@ toolbar menu first with the browser tool, then run `menu-pick`.
   minimized. Everything in this file kept working in that state.
 - A menu or dialog can act on a different cell than the one typed into the Name Box;
   check the Name Box, and read the range field of any dialog before confirming it.
+- Observed on 2026-09-29: at a 1200 px wide window the toolbar folded, and its Data
+  button opened a menu whose Data validation item sat one submenu deeper, so
+  `menu-pick --item dropdown` reported it missing. At 1680 px the documented paths
+  worked again; set the window width before driving menus.
+- A dropdown imported from an `.xlsx` list validation uses the reference-data source
+  (the option list sits in one text box, for example `a,b,c`) and has no color
+  swatches. `dialog-readback` reads only manual-entry options and returned wrong
+  options for it; read the reference box from a snapshot instead. Recoloring an
+  imported dropdown was not tried: if `dropdown-colors` finds no swatches, remove that
+  validation (only when this session created it) and add a manual-entry dropdown as in
+  section 4.
+- `wecom-cli` has no command to delete a document. In the page, the title-bar file
+  operations button opens a menu with Delete document, and its confirmation says the
+  document goes to the user's recycle bin; delete only documents this session created.
 - The browser tool transports UTF-8 function text; escaping every CJK character as
   `\u` roughly triples a data block, so the generator keeps data as UTF-8.
