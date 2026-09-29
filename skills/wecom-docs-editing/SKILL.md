@@ -106,8 +106,8 @@ discarded when the browser closes.
   confirmation states a rule count; proceed only when it equals what this session made.
 - Before a change the user did not ask for that alters what collaborators see, such as
   a filter that hides rows, a sort, or a dropdown on columns this session did not
-  write. A filter the user asked for is added directly. Either way, whether a filter is shared with collaborators could not be established
-  from the page, so describe that risk in the report instead of asserting either way.
+  write. A filter the user asked for is added directly. Either way, whether a filter
+  is shared with collaborators could not be established from the page, so describe that risk in the report instead of asserting either way.
 - After adding a dropdown, values outside its list become invalid; say so.
 - When a label or element is missing, `menu-pick` returns the visible menu items. Stop
   and report them; do not guess by screen coordinates, because a changed page makes a
