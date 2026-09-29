@@ -79,12 +79,17 @@ discarded when the browser closes.
    present, nothing spilled past the block. Report any diff as found; the sheet may
    reformat number-like text (leading zeros, dates), and whether to keep that is the
    user's call, not a silent retry.
-5. **Format on request.** Prefer colored dropdown options for columns with a fixed
-   vocabulary: they color every value and reject typos that would make a text rule miss.
-   Use conditional formatting for open text or formula rules, then a filter and a frozen
-   header. After each change, read it back through its own surface - `dialog-readback`
-   on a corner cell and on a cell just outside the range for dropdowns, `state` for the
-   filter and frozen rows. For a conditional format, a rule in the list is not proof it
+5. **Format.** Give every column this session writes whose values repeat from a short
+   fixed vocabulary (status, priority, result, grade, yes/no) a colored dropdown by
+   default, even when the user asked only for the data: each value carries its color,
+   the column filters by option, and the list rejects typos that would make a filter or
+   a text rule miss. Color by meaning (bad red, at risk yellow or orange, good green,
+   not applicable gray) and state the mapping in the report. Leave names, dates,
+   numbers, IDs, and free text as plain cells; use conditional formatting for their
+   rules and for formula rules, then a filter and a frozen header on request. After
+   each change, read it back through its own surface - `dialog-readback` on a corner
+   cell and on a cell just outside the range for dropdowns, `state` for the filter and
+   frozen rows. For a conditional format, a rule in the list is not proof it
    works: count from the source data how many cells in the apply range it should color,
    then require `ok: true` from `cf-matches --range K2:K77 --sheet TAB --expect N`. A
    rule that colors fewer or more cells than that is a failed rule to fix, not a
@@ -100,8 +105,8 @@ discarded when the browser closes.
   this session did not create, or clearing the whole sheet's rules. The delete-all
   confirmation states a rule count; proceed only when it equals what this session made.
 - Before a change the user did not ask for that alters what collaborators see, such as
-  a filter that hides rows or a sort. A filter the user asked for is added directly.
-  Either way, whether a filter is shared with collaborators could not be established
+  a filter that hides rows, a sort, or a dropdown on columns this session did not
+  write. A filter the user asked for is added directly. Either way, whether a filter is shared with collaborators could not be established
   from the page, so describe that risk in the report instead of asserting either way.
 - After adding a dropdown, values outside its list become invalid; say so.
 - When a label or element is missing, `menu-pick` returns the visible menu items. Stop

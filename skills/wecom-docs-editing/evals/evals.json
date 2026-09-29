@@ -45,6 +45,11 @@
       "id": 9,
       "prompt": "把 export.json 里的 40 行填进这个腾讯文档在线表格 https://docs.qq.com/sheet/DZmFrZUlk 的 Sheet1，从 A1 开始，填完核对一下。",
       "expected_output": "Should NOT trigger wecom-docs-editing. A Tencent Docs sheet at docs.qq.com is a different product with its own editor; this skill's selectors, page script, and read-back cover only the WeCom sheet editor at doc.weixin.qq.com/sheet."
+    },
+    {
+      "id": 10,
+      "prompt": "把 issues.csv 里的 30 行写进 https://doc.weixin.qq.com/sheet/e3_Mn8Kp2 的 Sheet1，从 A1 开始，列是编号、标题、负责人、状态（未开始/进行中/已完成）、优先级（高/中/低）。",
+      "expected_output": "Should trigger wecom-docs-editing. The user asked only for the data, yet the status and priority columns repeat a short fixed vocabulary, so after the verified write the result should give those two columns colored dropdowns by default, colored by meaning, confirm the stored options and colors through the validation dialog, leave the ID, title, and owner columns as plain cells, and state the color mapping in the report."
     }
   ]
 }
