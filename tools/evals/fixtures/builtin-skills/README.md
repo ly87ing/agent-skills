@@ -25,6 +25,7 @@ test.
 
 Captured 2026-09-23 from the skill catalog a live Claude Code session renders into its system
 prompt, on **Claude Code 2.1.281**. That is the only place these strings exist in readable form.
+The strings are Anthropic's, reproduced only so the judge sees the real catalog; the repository's MIT license does not cover them.
 
 They will drift as the CLI ships new versions, and a stale fixture is a new source of exactly the
 false confidence it was built to remove. Re-capture whenever the CLI version changes, and record the

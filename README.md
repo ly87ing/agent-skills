@@ -96,7 +96,7 @@ You don't need to adopt any fixed installer; this repository emphasizes the port
 
 Common usage:
 
-1. Pick the skill directory you need under `skills/`.
+1. Clone the repository (`git clone https://github.com/ly87ing/agent-skills.git`) and pick the skill directory you need under `skills/`.
 2. Copy that directory into your agent skills path, or bring it into your own repo as a subdirectory / submodule.
 3. Make sure the runtime can discover `SKILL.md`.
 4. Let the agent invoke it via the skill's natural-language trigger conditions, reading `references/` or running `scripts/` on demand as needed.
@@ -105,6 +105,10 @@ The repository itself stays runtime-neutral and does not additionally maintain p
 If you want to use these skills within a specific runtime, the consuming side should place the skill in that runtime's required discovery path.
 
 Skills split out of the rule system should carry only low-frequency, topic-specific workflows that need on-demand loading. Always-on rules retain only trigger conditions, constraint boundaries, and the minimal collaboration protocol; execution steps, checklists, failure boundaries, and verification details are maintained in the corresponding skill.
+
+## License
+
+[MIT](./LICENSE), except `tools/evals/fixtures/builtin-skills/`: those files reproduce Claude Code's built-in skill descriptions verbatim as eval input, remain Anthropic's text, and are not covered by this license.
 
 ## Suggested Project Description
 
