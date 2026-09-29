@@ -69,6 +69,9 @@ agent-skills/
 │   ├── core.md                         # always-on rules for CLAUDE.md / AGENTS.md
 │   ├── README.md                       # what may go in core.md, budget, measuring
 │   └── evals/core.json
+├── subagents/
+│   ├── claude/implementer.md           # Claude Code subagent: well-specified coding on sonnet
+│   └── README.md                       # which work goes to which model, how to install
 ├── aliases/
 │   ├── aliases.json                    # recommended terminal shortcuts
 │   └── README.md                       # file shape and the rules Agent Manager enforces
