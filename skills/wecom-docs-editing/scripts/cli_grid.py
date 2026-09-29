@@ -29,8 +29,9 @@ _SPEC.loader.exec_module(sheet_js)
 
 InputError = sheet_js.InputError
 
-# Text the sheet stores as a number and then shows differently (observed: "007" -> 7).
-NUMBER_LIKE = re.compile(r"[+-]?(0\d+(\.\d*)?|\d+\.\d*0|\d{16,})")
+# Text the sheet stores as a number and then shows differently, even in a cell formatted
+# as text (observed: "007" -> 7, "1.50" -> 1.5; a 16-digit number came back unchanged).
+NUMBER_LIKE = re.compile(r"[+-]?(0\d+(\.\d*)?|\d+\.\d*0)")
 
 
 def cell_text(cell: dict) -> tuple[str, str | None]:
@@ -77,6 +78,9 @@ def readback_range(rows, anchor: str) -> str:
 
 def load_readback(path: Path) -> list[list[dict]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
+    error = payload.get("error")
+    if isinstance(error, dict):
+        raise InputError(f"read-back failed: {error.get('code')} {error.get('message', '')}; read again")
     if payload.get("errcode") not in (0, None):
         raise InputError(f"read-back failed: errcode {payload.get('errcode')} {payload.get('errmsg', '')}")
     grid = payload.get("grid_data")

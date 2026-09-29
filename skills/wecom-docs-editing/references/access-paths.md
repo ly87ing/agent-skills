@@ -35,8 +35,13 @@ wecom-cli 1.3.4 against a member-created sheet and two imported ones.
   ("urgent" in a high/medium/low column) was stored the same way and shown with a red
   corner marking it invalid; the API gave no warning.
 - Text that looks like a number is stored as a number: `007` and `0012` read back and
-  displayed as `7` and `12`. A leading apostrophe stays in the cell as a literal
-  character. Date-like text (`2026-09-28`, `1/2`, `3-4`) stayed text.
+  displayed as `7` and `12`, and `1.50` as `1.5`. The same happened in cells an import
+  had formatted as text, so a cell format does not protect them. A leading apostrophe
+  stays in the cell as a literal character. Date-like text (`2026-09-28`, `1/2`,
+  `3-4`) and a 16-digit number stayed as written.
+- A read-back once failed with `{"error": {"code": 640210, ...}}` (an internal error,
+  no `errcode`) and the same call succeeded when repeated; `cli_grid.py verify` reports
+  that shape as a failed read rather than as an empty sheet.
 - In an imported sheet, rows written through the API displayed smaller than the
   imported rows (which showed Calibri 11 pt). The read-back reported SimSun 8 pt for
   both, and also for rows of a sheet created in the page, so the read-back font is not

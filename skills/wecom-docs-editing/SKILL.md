@@ -83,10 +83,11 @@ silently drops and does not warn that leading-zero IDs turn into numbers.
    success and drops the value in a plain column, and blanks the cell in a dropdown
    column. Plain text written into a column with a list validation became that option
    (observed on an imported one), but a value outside the list was stored too and only
-   marked invalid on the page, so check values against the column's options first. `request` warns about number-like text
-   (`007`, `1.50`, 16+ digits): the sheet stores it as a number and reads it back
-   changed. Tell the user before writing and let them choose; there is no API cell
-   format that keeps it as text.
+   marked invalid on the page, so check values against the column's options first.
+   `request` warns about number-like text (`007`, `1.50`): the sheet stores it as a
+   number and reads it back changed, even in a cell formatted as text. Tell the user
+   before writing and let them choose; only an `.xlsx` import with a text-formatted
+   column kept such IDs intact.
 4. **Verify.** Read the same range back with `"mode": "default"` and run `cli_grid.py
    verify` with the same block and anchor. Require `ok: true`: every cell equal, every
    link URL equal, nothing spilled past the block. Report any diff as found; do not

@@ -53,7 +53,7 @@ class RequestTests(unittest.TestCase):
     def test_warns_about_number_like_text(self):
         _, warnings = cli_grid.build_request([["007", "1.50", "1234567890123456", "7", "2026-09-28"]], [], "A1", "d", "s")
         flagged = [w.split()[0] for w in warnings]
-        self.assertEqual(flagged, ["A1", "B1", "C1"])
+        self.assertEqual(flagged, ["A1", "B1"])
 
     def test_readback_range_adds_one_row_and_column(self):
         self.assertEqual(cli_grid.readback_range(ROWS, "B2"), "B2:D4")
@@ -103,6 +103,14 @@ class VerifyTests(unittest.TestCase):
         payload.pop("grid_data")
         path.write_text(json.dumps(payload), encoding="utf-8")
         with self.assertRaises(cli_grid.InputError):
+            cli_grid.load_readback(path)
+        path.unlink()
+
+    def test_transient_server_error_shape_is_rejected(self):
+        # Observed 2026-09-29: an internal error came back as {"error": {...}} with no errcode.
+        path = readback([])
+        path.write_text(json.dumps({"error": {"code": 640210, "message": "internal"}}), encoding="utf-8")
+        with self.assertRaisesRegex(cli_grid.InputError, "640210"):
             cli_grid.load_readback(path)
         path.unlink()
 
