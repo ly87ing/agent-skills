@@ -202,6 +202,21 @@ A probe gave the pre-rewrite page to the isolated `claude -p` (sonnet, Read/Glob
 - Whether reader counts cut the number of rounds a user has to repeat a remark is a multi-round effect no one-turn case poses; it is not measured.
 - The behaviour runner gives answer calls read-only tools, so its cases cannot exercise the script.
 
+## Replacement-Proposal Example in `reader-facing-writing`, 2026-09-30
+
+The draft the rewrite session started from was written in an earlier session: the skill had loaded 40 minutes before for another document, the HTML was asked for in the user's words ("给我初一版本 html，看一看整体方案") after `solution-shaping` loaded, and four omission-review rounds then appended to it. That phrasing triggers this skill (#49, trigger, sonnet, N=5, built-in fixtures plus the installed catalog: 4/5, the miss to `artifact-design`), so the gap was applying the skill at the first draft, not choosing it. Two changes follow. `SKILL.md` gained a before/after of a replacement proposal's first screen, one claim over a table of job, failure, and new owner; the body cap in `tests/test_skill_contracts.py` went from 16,000 to 17,000 characters for it, since the rules had filled the body and examples are what moved this skill before. `solution-shaping` now says to load this skill before drafting any page a person reads to understand the scheme, and to re-outline that page after a review round instead of appending to it.
+
+Sonnet, N=3, against `f3ee592`:
+
+| Case | Current | Pre-edit |
+| --- | --- | --- |
+| #50 new: opening of a log-pipeline replacement, a different domain from the example | 3/3 | 1/3 |
+| #40 design doc | 2/3 | 3/3 |
+| #12, #31 regression | 3/3, 3/3 | 3/3, 3/3 |
+
+- On #40 the current miss kept every other point and lacked only the cause-and-removal pairing added to the grade in `b3d81db`, which read 1/2 on both arms there; the pre-edit arm's 3/3 here is the same point landing, so the intervals overlap and this is not read as the example pulling the answer away.
+- The `solution-shaping` line changes that skill's body only; whether a real session now loads the writing skill before its first draft is a field question, to be read with `scan_session_usage.py`.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:

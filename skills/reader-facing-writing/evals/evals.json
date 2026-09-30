@@ -258,6 +258,17 @@
       "prompt": "这份设计文档评审说太长看不下去，帮我把主路径压到三页以内，给出新的章节结构。",
       "behaviour_prompt": "这份设计文档评审说太长看不下去，帮我把主路径压到三页以内，给出新的章节结构，并说明每节默认展示什么、什么折叠或放附录。评审这次主要判断实施设计是否可行。现有章节和篇幅：1 背景与问题（1 页）；2 新方案原理（1 页，含一张新旧对照图）；3 实施设计（约 6 页）：3.1 组件清单表 22 行（新增 7、改造 7、不变 3、退役 3、待定 2，每行一段说明）、3.2 启动时序图和派生程序形态、3.3 现场覆盖的优先级与存储、3.4 配置体检三个时点的检查项、3.5 新旧等价证明的四张网、3.6 单服务迁移四步和回退；4 计划与代价（1 页）；5 需要评审决定的事 7 项（半页）；附录 A–F 原始调研明细（约 10 页）。",
       "expected_output": "Should trigger reader-facing-writing. The implementation design stays in the main path as its own section, each subsection cut to its conclusion and one key figure or table with the dense tables and per-row explanations folded inside it or linked, rather than being moved wholesale to an appendix while the plan and decision sections keep the main path; the research appendices stay in the detail layer."
+    },
+    {
+      "id": 49,
+      "prompt": "这整体方案我还没太理解，给我出一版 html 的，用 html 看一看整体方案。",
+      "expected_output": "Should trigger reader-facing-writing. The request is to write an agreed scheme up as an HTML page a person will read to understand it, which is this skill's document job, not further shaping of the scheme."
+    },
+    {
+      "id": 50,
+      "prompt": "帮我写这份日志改造方案的开头，评审不了解日志系统内部，要让他们第一屏就看懂为什么改、改完为什么就好了。",
+      "behaviour_prompt": "帮我写这份日志改造方案的开头，评审不了解日志系统内部，要让他们第一屏就看懂为什么改、改完为什么就好了。材料：现状是每台机器上的日志 agent 负责解析所有业务的日志格式（共维护 340 条正则），中心侧再按租户重新切分后转发给 ES；业务新增一个字段就要改正则并重启全部 agent，单次发布约 40 分钟；正则匹配不上时这条日志直接丢弃且没有告警，上月约 3% 的错误日志因此丢失。方案：业务直接输出结构化 JSON 日志，agent 只做转发，切分交给 ES 的 ingest pipeline 按字段路由。组件：agent（改造）、中心切分服务（退役）、ES ingest pipeline（新增）、业务日志库（改造）。请直接给出开头部分的正文。",
+      "expected_output": "Should trigger reader-facing-writing. The opening leads with a cause-level claim (the agent and the central splitter do work that belongs to the services: parsing every service's format and re-splitting), not with symptoms alone, and puts each problem on the same row or screen as its cause and the component the job is handed to, with the source figures kept (340 regexes, about 40 minutes, about 3%); it does not open with a component inventory or implementation detail before the problem and its answer."
     }
   ]
 }

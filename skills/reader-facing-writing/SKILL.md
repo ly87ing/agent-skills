@@ -103,6 +103,22 @@ After: a sequence diagram with a one-line takeaway and the one sentence the diag
 >
 > Scan's latency is inherited by every caller because the upload-to-scan call is synchronous; making that call asynchronous is the change under review.
 
+**Replacement proposal, opening.** The source: the config center stores and ships every service's whole config file, re-renders each file a changed value touches, and patches files by text replacement.
+
+Before: a problem-approach-cost paragraph and a 30-row component table; the principle came three sections later.
+
+After, first screen:
+
+> **The config center should hold only values; today it also stores, re-renders, and patches service files.**
+>
+> | Job it does today | What goes wrong | Handed to |
+> | --- | --- | --- |
+> | Stores and ships whole files | No proof which instance runs which file | The service image |
+> | Re-renders files when a value changes | Saving one database configuration: 70.6 s | The service, reading values at startup |
+> | Patches files by text replacement | About 210 rules fail silently | The framework, reading by key; a missing key fails startup |
+>
+> One practice causes all three, so tuning cannot remove them; handing the jobs back does.
+
 **Change handoff note.** A change that removed an upload endpoint, added a rate limit on third-party downloads, and moved files to a new path went through three descriptions. Version one listed merge-request numbers, class names, and four review rounds; the tester could not find what to test, and none of those identifiers survive into the note. Version two was rewritten for the tester and lost the list of what changed. Version three:
 
 > | Change | Kind | Visible to users |

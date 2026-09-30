@@ -154,7 +154,11 @@ class SkillContractTests(unittest.TestCase):
             # body: its job is to stop a silent slide back, not to dictate a target.
             # Raising it needs the same justification a rule-budget bump needs — say
             # which content earned the increase, in a comment here.
-            self.assertLessEqual(len(skill_text), 16000, f"{skill_dir.name}: SKILL.md too large")
+            # 16000 -> 17000 (2026-09-30): reader-facing-writing's before/after for a
+            # replacement proposal's opening. Its rules had filled the body, and the
+            # measurements in docs/evaluation.md show examples, not added rules, are
+            # what moved this skill's output.
+            self.assertLessEqual(len(skill_text), 17000, f"{skill_dir.name}: SKILL.md too large")
 
             for forbidden_doc_name in ("README.md", "CHANGELOG.md", "INSTALL.md", "INSTALLATION.md"):
                 self.assertFalse((skill_dir / forbidden_doc_name).exists(), f"{skill_dir.name}/{forbidden_doc_name}")
