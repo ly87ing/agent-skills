@@ -94,4 +94,4 @@ Request: retire service X and fold its two capabilities into services Y and Z.
 
 ## Ownership
 
-`change-discipline` owns the edit once the scheme is agreed: history, callers, symptom-is-not-spec. `verification` owns proving the result and accepting delegated work. `reader-facing-writing` owns the document the scheme is written into, including the design-doc skeleton. `safe-merge-review` owns merges.
+`change-discipline` owns the edit once the scheme is agreed: history, callers, symptom-is-not-spec. `verification` owns proving the result and accepting delegated work. `reader-facing-writing` owns the document the scheme is written into, including the design-doc skeleton: before drafting any page a person will read to understand the scheme — a design doc, an HTML overview — load it and write to its skeleton, and when a later review round finds more, re-outline that document by its reader tests instead of appending sections to it. `safe-merge-review` owns merges.

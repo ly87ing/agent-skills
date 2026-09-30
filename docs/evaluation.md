@@ -215,6 +215,7 @@ Sonnet, N=3, against `f3ee592`:
 | #12, #31 regression | 3/3, 3/3 | 3/3, 3/3 |
 
 - On #40 the current miss kept every other point and lacked only the cause-and-removal pairing added to the grade in `b3d81db`, which read 1/2 on both arms there; the pre-edit arm's 3/3 here is the same point landing, so the intervals overlap and this is not read as the example pulling the answer away.
+- `solution-shaping` regression, sonnet, N=2, against `f3ee592`: #2 1/2 against 0/2, #4 and #15 2/2 on both arms.
 - The `solution-shaping` line changes that skill's body only; whether a real session now loads the writing skill before its first draft is a field question, to be read with `scan_session_usage.py`.
 
 ## Already-Tested Dead Ends
