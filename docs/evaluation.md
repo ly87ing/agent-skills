@@ -162,6 +162,21 @@ Step 2 now also lists every effect of a mechanism the scheme replaces, enumerate
 - A companion rule for `reader-facing-writing` — mark each component new, changed, unchanged, retired, or undecided in a design doc — was dropped: on a new case the pre-edit answers already carried such a status column (0/3 and 0/2 graded on both arms, failing only on the undecided item). The session's failure came from a document grown over many rounds, which this case does not reproduce.
 - Trigger, sonnet, N=3, repository catalog only: #15 3/3. The description was not changed.
 
+## Reference Loading in `reader-facing-writing`, 2026-09-30
+
+Field sessions stopped opening this skill's references after the 2026-09-21 rewrite. Of the 13 Claude Code sessions on this machine that loaded the skill from 09-10 to 09-16, 8 read `prose-style.md` and 5 read `revision-pass.md`; of the 14 from 09-18 to 09-30, none read either, and one read `visuals-and-decks.md`. The rewrite had turned "Read [prose-style.md] and apply it while drafting" into "Write plain sentences with [prose-style.md]: <summary>", and the same for the revision pass; with the summary inline, the link read as a citation. A config-center proposal rewrite that day shows the cost: the user had to ask by hand for five things the unread files already say — sweep a flagged defect as a class, reread as a new reader, put each figure where the text argues from it, name an unfamiliar entity on first use, keep table cells to compared values.
+
+Steps 3, 5, and 6 now open with an imperative read and its trigger, the visuals trigger names HTML fragments, the revision pass also runs after feedback on the whole artifact, and the shaping checklist also loads when a reader says structure or focus is unclear. A probe ran the behaviour runner's isolated `claude -p` (sonnet, read-only tools) with `--output-format stream-json` and counted `Read` calls into `references/`; no grading.
+
+| Request | Pre-edit (`e36efb1`) | Current |
+| --- | --- | --- |
+| Rewrite an HTML proposal fragment for reviewers | 0/3 read any reference | prose-style 6/6, visuals-and-decks 6/6, revision-pass 3/6 |
+| #40 design doc | 0/3 read any reference | prose-style 3/3, revision-pass 3/3, visuals-and-decks 2/3 |
+
+- The first current wording said "an HTML page"; asked for a fragment, it read `visuals-and-decks.md` 0/3, and naming fragments took it to 3/3 and then 6/6.
+- `revision-pass.md` is read in half the HTML runs: a one-turn answer has no moment when a full draft exists before it is sent.
+- Being read is not being acted on (see the dead ends below); this measures loading only. Whether the five rules now fire in a long revision session is not measured.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:
