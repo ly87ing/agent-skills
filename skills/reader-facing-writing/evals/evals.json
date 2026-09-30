@@ -210,7 +210,7 @@
       "id": 40,
       "prompt": "帮我给评审写一份设计文档,讲清楚我们把同步的图片处理改成异步队列的方案。",
       "behaviour_prompt": "帮我给评审写一份设计文档,讲清楚我们把同步的图片处理改成异步队列的方案。已知:现在上传接口在请求内同步做缩略图和水印,平均 2.8 秒,p99 9 秒,高峰期上传网关超时;方案是上传接口只落原图并写一条消息到队列,由 3 个 worker 消费做处理,处理完更新图片状态,前端轮询状态;备选是把处理放到上传服务里的后台线程(不加队列),放弃的原因是服务重启会丢任务;非目标:不改前端的上传 UI,不做视频;风险:队列积压时用户看到的处理中状态会变长,计划加积压告警;灰度按租户放量。",
-      "expected_output": "Should trigger reader-facing-writing. The result should be a short design doc, roughly one to three pages, ordered as context and scope, goals and non-goals, the design, alternatives, risks, and rollout, with a diagram of the new flow (upload, queue, workers, status update, polling) placed before the detailed design rather than describing the flow only in prose. It should keep the source figures verbatim (2.8 seconds, p99 9 seconds, 3 workers), record the rejected background-thread alternative with its stated reason (task loss on restart), state the non-goals and the backlog risk with its mitigation, and not pad with sections the material cannot fill, pasted code, or a summary that repeats the design."
+      "expected_output": "Should trigger reader-facing-writing. The result should be a short design doc, roughly one to three pages, ordered as context and scope, goals and non-goals, the design, alternatives, risks, and rollout, with the problem traced to the step that causes it (thumbnailing and watermarking inside the upload request) and paired with what the design removes, not listed only as symptoms, and with a diagram of the new flow (upload, queue, workers, status update, polling) placed before the detailed design rather than describing the flow only in prose. It should keep the source figures verbatim (2.8 seconds, p99 9 seconds, 3 workers), record the rejected background-thread alternative with its stated reason (task loss on restart), state the non-goals and the backlog risk with its mitigation, and not pad with sections the material cannot fill, pasted code, or a summary that repeats the design."
     },
     {
       "id": 41,
@@ -246,6 +246,18 @@
       "id": 46,
       "prompt": "把这份实测报告压成一张矩阵表放进方案，数字直接搬过去就行。",
       "expected_output": "Should trigger reader-facing-writing. Each number keeps its qualifier — environment, sample versus delivery, period, population — beside it in the table rather than being dropped during compression, so a figure measured on a sampled development environment cannot be read as the product's delivery shape."
+    },
+    {
+      "id": 47,
+      "prompt": "这段方案开头是给新同事看的，太啰嗦了，帮我改成一两句大白话，关键数字留着。",
+      "behaviour_prompt": "这段方案开头是给新同事看的，太啰嗦了，帮我改成一两句大白话，关键数字留着。原文：\"现状：5.6 中 Manager 保存一次数据库配置时，会拆成 3 次 Noah 请求、共改写 60 份配置文件，2026-09-16 现场日志实测耗时 70.6 秒（测的版本早于当前代码，尚未复测）。配置扇出方面，变量 USER_NAMESPACE 被 386 份配置引用（该值安装时自动生成，客户不可修改），主域名被 55 份配置引用。数据库方面，5.6 的公共驱动变量只覆盖达梦、OceanBase、MySQL 三种，神通、金仓、PG、高斯四种拿到的是空值，个别服务在自己的脚本里另写了驱动。\" 请直接给出改写后的开头。",
+      "expected_output": "Should trigger reader-facing-writing. The plain version keeps each claim's subject and scope: 70.6 seconds stays tied to saving one database configuration, not to changing one value, and keeps its not-yet-re-measured caveat or drops the figure; a fan-out example uses the main domain (55 files) or says USER_NAMESPACE is not customer-editable instead of presenting 386 files as what a customer change costs; and the database point says the shared driver variable covers three databases rather than that the other four are unsupported everywhere."
+    },
+    {
+      "id": 48,
+      "prompt": "这份设计文档评审说太长看不下去，帮我把主路径压到三页以内，给出新的章节结构。",
+      "behaviour_prompt": "这份设计文档评审说太长看不下去，帮我把主路径压到三页以内，给出新的章节结构，并说明每节默认展示什么、什么折叠或放附录。评审这次主要判断实施设计是否可行。现有章节和篇幅：1 背景与问题（1 页）；2 新方案原理（1 页，含一张新旧对照图）；3 实施设计（约 6 页）：3.1 组件清单表 22 行（新增 7、改造 7、不变 3、退役 3、待定 2，每行一段说明）、3.2 启动时序图和派生程序形态、3.3 现场覆盖的优先级与存储、3.4 配置体检三个时点的检查项、3.5 新旧等价证明的四张网、3.6 单服务迁移四步和回退；4 计划与代价（1 页）；5 需要评审决定的事 7 项（半页）；附录 A–F 原始调研明细（约 10 页）。",
+      "expected_output": "Should trigger reader-facing-writing. The implementation design stays in the main path as its own section, each subsection cut to its conclusion and one key figure or table with the dense tables and per-row explanations folded inside it or linked, rather than being moved wholesale to an appendix while the plan and decision sections keep the main path; the research appendices stay in the detail layer."
     }
   ]
 }

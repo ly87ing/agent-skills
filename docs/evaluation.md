@@ -177,6 +177,20 @@ Steps 3, 5, and 6 now open with an imperative read and its trigger, the visuals 
 - `revision-pass.md` is read in half the HTML runs: a one-turn answer has no moment when a full draft exists before it is sent.
 - Being read is not being acted on (see the dead ends below); this measures loading only. Whether the five rules now fire in a long revision session is not measured.
 
+## Session-Derived Rules in `reader-facing-writing`, 2026-09-30
+
+The same rewrite session supplied three content rules. The Design doc row now asks a replacement to trace each problem to its cause in the current design and pair it with what the new one removes, drawn old beside new; `shaping-checklist.md` carries the long form of that, a bullet that the implementation stays a main-path section whatever its provenance, and the plain-language drift examples (70.6 s retold as "change one value", the 386-file variable no customer changes); `revision-pass.md` says a number-presence script proves presence, not correctness, and that whole-artifact feedback means re-outlining from a new reader's read rather than patching. Sonnet, N=2, against `d34a98c`.
+
+| Case | Current | Pre-edit |
+| --- | --- | --- |
+| #40 design doc, now also graded on cause-and-removal pairing | 1/2 | 1/2 |
+| #47 new: plain-language opening from a source with scoped figures | 2/2 | 2/2 |
+| #48 new: compress a design doc whose implementation is most of it | 2/2 | 2/2 |
+| #13, #25, #31, #46 regression | 2/2, 2/2, 2/2, 1/2 | 2/2, 2/2, 2/2, 0/2 |
+
+- #47 and #48 pass on the pre-edit skill: asked once, with the source inline, it already keeps the scope and keeps the implementation in the main path. The session's misses came late in a many-round revision, which a one-turn case does not pose. One-line clauses for both had been added to `SKILL.md` steps 2 and 4 and were removed again; the reference bullets and both cases stay as regression guards.
+- The Design doc row clause is kept at +0.00: it targets the comparison the user asked for four times, and #40 fails in both arms on points other than the pairing.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:

@@ -28,6 +28,7 @@ artifact needs another section.
 - A number supports a claim only if it measures that claim over a matching period and population — a baseline gathered before the change you are crediting cannot show that change's effect. Cut such data or reframe the claim, and never add figures to look rigorous.
 - When two sources disagree (a registry and a synced overview, a ticket and a chat summary), recompute from the primary record, treat the secondary as a claim, and mark what neither source can establish as unverified.
 - Never present future or aspirational state as current.
+- Plain-language rewording and example choice are where a claim drifts past its source. A rewrite for newcomers turned "70.6 s to save one database configuration (three requests, 60 files)" into "70.6 s to change one value", took the variable with the largest fan-out (386 files) as its example although customers never change it, and hardened "the shared driver variable covers three databases" into "none of the four is supported". Check each simplified claim against its source for subject, unit, and scope, and pick the example the reader will actually meet, not the one with the biggest number.
 
 ## Reading path
 
@@ -38,6 +39,8 @@ artifact needs another section.
 - Structural emphasis and emphasis the user supplied sit outside the bold budget. When most elements are emphasized, none rank.
 - Layer a document set the same way: one overview carries the shared conclusion and maps each file to the question it answers; each member opens with its own takeaway and place in that map.
 - Aggregate raw counts into the categories that carry the insight, or cut numbers that do not.
+- In a proposal that replaces a mechanism, the reader accepts the new design only after seeing why the old one fails. State each problem as the step of the current design that causes it, not as its symptom ("the config center stores and re-renders every service's whole file", not "saving is slow"), and put what the new design removes on the same row, so the cause, the removal, and why the problem then disappears read together. A problem section and a principle section two sections apart make the reader flip between them.
+- A design doc's implementation — components, runtime sequence, migration mechanics — stays a main-path section when implementers and reviewers came for it, with its dense tables folded inside. Filing it as an appendix because it came from the original draft, while plan and decision sections keep the main path, buries the part the reader needs; where text came from never decides its layer.
 - Give an unfamiliar named entity a plain one-line identity on first appearance and the evidence that makes it relevant when it supports a judgment. Do not redefine tools the audience already uses.
 - State the artifact's organizing logic in one sentence and place every section by it. Each section's body answers the question its heading raises. Announced counts match the body one-to-one; parts are non-overlapping and collectively complete; each fact or caveat lives in one place with named cross-references.
 
