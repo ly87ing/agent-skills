@@ -147,6 +147,21 @@ Step 6 — attack the recommendation before closing, and brief a fresh challenge
 - In one #13 answer the edited skill escalated because the recommended option needs the front-end team to act, although the prompt said both options change only the export service; the other-team trigger read the scheme rather than the user's summary of it.
 - Trigger, sonnet, N=3, full catalog: #13 and #14 both 3/3. The description was not changed.
 
+## Replaced-Mechanism Inventory in `solution-shaping`, 2026-09-30
+
+Step 2 now also lists every effect of a mechanism the scheme replaces, enumerated by mechanism and marked loud or silent, and diffs two live implementations before either becomes the baseline; step 4 settles unknowns the code or data can answer before asking the user; the completeness check gained a mitigations row and a rule on how a no-gaps verdict is earned. Source: a config-center redesign session in which three omission reviews declared the scheme gap-free before the user named a silent rule class. Sonnet, against the pre-edit skill at `a32b8ed`.
+
+| Case | Current | Pre-edit |
+| --- | --- | --- |
+| #15 replacing a render script, one known pitfall given | 3/4 | 0/4 |
+| #15, first version with the script's rules inlined | 3/3 | 3/3 |
+| #4 completeness review, regression | 3/3 | 3/3 |
+
+- The first #15 put every rule class in the prompt, so both arms listed them without enumerating anything; it measured nothing and was rewritten to give only the pitfall the user had given.
+- Intervals overlap at N=4. Whether a real session enumerates by mechanism before its first no-gaps claim, and whether it answers its own source questions, is not measured.
+- A companion rule for `reader-facing-writing` — mark each component new, changed, unchanged, retired, or undecided in a design doc — was dropped: on a new case the pre-edit answers already carried such a status column (0/3 and 0/2 graded on both arms, failing only on the undecided item). The session's failure came from a document grown over many rounds, which this case does not reproduce.
+- Trigger, sonnet, N=3, repository catalog only: #15 3/3. The description was not changed.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:
