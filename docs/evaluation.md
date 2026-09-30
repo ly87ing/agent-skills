@@ -191,6 +191,17 @@ The same rewrite session supplied three content rules. The Design doc row now as
 - #47 and #48 pass on the pre-edit skill: asked once, with the source inline, it already keeps the scope and keeps the implementation in the main path. The session's misses came late in a many-round revision, which a one-turn case does not pose. One-line clauses for both had been added to `SKILL.md` steps 2 and 4 and were removed again; the reference bullets and both cases stay as regression guards.
 - The Design doc row clause is kept at +0.00: it targets the comparison the user asked for four times, and #40 fails in both arms on points other than the pairing.
 
+## Reader Counts in `reader-facing-writing`, 2026-09-30
+
+In the same session the user repeated one class of remark many times — seven on focus, six on layout, four on comparison, two on redundancy — and every round's report listed only mechanical checks (numbers present, tags closed, labels inside boxes). The reader checks that did work (a new-reader read, a count of how often each point recurs, a scan for long paragraphs, the core figure's scroll position) each ran only after the user asked. `revision-pass.md` now requires reader counts on every round that changes a page, reported at delivery, and turns a correction the user repeats into a standing check for the rest of the session. `scripts/reader_check.py` counts the countable part of an HTML or Markdown page's default-visible text: outline, opening, text before the first figure, long paragraphs and cells, near-constant columns, repeated numbers, shared text runs, and code-like terms by first appearance. Step 6 names it. Its unit suite has 9 tests.
+
+On the session's own page, the pre-rewrite version reads 670 visible blocks, 25 paragraphs over 100 characters, 54 cells over 40, and 35 numbers stated more than once; the committed rewrite reads 264, 2, 9, and 7.
+
+A probe gave the pre-rewrite page to the isolated `claude -p` (sonnet, Read/Glob/Grep/Bash) with "reviewers say it has no focus, repeats itself, and is badly laid out; diagnose it", N=2 per arm against `b3d81db`: the current skill ran the script 2/2, the pre-edit one 0/2. Both arms' diagnoses found the same main faults by reading; the current ones also cited the page-wide counts. Regression, behaviour runner, N=2: #14, #31, #40 2/2 on both arms, #4 0/2 on both.
+
+- Whether reader counts cut the number of rounds a user has to repeat a remark is a multi-round effect no one-turn case poses; it is not measured.
+- The behaviour runner gives answer calls read-only tools, so its cases cannot exercise the script.
+
 ## Already-Tested Dead Ends
 
 Already-tested dead ends — do not re-run these:
