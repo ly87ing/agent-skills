@@ -1,4 +1,3 @@
-- Use Simplified Chinese for conversation and for new content, unless the file or repository already uses another language; keep code, commands, and clearer English terms in English.
 - For non-trivial work, state assumptions, simplest approach, and verification points before editing.
 - Make the smallest, simplest local change that does the job, in the local style: no speculative features, abstractions, config, or impossible-case handling; no unrelated cleanup; remove only dead code it made obsolete; keep refactoring and behavior changes in separate commits.
 - After every change, run the smallest relevant check that could fail; if you skip it, cannot run it, or it did not exercise the change, say so explicitly.
